@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title id="pageTitle">問題MAKER</title>
+<style>
+:root{--p:#4a90e2;--s:#2ecc71;--d:#e74c3c;--b:#f5f7fa;--c:#fff;--t:#2c3e50}
+*{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}
+body{background:var(--b);color:var(--t);padding:20px;display:flex;justify-content:center;align-items:center;min-height:100vh}
+.con{width:100%;max-width:1050px;background:var(--c);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.05);padding:30px;position:relative;overflow:hidden}
+@keyframes fI{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes p{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.anim{animation:fI .4s ease forwards}
+
+.t-area{text-align:center;margin-bottom:25px}
+.e-title{font-size:2rem;font-weight:bold;border:2px dashed #dcdde1;padding:6px 16px;border-radius:8px;outline:none;display:inline-block;color:var(--t)}
+.m-mode .e-title:hover,.m-mode .e-title:focus{border-color:var(--p);background:rgba(74,144,226,0.05)}
+
+.t-wrap{overflow-x:auto;margin-bottom:25px;border-radius:8px;border:1px solid #dcdde1}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #dcdde1;padding:12px;text-align:left;position:relative}
+th{background:#f8f9fa;font-weight:600;color:#34495e}
+
+/* セル内のテキストエリアとクリアボタン */
+.cell-wrap { position: relative; padding-right: 22px; }
+.c-cell{min-height:32px;outline:none;width:100%;line-height:1.5}
+.c-cell[contenteditable="false"]{background:#e9ecef;cursor:not-allowed;}
+.clear-cell-btn {
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  border: 0; border-radius: 50%; background: #bdc3c7; color: white;
+  width: 18px; height: 18px; font-size: 10px; cursor: pointer;
+  display: flex; justify-content: center; align-items: center;
+  opacity: 0; transition: opacity 0.2s; z-index: 5;
+}
+.cell-wrap:hover .clear-cell-btn { opacity: 1; }
+
+.q-cell{padding-right:28px}
+
+/* ヘッダー＆行の削除ボタンのホバー演出 */
+.opt-head { position: relative; padding-right: 28px !important; }
+.opt-head .del-opt {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  border: 0; border-radius: 50%; background: #e74c3c; color: white;
+  width: 18px; height: 18px; font-size: 11px; cursor: pointer;
+  display: flex; justify-content: center; align-items: center;
+  opacity: 0; transition: opacity 0.2s; z-index: 5;
+}
+.opt-head:hover .del-opt { opacity: 1; }
+
+.row-del-wrap { position: relative; padding-right: 28px !important; }
+.del-row {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  border: 0; border-radius: 4px; background: #e74c3c; color: white;
+  width: 22px; height: 22px; font-size: 12px; cursor: pointer;
+  display: flex; justify-content: center; align-items: center;
+  opacity: 0; transition: opacity 0.2s; z-index: 5;
+}
+tr:hover .del-row { opacity: 1; }
+
+.add-option{white-space:nowrap}
+.add-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:var(--s);color:var(--c);border:none;width:22px;height:22px;border-radius:50%;cursor:pointer;display:flex;justify-content:center;align-items:center;font-weight:bold;font-size:12px;opacity:0;transition:opacity .2s;z-index:10}
+td.q-cell:hover .add-btn{opacity:1}
+
+.btn-con{display:flex;gap:15px;justify-content:center;align-items:center;margin-top:25px}
+.m-btn{background:var(--p);color:var(--c);border:none;padding:12px 28px;font-size:1rem;font-weight:bold;border-radius:24px;cursor:pointer;box-shadow:0 4px 12px rgba(74,144,226,0.3);transition:all .2s}
+.m-btn:hover{transform:translateY(-2px)}
+.r-btn{background:var(--d);box-shadow:0 4px 12px rgba(231,76,60,0.3);}
+
+/* 共有エリアの綺麗めな整頓 */
+.sh-area{background:#f8f9fa;padding:20px;border-radius:10px;margin-bottom:25px;text-align:center;border:1px solid #dcdde1;display:none}
+.sh-wrap-in { display: flex; gap: 10px; justify-content: center; align-items: center; max-width: 600px; margin: 0 auto; }
+.sh-input{flex:1;padding:10px 14px;border:1px solid #dcdde1;border-radius:6px;outline:none;font-size:0.95rem;background:#fff}
+
+.q-card{text-align:center}
+.q-title-view{font-size:1.5rem;font-weight:bold;color:var(--p);margin-bottom:20px;}
+.q-text{font-size:1.4rem;margin-bottom:25px;font-weight:bold}
+.o-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:650px;margin:0 auto 25px auto}
+@media(max-width:600px){.o-grid{grid-template-columns:100%}}
+.o-btn{background:#f8f9fa;border:2px solid #dcdde1;padding:14px 18px;font-size:1.05rem;border-radius:10px;cursor:pointer;text-align:left;transition:all .2s}
+.o-btn:hover{border-color:var(--p);transform:translateX(4px);background:#fff}
+
+.text-ans-input { width: 100%; max-width: 450px; padding: 12px 16px; font-size: 1.1rem; border: 2px solid #dcdde1; border-radius: 8px; outline: none; margin: 0 auto 20px auto; display: block; }
+.text-ans-input:focus { border-color: var(--p); }
+
+.p-bar-c{width:100%;height:8px;background:#dcdde1;border-radius:4px;margin-bottom:25px;overflow:hidden}
+.p-bar{height:100%;width:0%;background:var(--p);transition:width .3s}
+
+/* モード切り替えによる非表示制御の確実化 */
+.p-mode{display:none}
+.r-mode{display:none}
+
+.r-card{text-align:center}
+.s-circ{width:130px;height:130px;border-radius:50%;border:6px solid var(--s);display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 auto 20px auto;animation:p 2s infinite}
+.s-num{font-size:2.2rem;font-weight:bold;color:var(--s)}
+.s-lab{font-size:.85rem;color:#7f8c8d}
+
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:100}
+.m-body{background:#fff;padding:25px;border-radius:12px;width:300px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+.m-body h3{margin-bottom:15px;color:var(--t)}
+.m-body label{display:block;margin:12px 0 6px;text-align:left;font-size:0.9rem;font-weight:600}
+.m-body select,.m-body input{width:100%;padding:10px;margin-bottom:10px;border:1px solid #dcdde1;border-radius:6px;font-size:1rem}
+.m-line{display:flex;gap:10px;justify-content:center;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="con m-mode" id="app">
+  <div class="t-area">
+    <div id="qTitle" class="e-title" contenteditable="true">タイトルを入力</div>
+  </div>
+  
+  <div class="sh-area" id="shArea">
+    <div class="sh-wrap-in">
+      <input type="text" id="shUrl" class="sh-input" readonly>
+      <button class="m-btn" style="padding:8px 16px;font-size:0.9rem;border-radius:6px;box-shadow:none;" onclick="cpL()">コピー</button>
+      <button class="m-btn" style="padding:8px 16px;font-size:0.9rem;background:#06c755;border-radius:6px;box-shadow:none;" onclick="lineS()">LINE共有</button>
+    </div>
+  </div>
+
+  <div id="mSec">
+    <div class="t-wrap">
+      <table>
+        <thead>
+          <tr id="optionHead">
+            <th style="width:30%">問題文</th>
+            <th><button class="m-btn add-option" onclick="addOption()" style="padding:5px 10px;font-size:.8rem">＋選択肢追加</button></th>
+            <th style="text-align:center; width:140px;">形式 / 正解</th>
+          </tr>
+        </thead>
+        <tbody id="tBody">
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-con">
+      <button class="m-btn" onclick="sQ(true)">クイズ開始＆URL発行</button>
+      <button class="m-btn r-btn" onclick="resetAll()">リセット</button>
+    </div>
+  </div>
+
+  <div id="pSec" class="p-mode">
+    <div class="p-bar-c"><div class="p-bar" id="pBar"></div></div>
+    <div class="q-card" id="qCard">
+      <div class="q-title-view" id="qTitleView"></div>
+      <div class="q-text" id="qTxt"></div>
+      <div id="quizArea"></div>
+    </div>
+  </div>
+
+  <div id="rSec" class="r-mode">
+    <div class="r-card anim">
+      <h2 style="margin-bottom:15px">結果発表</h2>
+      <div class="s-circ">
+        <div class="s-num" id="aRate">0%</div>
+        <div class="s-lab">正答率</div>
+      </div>
+      <p id="rCom" style="font-size:1.1rem;margin-bottom:10px;font-weight:bold;"></p>
+      <p id="sDet" style="color:#7f8c8d; margin-bottom:20px;"></p>
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button class="m-btn" onclick="restartQuiz()">もう一度解答する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="mdl">
+  <div class="m-body">
+    <h3>問題の追加設定</h3>
+    <label>選択肢の数</label>
+    <select id="selOpt"></select>
+    <label>追加する問題数</label>
+    <input type="number" id="numQ" value="1" min="1">
+    <div class="m-line">
+      <button class="m-btn" style="background:#7f8c8d;padding:8px 16px;font-size:0.9rem;border-radius:6px;box-shadow:none;" onclick="cM()">閉じる</button>
+      <button class="m-btn" style="padding:8px 16px;font-size:0.9rem;border-radius:6px;box-shadow:none;" onclick="gR()">作成</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let qD=[], cI=0, sc=0, tR=null, optionCount=4, quizTitle="問題MAKER";
+
+function keyFor(i){let s="";i++;while(i>0){i--;s=String.fromCharCode(65+i%26)+s;i=Math.floor(i/26)}return s}
+
+window.onload=()=>{
+  const urlParams = new URLSearchParams(window.location.search);
+  const p = urlParams.get('p');
+  
+  if(p){
+    try{
+      const d=JSON.parse(decodeURIComponent(escape(atob(p.replace(/-/g,'+').replace(/_/g,'/')))));
+      quizTitle = d.t || "問題MAKER";
+      document.getElementById('pageTitle').innerText = quizTitle;
+      document.getElementById('qTitleView').innerText = quizTitle;
+      qD=d.q;
+      document.getElementById('app').classList.remove('m-mode');
+      document.getElementById('mSec').style.display='none';
+      document.getElementById('pSec').style.display='block';
+      sW();
+    }catch(e){alert("URLデータが破損しています")}
+  } else {
+    loadFromLocalStorage();
+  }
+
+  window.onpopstate = (event) => {
+    if(!new URLSearchParams(window.location.search).get('p')) {
+      location.reload();
+    }
+  };
+};
+
+function initTable(){
+  renderOptionHeaders();
+  const tbody = document.getElementById('tBody');
+  tbody.innerHTML = '';
+  appendRow();
+}
+
+function renderOptionHeaders(){
+  const head=document.getElementById('optionHead');
+  if(!head)return;
+  let h='<th style="width:30%">問題文</th>';
+  for(let i=0;i<optionCount;i++){
+    h+=`<th class="opt-head">${keyFor(i)} <button class="del-opt" onclick="removeOption(${i})" title="${keyFor(i)}を削除">×</button></th>`;
+  }
+  h+='<th><button class="m-btn add-option" onclick="addOption()" style="padding:5px 10px;font-size:.8rem">＋選択肢追加</button></th>';
+  h+='<th style="text-align:center; width:140px;">形式 / 正解</th>';
+  head.innerHTML=h;
+  updateTableCellsEditable();
+}
+
+function updateTableCellsEditable(){
+  document.querySelectorAll('#tBody tr').forEach(r=>{
+    const typeSel = r.querySelector('.type-select');
+    if(!typeSel) return;
+    const isText = typeSel.value === 'text';
+    const cells = r.querySelectorAll('.opt-cell');
+    cells.forEach((cell, idx)=>{
+      const editableDiv = cell.querySelector('.c-cell');
+      if(isText || idx >= optionCount){
+        editableDiv.setAttribute('contenteditable', 'false');
+        editableDiv.style.background = '#e9ecef';
+      } else {
+        editableDiv.setAttribute('contenteditable', 'true');
+        editableDiv.style.background = '#fff';
+      }
+    });
+  });
+}
+
+function onTypeChange(selectElem){
+  const tr = selectElem.closest('tr');
+  const cells = tr.querySelectorAll('.opt-cell .c-cell');
+  let hasContent = false;
+  cells.forEach(c => { if(c.innerText.trim() !== '') hasContent = true; });
+
+  if(hasContent){
+    if(!confirm('すでに選択肢が入力されていますが、形式を変更してよろしいですか？（入力内容がリセットされます）')){
+      selectElem.value = selectElem.value === 'text' ? 'select' : 'text';
+      return;
+    }
+    cells.forEach(c => c.innerText = '');
+  }
+  updateTableCellsEditable();
+  saveToLocalStorage();
+}
+
+function addOption(){
+  if(optionCount >= 10){ alert('選択肢は最大10個までです'); return; }
+  optionCount++;
+  document.querySelectorAll('#tBody tr').forEach(r=>{
+    const td=document.createElement('td');
+    td.className = 'opt-cell';
+    td.innerHTML=`<div class="cell-wrap"><div class="c-cell" contenteditable="true" oninput="saveToLocalStorage()"></div><button class="clear-cell-btn" onclick="clearCell(this)" title="クリア">×</button></div>`;
+    r.insertBefore(td, r.querySelector('.row-del-wrap'));
+  });
+  renderOptionHeaders();
+  saveToLocalStorage();
+}
+
+function removeOption(index){
+  if(optionCount<=2){alert('選択肢は最低2つ必要です');return}
+  document.querySelectorAll('#tBody tr').forEach(r=>{
+    const cells=r.querySelectorAll('.opt-cell');
+    if(cells[index]) cells[index].remove();
+  });
+  optionCount--;
+  document.querySelectorAll('#tBody .answer-cell').forEach(el=>{
+    const old=el.innerText.trim().toUpperCase();
+    const oldIndex=old.charCodeAt(0)-65;
+    if(oldIndex===index) el.innerText='A';
+    else if(oldIndex>index&&old.length===1) el.innerText=keyFor(oldIndex-1);
+  });
+  renderOptionHeaders();
+  saveToLocalStorage();
+}
+
+function appendRow(targetTr = null, qText="", opts=[], type="select", ans="A"){
+  const r=document.createElement('tr');
+  let h=`<td class="q-cell"><div class="cell-wrap"><div class="c-cell" contenteditable="true" oninput="saveToLocalStorage()">${qText}</div><button class="clear-cell-btn" onclick="clearCell(this)" title="クリア">×</button></div><button class="add-btn" onclick="oM(this)">＋</button></td>`;
+  
+  for(let j=0;j<10;j++){
+    const displayStyle = (j < optionCount) ? '' : 'display:none;';
+    const val = opts[j] || "";
+    h+=`<td class="opt-cell" style="${displayStyle}"><div class="cell-wrap"><div class="c-cell" contenteditable="true" oninput="saveToLocalStorage()">${val}</div><button class="clear-cell-btn" onclick="clearCell(this)" title="クリア">×</button></div></td>`;
+  }
+  
+  h+=`<td class="row-del-wrap" style="text-align:center"><button class="del-row" onclick="removeRow(this)" title="この問題を削除">×</button></td>`;
+  
+  h+=`<td style="text-align:center">
+        <select class="type-select" onchange="onTypeChange(this)" style="width:100%; padding:4px; margin-bottom:6px; font-size:0.9rem; border:1px solid #dcdde1; border-radius:4px;">
+          <option value="select" ${type==='select'?'selected':''}>選択式</option>
+          <option value="text" ${type==='text'?'selected':''}>記入形式</option>
+        </select>
+        <div class="cell-wrap"><div class="c-cell answer-cell" contenteditable="true" oninput="saveToLocalStorage()" style="text-align:center;font-weight:bold;color:var(--p)">${ans}</div><button class="clear-cell-btn" onclick="clearCell(this)" title="クリア">×</button></div>
+      </td>`;
+  r.innerHTML=h;
+  
+  const tbody = document.getElementById('tBody');
+  if(targetTr && targetTr.parentNode){
+    targetTr.parentNode.insertBefore(r, targetTr.nextSibling);
+  } else {
+    tbody.appendChild(r);
+  }
+  updateTableCellsEditable();
+  saveToLocalStorage();
+}
+
+function clearCell(btn){
+  const cell = btn.previousElementSibling;
+  if(cell) {
+    cell.innerText = '';
+    saveToLocalStorage();
+  }
+}
+
+function removeRow(btn){
+  const rows = document.querySelectorAll('#tBody tr');
+  if(rows.length <= 1){
+    alert('問題は最低1つ必要です');
+    return;
+  }
+  btn.closest('tr').remove();
+  saveToLocalStorage();
+}
+
+function resetAll(){
+  if(confirm('入力した内容をすべてリセットしてよろしいですか？')){
+    localStorage.removeItem('quiz_maker_data');
+    document.getElementById('qTitle').innerText = "タイトルを入力";
+    optionCount = 4;
+    initTable();
+  }
+}
+
+function saveToLocalStorage(){
+  const title = document.getElementById('qTitle').innerText.trim();
+  const rows = document.querySelectorAll('#tBody tr');
+  const rowsData = [];
+  
+  rows.forEach(r => {
+    const qCell = r.querySelector('.q-cell .c-cell');
+    const typeSelect = r.querySelector('.type-select');
+    const ansCell = r.querySelector('.answer-cell');
+    if(!qCell || !typeSelect || !ansCell) return;
+    
+    const optCells = r.querySelectorAll('.opt-cell');
+    const opts = [];
+    optCells.forEach(cell => {
+      opts.push(cell.querySelector('.c-cell').innerText.trim());
+    });
+    
+    rowsData.push({
+      q: qCell.innerText,
+      type: typeSelect.value,
+      opts: opts,
+      ans: ansCell.innerText,
+      optionCount: optionCount
+    });
+  });
+  
+  const data = { title, optionCount, rowsData };
+  localStorage.setItem('quiz_maker_data', JSON.stringify(data));
+}
+
+function loadFromLocalStorage(){
+  const saved = localStorage.getItem('quiz_maker_data');
+  if(saved){
+    try{
+      const data = JSON.parse(saved);
+      if(data.title) {
+        document.getElementById('qTitle').innerText = data.title;
+        document.getElementById('pageTitle').innerText = data.title;
+      }
+      if(data.optionCount) optionCount = data.optionCount;
+      
+      renderOptionHeaders();
+      const tbody = document.getElementById('tBody');
+      tbody.innerHTML = '';
+      
+      if(data.rowsData && data.rowsData.length > 0){
+        data.rowsData.forEach(rd => {
+          appendRow(null, rd.q, rd.opts, rd.type, rd.ans);
+        });
+      } else {
+        appendRow();
+      }
+    }catch(e){
+      initTable();
+    }
+  } else {
+    initTable();
+  }
+}
+
+function oM(b){
+  tR=b.closest('tr');
+  const sel=document.getElementById('selOpt');
+  sel.innerHTML='';
+  for(let i=2;i<=10;i++){
+    const op=document.createElement('option');
+    op.value=String(i);
+    op.textContent=i+'択 ('+Array.from({length:i},(_,k)=>keyFor(k)).join(',')+')';
+    sel.appendChild(op);
+  }
+  sel.value=String(optionCount);
+  document.getElementById('mdl').style.display='flex';
+}
+
+function cM(){document.getElementById('mdl').style.display='none'}
+
+function gR(){
+  const newOptCount = parseInt(document.getElementById('selOpt').value);
+  const n=parseInt(document.getElementById('numQ').value);
+  if(n<1||!Number.isFinite(n))return;
+  
+  optionCount = newOptCount;
+  renderOptionHeaders();
+
+  let curr = tR;
+  for(let i=0;i<n;i++){
+    appendRow(curr);
+    curr = curr.nextSibling;
+  }
+  cM();
+}
+
+function sQ(gL=false){
+  const rows=document.querySelectorAll('#tBody tr');
+  qD=[];
+  for(let r of rows){
+    const qCell = r.querySelector('.q-cell .c-cell');
+    const typeSelect = r.querySelector('.type-select');
+    const ansCell = r.querySelector('.answer-cell');
+    
+    if(!qCell || !typeSelect || !ansCell) continue;
+    
+    const q = qCell.innerText.trim();
+    const type = typeSelect.value;
+    const ans = ansCell.innerText.trim();
+    
+    if(!q) continue;
+    if(!ans){ alert('正解（または正解の答え）を入力してください'); return; }
+
+    const o = {};
+    if(type === 'select'){
+      const optCells = r.querySelectorAll('.opt-cell');
+      for(let j=0; j<optionCount; j++){
+        const val = optCells[j].querySelector('.c-cell').innerText.trim();
+        if(val) o[keyFor(j)] = val;
+      }
+      if(Object.keys(o).length < 2){ alert('選択式問題では、選択肢を最低2つ以上入力してください'); return; }
+      const validAns = Object.keys(o);
+      if(!validAns.includes(ans.toUpperCase())){
+        alert('正解欄には入力された選択肢の範囲内('+validAns.join(',')+')でアルファベットを入力してください');
+        return;
+      }
+      qD.push({q, type, o, ans: ans.toUpperCase()});
+    } else {
+      o['text'] = ans;
+      qD.push({q, type, o, ans: ans});
+    }
+  }
+  
+  if(qD.length===0){alert('問題が入力されていません');return}
+  quizTitle=document.getElementById('qTitle').innerText.trim() || "問題MAKER";
+  
+  if(gL){
+    const sD=btoa(unescape(encodeURIComponent(JSON.stringify({t:quizTitle,q:qD})))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    const url=window.location.protocol+'//'+window.location.host+window.location.pathname+'?p='+sD;
+    document.getElementById('shUrl').value=url;
+    document.getElementById('shArea').style.display='block';
+    
+    history.pushState({play: true}, "", "?p=" + sD);
+  }
+  document.getElementById('pageTitle').innerText = quizTitle;
+  document.getElementById('qTitleView').innerText = quizTitle;
+  document.getElementById('app').classList.remove('m-mode');
+  document.getElementById('mSec').style.display='none';
+  document.getElementById('pSec').style.display='block';
+  cI=0;sc=0;sW();
+}
+
+function sW(){
+  if(cI>=qD.length){sR();return}
+  const q=qD[cI],p=(cI/qD.length)*100;
+  document.getElementById('pBar').style.width=p+'%';
+  const c=document.getElementById('qCard');
+  c.classList.remove('anim');void c.offsetWidth;c.classList.add('anim');
+  document.getElementById('qTxt').innerText='Q'+(cI+1)+'. '+q.q;
+  
+  const quizArea = document.getElementById('quizArea');
+  quizArea.innerHTML = '';
+  
+  if(q.type === 'select'){
+    const g=document.createElement('div');
+    g.className = 'o-grid';
+    Object.keys(q.o).forEach(k=>{
+      const b=document.createElement('button');
+      b.className='o-btn';
+      b.innerText=k+': '+q.o[k];
+      b.onclick=()=>hA(k);
+      g.appendChild(b);
+    });
+    quizArea.appendChild(g);
+  } else {
+    const wrap = document.createElement('div');
+    wrap.style.maxWidth = '450px';
+    wrap.style.margin = '0 auto';
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'text-ans-input';
+    input.placeholder = '答えを入力してください';
+    
+    const btn = document.createElement('button');
+    btn.className = 'm-btn';
+    btn.innerText = '解答する';
+    btn.style.width = '100%';
+    
+    btn.onclick = () => {
+      const userAns = input.value;
+      if(!userAns.trim()){ alert('答えを入力してください'); return; }
+      hA(userAns);
+    };
+    
+    input.onkeydown = (e) => {
+      if(e.key === 'Enter') btn.click();
+    };
+    
+    wrap.appendChild(input);
+    wrap.appendChild(btn);
+    quizArea.appendChild(wrap);
+    input.focus();
+  }
+}
+
+function hA(userAns){
+  const currentQ = qD[cI];
+  let isCorrect = false;
+  
+  if(currentQ.type === 'select'){
+    isCorrect = (userAns.trim().toUpperCase() === currentQ.ans.trim().toUpperCase());
+  } else {
+    isCorrect = (userAns.trim() === currentQ.ans.trim());
+  }
+  
+  if(isCorrect) sc++;
+  cI++;
+  sW();
+}
+
+function sR(){
+  document.getElementById('pBar').style.width='100%';
+  document.getElementById('pSec').style.display='none';
+  document.getElementById('rSec').style.display='block';
+  const a=Math.round(sc/qD.length*100);
+  document.getElementById('aRate').innerText=a+'%';
+  document.getElementById('sDet').innerText=qD.length+'問中 '+sc+'問正解';
+  let m='';
+  if(a==100)m='パーフェクト！🎉';
+  else if(a>=80)m='高得点！✨';
+  else if(a>=50)m='ナイス挑戦！👍';
+  else m='次は頑張ろう！🔥';
+  document.getElementById('rCom').innerText=m;
+}
+
+function restartQuiz(){
+  document.getElementById('rSec').style.display='none';
+  document.getElementById('pSec').style.display='block';
+  cI=0;
+  sc=0;
+  sW();
+}
+
+function cpL(){
+  const i=document.getElementById('shUrl');
+  i.select();
+  document.execCommand('copy');
+  alert('URLをコピーしました！');
+}
+
+function lineS(){
+  const urlParams = new URLSearchParams(window.location.search);
+  const p = urlParams.get('p');
+  const u = p ? window.location.href : document.getElementById('shUrl').value;
+  window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(u));
+}
+</script>
+</body>
+</html>
