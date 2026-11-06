@@ -2,126 +2,178 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title id="pageTitle">問題MAKER</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title id="pageTitle">問題MAKER - ダッシュボード</title>
 <style>
 :root{--p:#4a90e2;--s:#2ecc71;--d:#e74c3c;--b:#f5f7fa;--c:#fff;--t:#2c3e50}
 *{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}
 body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-content:center;align-items:center;min-height:100vh}
-.con{width:100%;max-width:1100px;background:var(--c);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.05);padding:20px;position:relative;overflow:hidden}
+.con{width:100%;max-width:1100px;background:var(--c);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.05);padding:20px;position:relative;overflow:hidden;min-height:600px;display:flex;flex-direction:column}
+
+/* ヘッダー・ナビゲーション */
+.site-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f2f6; padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.site-logo { font-size: 1.4rem; font-weight: bold; color: var(--p); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.nav-links { display: flex; gap: 8px; }
+.nav-link-btn { background: #e9ecef; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--t); transition: background 0.2s; }
+.nav-link-btn:hover { background: #dcdde1; }
+
 @keyframes fI{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes p{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .anim{animation:fI .4s ease forwards}
 
-.t-area{text-align:center;margin-bottom:20px}
-.e-title{font-size:1.8rem;font-weight:bold;border:2px dashed #dcdde1;padding:6px 16px;border-radius:8px;outline:none;display:inline-block;color:var(--t);max-width:100%;word-break:break-all;}
+/* ホーム（ファイル一覧・ダッシュボード） */
+.home-section { display: none; flex: 1; }
+.home-section.active { display: block; }
+.home-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.home-top-bar h2 { font-size: 1.2rem; color: #34495e; }
+
+.file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+.file-card { background: #fff; border: 1px solid #dcdde1; border-radius: 10px; padding: 15px; cursor: pointer; transition: all 0.2s; position: relative; display: flex; flex-direction: column; justify-content: space-between; height: 150px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+.file-card:hover { transform: translateY(-3px); border-color: var(--p); box-shadow: 0 6px 16px rgba(74,144,226,0.15); }
+.file-card.new-card { border: 2px dashed var(--p); background: rgba(74,144,226,0.02); justify-content: center; align-items: center; text-align: center; color: var(--p); font-weight: bold; }
+.file-card-title { font-size: 1.05rem; font-weight: bold; color: var(--t); word-break: break-all; margin-bottom: 5px; }
+.file-card-meta { font-size: 0.8rem; color: #7f8c8d; }
+.file-card-actions { display: flex; gap: 6px; margin-top: 10px; }
+.file-action-btn { background: #f1f2f6; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: 600; color: var(--t); }
+.file-action-btn.del { background: #f8d7da; color: #721c24; }
+
+/* 各ページセクション */
+.page-section { display: none; flex: 1; }
+.page-section.active { display: block; }
+
+.t-area{text-align:center;margin-bottom:15px}
+.e-title{font-size:1.6rem;font-weight:bold;border:2px dashed #dcdde1;padding:6px 16px;border-radius:8px;outline:none;display:inline-block;color:var(--t);max-width:100%;word-break:break-all;}
 .m-mode .e-title:hover,.m-mode .e-title:focus{border-color:var(--p);background:rgba(74,144,226,0.05)}
 
-.settings-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; font-size: 0.9rem; align-items: center; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dcdde1; flex-wrap: wrap; }
+.settings-bar { display: flex; justify-content: center; gap: 12px; margin-bottom: 15px; font-size: 0.85rem; align-items: center; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dcdde1; flex-wrap: wrap; }
 .settings-bar label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600; }
 
-.t-wrap{overflow-x:auto;margin-bottom:25px;border-radius:8px;border:1px solid #dcdde1; -webkit-overflow-scrolling: touch;}
-table{width:100%;border-collapse:collapse;min-width:600px;}
-th,td{border:1px solid #dcdde1;padding:10px;text-align:left;position:relative}
-th{background:#f8f9fa;font-weight:600;color:#34495e}
+.toolbar-sub { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+.import-box { background: #eef2f7; padding: 8px 10px; border-radius: 8px; font-size: 0.8rem; display: flex; gap: 8px; align-items: center; flex: 1; min-width: 260px; }
+.import-box input { flex: 1; padding: 6px; border: 1px solid #dcdde1; border-radius: 4px; font-size: 0.85rem; }
 
-.cell-wrap { position: relative; padding-right: 22px; }
-.c-cell{min-height:30px;outline:none;width:100%;line-height:1.4;word-break:break-all;}
+.t-wrap{overflow-x:auto;margin-bottom:20px;border-radius:8px;border:1px solid #dcdde1; -webkit-overflow-scrolling: touch;}
+table{width:100%;border-collapse:collapse;min-width:650px;}
+th,td{border:1px solid #dcdde1;padding:8px;text-align:left;position:relative}
+th{background:#f8f9fa;font-weight:600;color:#34495e;font-size:0.9rem;}
+
+.cell-wrap { position: relative; padding-right: 20px; }
+.c-cell{min-height:28px;outline:none;width:100%;line-height:1.4;word-break:break-all;font-size:0.95rem;}
 .c-cell[contenteditable="false"]{background:#e9ecef;cursor:not-allowed;}
 .clear-cell-btn {
   position: absolute; right: 2px; top: 50%; transform: translateY(-50%);
   border: 0; border-radius: 50%; background: #bdc3c7; color: white;
-  width: 18px; height: 18px; font-size: 10px; cursor: pointer;
+  width: 16px; height: 16px; font-size: 9px; cursor: pointer;
   display: flex; justify-content: center; align-items: center;
   z-index: 5;
 }
 
-.q-cell{padding-right:32px}
+.q-cell{padding-right:30px}
 
-.opt-head { position: relative; padding-right: 28px !important; }
+.opt-head { position: relative; padding-right: 26px !important; }
 .opt-head .del-opt {
-  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
   border: 0; border-radius: 50%; background: #e74c3c; color: white;
-  width: 18px; height: 18px; font-size: 11px; cursor: pointer;
+  width: 16px; height: 16px; font-size: 10px; cursor: pointer;
   display: flex; justify-content: center; align-items: center;
   z-index: 5;
 }
 
-.row-del-wrap { position: relative; padding-right: 30px !important; }
+.row-del-wrap { position: relative; padding-right: 26px !important; }
 .del-row {
   position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
   border: 0; border-radius: 4px; background: #e74c3c; color: white;
-  width: 22px; height: 22px; font-size: 12px; cursor: pointer;
+  width: 20px; height: 20px; font-size: 11px; cursor: pointer;
   display: flex; justify-content: center; align-items: center;
   z-index: 5;
 }
 
 .add-option{white-space:nowrap}
-.add-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:var(--s);color:var(--c);border:none;width:22px;height:22px;border-radius:50%;cursor:pointer;display:flex;justify-content:center;align-items:center;font-weight:bold;font-size:12px;z-index:10}
+.add-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:var(--s);color:var(--c);border:none;width:20px;height:20px;border-radius:50%;cursor:pointer;display:flex;justify-content:center;align-items:center;font-weight:bold;font-size:11px;z-index:10}
 
-.btn-con{display:flex;gap:15px;justify-content:center;align-items:center;margin-top:20px;flex-wrap:wrap;}
-.m-btn{background:var(--p);color:var(--c);border:none;padding:12px 24px;font-size:1rem;font-weight:bold;border-radius:24px;cursor:pointer;box-shadow:0 4px 12px rgba(74,144,226,0.3);transition:all .2s}
+.btn-con{display:flex;gap:12px;justify-content:center;align-items:center;margin-top:15px;flex-wrap:wrap;}
+.m-btn{background:var(--p);color:var(--c);border:none;padding:10px 22px;font-size:0.95rem;font-weight:bold;border-radius:24px;cursor:pointer;box-shadow:0 4px 12px rgba(74,144,226,0.3);transition:all .2s}
 .m-btn:hover{transform:translateY(-2px)}
 .r-btn{background:var(--d);box-shadow:0 4px 12px rgba(231,76,60,0.3);}
 
-.sh-area{background:#f8f9fa;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;border:1px solid #dcdde1;display:none}
+.sh-area{background:#f8f9fa;padding:12px;border-radius:10px;margin-bottom:15px;text-align:center;border:1px solid #dcdde1;display:none}
 .sh-wrap-in { display: flex; gap: 8px; justify-content: center; align-items: center; max-width: 600px; margin: 0 auto; flex-wrap: wrap;}
-.sh-input{flex:1;min-width:200px;padding:8px 12px;border:1px solid #dcdde1;border-radius:6px;outline:none;font-size:0.9rem;background:#fff}
+.sh-input{flex:1;min-width:200px;padding:8px 12px;border:1px solid #dcdde1;border-radius:6px;outline:none;font-size:0.85rem;background:#fff}
 
 .q-card{text-align:center}
-.q-title-view{font-size:1.3rem;font-weight:bold;color:var(--p);margin-bottom:15px;}
-.timer-view{font-size:1.1rem;font-weight:bold;color:var(--d);margin-bottom:10px;}
-.q-text{font-size:1.3rem;margin-bottom:20px;font-weight:bold;word-break:break-all;}
-.o-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:650px;margin:0 auto 20px auto}
+.q-title-view{font-size:1.2rem;font-weight:bold;color:var(--p);margin-bottom:8px;}
+.meta-info-view { display: flex; justify-content: space-between; font-weight: bold; color: #7f8c8d; margin-bottom: 12px; font-size: 0.9rem; }
+.timer-view{font-size:1.05rem;font-weight:bold;color:var(--d);margin-bottom:8px;}
+.q-text{font-size:1.2rem;margin-bottom:18px;font-weight:bold;word-break:break-all;}
+.o-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:650px;margin:0 auto 15px auto}
 @media(max-width:600px){.o-grid{grid-template-columns:100%}}
-.o-btn{background:#f8f9fa;border:2px solid #dcdde1;padding:14px 18px;font-size:1rem;border-radius:10px;cursor:pointer;text-align:left;transition:all .2s}
+.o-btn{background:#f8f9fa;border:2px solid #dcdde1;padding:12px 16px;font-size:1rem;border-radius:10px;cursor:pointer;text-align:left;transition:all .2s}
 .o-btn:hover{border-color:var(--p);transform:translateX(4px);background:#fff}
 
-.text-ans-input { width: 100%; max-width: 450px; padding: 12px 16px; font-size: 1.1rem; border: 2px solid #dcdde1; border-radius: 8px; outline: none; margin: 0 auto 15px auto; display: block; }
+.text-ans-input { width: 100%; max-width: 450px; padding: 10px 14px; font-size: 1.05rem; border: 2px solid #dcdde1; border-radius: 8px; outline: none; margin: 0 auto 12px auto; display: block; }
 .text-ans-input:focus { border-color: var(--p); }
 
-.feedback-box { margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; display: none; }
+.feedback-box { margin-top: 12px; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; display: none; }
 .feedback-correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
 .feedback-incorrect { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-.p-bar-c{width:100%;height:8px;background:#dcdde1;border-radius:4px;margin-bottom:20px;overflow:hidden}
+.p-bar-c{width:100%;height:6px;background:#dcdde1;border-radius:3px;margin-bottom:15px;overflow:hidden}
 .p-bar{height:100%;width:0%;background:var(--p);transition:width .3s}
 
-.p-mode{display:none}
-.r-mode{display:none}
-
 .r-card{text-align:center}
-.s-circ{width:120px;height:120px;border-radius:50%;border:6px solid var(--s);display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 auto 20px auto;animation:p 2s infinite}
-.s-num{font-size:2rem;font-weight:bold;color:var(--s)}
-.s-lab{font-size:.8rem;color:#7f8c8d}
+.s-circ{width:110px;height:110px;border-radius:50%;border:6px solid var(--s);display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 auto 15px auto;animation:p 2s infinite}
+.s-num{font-size:1.8rem;font-weight:bold;color:var(--s)}
+.s-lab{font-size:0.75rem;color:#7f8c8d}
+
+.ranking-box { max-width: 400px; margin: 12px auto; background: #f8f9fa; border: 1px solid #dcdde1; border-radius: 8px; padding: 12px; text-align: left; }
+.ranking-box h4 { text-align: center; margin-bottom: 8px; color: var(--t); font-size: 0.95rem; }
+.ranking-list { list-style: none; font-size: 0.9rem; }
+.ranking-list li { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #dcdde1; }
 
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:100}
 .m-body{background:#fff;padding:20px;border-radius:12px;width:90%;max-width:300px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
-.m-body h3{margin-bottom:15px;color:var(--t)}
-.m-body label{display:block;margin:12px 0 6px;text-align:left;font-size:0.9rem;font-weight:600}
-.m-body select,.m-body input{width:100%;padding:10px;margin-bottom:10px;border:1px solid #dcdde1;border-radius:6px;font-size:1rem}
-.m-line{display:flex;gap:10px;justify-content:center;margin-top:20px}
+.m-body h3{margin-bottom:12px;color:var(--t);font-size:1.1rem;}
+.m-body label{display:block;margin:10px 0 4px;text-align:left;font-size:0.85rem;font-weight:600}
+.m-body select,.m-body input{width:100%;padding:8px;margin-bottom:8px;border:1px solid #dcdde1;border-radius:6px;font-size:0.95rem}
+.m-line{display:flex;gap:8px;justify-content:center;margin-top:15px}
 </style>
 </head>
 <body>
-<div class="con m-mode" id="app">
-  <div class="t-area">
-    <div id="qTitle" class="e-title" contenteditable="true">タイトルを入力</div>
-  </div>
-  
-  <div class="sh-area" id="shArea">
-    <div class="sh-wrap-in">
-      <input type="text" id="shUrl" class="sh-input" readonly>
-      <button class="m-btn" style="padding:8px 14px;font-size:0.9rem;border-radius:6px;box-shadow:none;" onclick="cpL()">コピー</button>
-      <button class="m-btn" style="padding:8px 14px;font-size:0.9rem;background:#06c755;border-radius:6px;box-shadow:none;" onclick="lineS()">LINE共有</button>
+<div class="con" id="app">
+  <header class="site-header">
+    <a class="site-logo" onclick="goHome()">🏠 問題MAKER ダッシュボード</a>
+    <nav class="nav-links">
+      <button class="nav-link-btn" onclick="goHome()">📁 一覧</button>
+      <button class="nav-link-btn" onclick="switchPage('howtouse')">📖 使い方</button>
+    </nav>
+  </header>
+
+  <div id="pageHome" class="home-section active">
+    <div class="home-top-bar">
+      <h2>保存されたクイズ一覧</h2>
+      <button class="m-btn" style="padding:6px 14px; font-size:0.85rem; border-radius:6px;" onclick="createNewQuiz()">＋ 新規クイズ</button>
     </div>
+    <div class="file-grid" id="fileGrid"></div>
   </div>
 
-  <div id="mSec">
+  <div id="pageEdit" class="page-section">
+    <div class="t-area">
+      <div id="qTitle" class="e-title" contenteditable="true" oninput="saveToLocalStorage()">タイトルを入力</div>
+    </div>
+    
+    <div class="sh-area" id="shArea">
+      <div class="sh-wrap-in">
+        <input type="text" id="shUrl" class="sh-input" readonly>
+        <button class="m-btn" style="padding:6px 12px;font-size:0.85rem;border-radius:6px;box-shadow:none;" onclick="cpL()">コピー</button>
+        <button class="m-btn" style="padding:6px 12px;font-size:0.85rem;background:#06c755;border-radius:6px;box-shadow:none;" onclick="lineS()">LINE共有</button>
+      </div>
+    </div>
+
     <div class="settings-bar">
-      <label><input type="checkbox" id="chkShuffle"> 問題と選択肢をシャッフルする</label>
+      <label><input type="checkbox" id="chkShuffle" onchange="saveToLocalStorage()"> シャッフル</label>
+      <label><input type="checkbox" id="chkSpeed" onchange="saveToLocalStorage()"> 早押し</label>
       <label>制限時間: 
-        <select id="selTimer" style="padding:4px; border:1px solid #dcdde1; border-radius:4px;">
+        <select id="selTimer" onchange="saveToLocalStorage()" style="padding:4px; border:1px solid #dcdde1; border-radius:4px;">
           <option value="0">なし</option>
           <option value="10">10秒</option>
           <option value="15">15秒</option>
@@ -130,29 +182,51 @@ th{background:#f8f9fa;font-weight:600;color:#34495e}
       </label>
     </div>
 
+    <div class="toolbar-sub">
+      <div class="import-box">
+        <span>一括(問題,A,B,C,D,正解):</span>
+        <input type="text" id="importInput" placeholder="例: 日本の首都は?,大阪,東京,京都,福岡,B">
+        <button class="m-btn" style="padding:4px 8px;font-size:0.75rem;border-radius:4px;box-shadow:none;" onclick="importText()">追加</button>
+      </div>
+      <div>
+        <label style="font-weight:600; font-size:0.85rem;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: 社会" style="padding:4px; border:1px solid #dcdde1; border-radius:4px; width:100px;"></label>
+      </div>
+    </div>
+
     <div class="t-wrap">
       <table>
         <thead>
           <tr id="optionHead">
             <th style="width:25%">問題文</th>
-            <th><button class="m-btn add-option" onclick="addOption()" style="padding:5px 10px;font-size:.8rem">＋選択肢追加</button></th>
-            <th style="text-align:center; width:130px;">形式 / 正解</th>
+            <th><button class="m-btn add-option" onclick="addOption()" style="padding:4px 8px;font-size:0.75rem">＋選択肢追加</button></th>
+            <th style="text-align:center; width:120px;">形式 / 正解</th>
             <th style="width:22%">解説 (任意)</th>
           </tr>
         </thead>
-        <tbody id="tBody">
-        </tbody>
+        <tbody id="tBody"></tbody>
       </table>
     </div>
     <div class="btn-con">
       <button class="m-btn" onclick="sQ(true)">クイズ開始＆URL発行</button>
-      <button class="m-btn r-btn" onclick="resetAll()">リセット</button>
+      <button class="m-btn" style="background:#7f8c8d;" onclick="goHome()">一覧に戻る</button>
     </div>
   </div>
 
-  <div id="pSec" class="p-mode">
+  <div id="pageHowToUse" class="page-section">
+    <h2 style="margin-bottom:12px; color:var(--p); font-size:1.2rem;">📖 使い方ガイド</h2>
+    <p style="line-height:1.5; margin-bottom:8px; font-size:0.95rem;">スマホ・PC両対応の完全無料クイズ作成ツールです。</p>
+    <ul style="padding-left:18px; line-height:1.7; margin-bottom:15px; font-size:0.9rem;">
+      <li><b>ダッシュボード:</b> 作成したクイズがファイルカードとして一覧保存されます。いつでも編集・再プレイが可能！</li>
+      <li><b>編集＆共有:</b> 問題や選択肢を入力したら「クイズ開始＆URL発行」でLINEやリンクですぐに友達へ共有できます。</li>
+      <li><b>便利機能:</b> タイマー制限、早押しボーナス、解説文付きで本格的なテスト勉強やレクリエーションに使えます。</li>
+    </ul>
+    <button class="m-btn" style="font-size:0.9rem; padding:8px 16px;" onclick="goHome()">一覧に戻る</button>
+  </div>
+
+  <div id="pagePlay" class="page-section">
     <div class="p-bar-c"><div class="p-bar" id="pBar"></div></div>
-    <div class="q-card" id="qCard">
+    <div class="q-card">
+      <div class="meta-info-view"><span id="genreView"></span><span id="scoreLiveView">スコア: 0</span></div>
       <div class="q-title-view" id="qTitleView"></div>
       <div class="timer-view" id="timerView"></div>
       <div class="q-text" id="qTxt"></div>
@@ -161,17 +235,29 @@ th{background:#f8f9fa;font-weight:600;color:#34495e}
     </div>
   </div>
 
-  <div id="rSec" class="r-mode">
+  <div id="pageResult" class="page-section">
     <div class="r-card anim">
-      <h2 style="margin-bottom:15px">結果発表</h2>
+      <h2 style="margin-bottom:12px; font-size:1.3rem;">結果発表</h2>
       <div class="s-circ">
         <div class="s-num" id="aRate">0%</div>
         <div class="s-lab">正答率</div>
       </div>
-      <p id="rCom" style="font-size:1.1rem;margin-bottom:10px;font-weight:bold;"></p>
-      <p id="sDet" style="color:#7f8c8d; margin-bottom:20px;"></p>
-      <div style="display:flex; gap:10px; justify-content:center;">
-        <button class="m-btn" onclick="restartQuiz()">もう一度解答する</button>
+      <p id="rCom" style="font-size:1.05rem;margin-bottom:8px;font-weight:bold;"></p>
+      <p id="sDet" style="color:#7f8c8d; margin-bottom:12px; font-size:0.9rem;"></p>
+      
+      <div style="max-width:280px; margin:0 auto 12px auto;">
+        <input type="text" id="playerName" placeholder="ニックネームを入力" style="width:100%; padding:8px; border:1px solid #dcdde1; border-radius:6px; margin-bottom:6px; text-align:center; font-size:0.95rem;">
+        <button class="m-btn" style="padding:6px 14px; font-size:0.85rem; width:100%; border-radius:6px;" onclick="saveRanking()">ランキングに登録</button>
+      </div>
+
+      <div class="ranking-box" id="rankingContainer" style="display:none;">
+        <h4>🏆 クラスランキング</h4>
+        <ul class="ranking-list" id="rankingList"></ul>
+      </div>
+
+      <div style="display:flex; gap:8px; justify-content:center; margin-top:15px;">
+        <button class="m-btn" style="font-size:0.9rem; padding:8px 16px;" onclick="restartQuiz()">もう一度</button>
+        <button class="m-btn" style="background:#7f8c8d; font-size:0.9rem; padding:8px 16px;" onclick="goHome()">一覧に戻る</button>
       </div>
     </div>
   </div>
@@ -185,14 +271,211 @@ th{background:#f8f9fa;font-weight:600;color:#34495e}
     <label>追加する問題数</label>
     <input type="number" id="numQ" value="1" min="1">
     <div class="m-line">
-      <button class="m-btn" style="background:#7f8c8d;padding:8px 16px;font-size:0.9rem;border-radius:6px;box-shadow:none;" onclick="cM()">閉じる</button>
-      <button class="m-btn" style="padding:8px 16px;font-size:0.9rem;border-radius:6px;box-shadow:none;" onclick="gR()">作成</button>
+      <button class="m-btn" style="background:#7f8c8d;padding:6px 14px;font-size:0.85rem;border-radius:6px;box-shadow:none;" onclick="cM()">閉じる</button>
+      <button class="m-btn" style="padding:6px 14px;font-size:0.85rem;border-radius:6px;box-shadow:none;" onclick="gR()">作成</button>
     </div>
   </div>
 </div>
 
 <script>
-let qD=[], cI=0, sc=0, tR=null, optionCount=4, quizTitle="問題MAKER", shuffleMode=false, timeLimit=0, timerInterval=null, timeLeft=0;
+let qD=[], cI=0, sc=0, totalScore=0, tR=null, optionCount=4, quizTitle="問題MAKER", quizGenre="", shuffleMode=false, speedBonus=false, timeLimit=0, timerInterval=null, timeLeft=0, audioCtx=null, currentFileId=null;
+
+function switchPage(pageName){
+  document.querySelectorAll('.home-section, .page-section').forEach(el => el.classList.remove('active'));
+  if(pageName === 'home') {
+    document.getElementById('pageHome').classList.add('active');
+    document.getElementById('pageTitle').innerText = "問題MAKER - ダッシュボード";
+    renderFileList();
+  } else if(pageName === 'edit') {
+    document.getElementById('pageEdit').classList.add('active');
+    document.getElementById('pageTitle').innerText = "問題MAKER - 編集";
+  } else if(pageName === 'howtouse') {
+    document.getElementById('pageHowToUse').classList.add('active');
+    document.getElementById('pageTitle').innerText = "問題MAKER - 使い方";
+  } else if(pageName === 'play') {
+    document.getElementById('pagePlay').classList.add('active');
+  } else if(pageName === 'result') {
+    document.getElementById('pageResult').classList.add('active');
+  }
+}
+
+function goHome(){
+  switchPage('home');
+  if(history.pushState) {
+    history.pushState(null, '', window.location.pathname);
+  }
+}
+
+function getAllFiles(){
+  try{
+    const saved = localStorage.getItem('quiz_maker_files');
+    return saved ? JSON.parse(saved) : [];
+  }catch(e){ return []; }
+}
+
+function saveAllFiles(files){
+  localStorage.setItem('quiz_maker_files', JSON.stringify(files));
+}
+
+function renderFileList(){
+  const grid = document.getElementById('fileGrid');
+  grid.innerHTML = '';
+  
+  const newCard = document.createElement('div');
+  newCard.className = 'file-card new-card';
+  newCard.innerHTML = `<div>＋ 新規クイズ作成</div>`;
+  newCard.onclick = () => createNewQuiz();
+  grid.appendChild(newCard);
+  
+  const files = getAllFiles();
+  files.forEach(file => {
+    const card = document.createElement('div');
+    card.className = 'file-card';
+    card.innerHTML = `
+      <div>
+        <div class="file-card-title">${file.title || '無題のクイズ'}</div>
+        <div class="file-card-meta">ジャンル: ${file.genre || 'なし'} / ${file.rowsData ? file.rowsData.length : 0}問</div>
+      </div>
+      <div class="file-card-actions" onclick="event.stopPropagation()">
+        <button class="file-action-btn" onclick="openFile('${file.id}')">編集</button>
+        <button class="file-action-btn" onclick="playFile('${file.id}')">プレイ</button>
+        <button class="file-action-btn del" onclick="deleteFile('${file.id}')">削除</button>
+      </div>
+    `;
+    card.onclick = () => openFile(file.id);
+    grid.appendChild(card);
+  });
+}
+
+function createNewQuiz(){
+  currentFileId = 'quiz_' + Date.now();
+  document.getElementById('qTitle').innerText = "新しいクイズ";
+  document.getElementById('quizGenre').value = "";
+  document.getElementById('chkShuffle').checked = false;
+  document.getElementById('chkSpeed').checked = false;
+  document.getElementById('selTimer').value = "0";
+  optionCount = 4;
+  initTable();
+  saveToLocalStorage();
+  switchPage('edit');
+}
+
+function openFile(id){
+  const files = getAllFiles();
+  const file = files.find(f => f.id === id);
+  if(!file) return;
+  
+  currentFileId = file.id;
+  document.getElementById('qTitle').innerText = file.title || "問題MAKER";
+  document.getElementById('quizGenre').value = file.genre || "";
+  document.getElementById('chkShuffle').checked = !!file.shuffle;
+  document.getElementById('chkSpeed').checked = !!file.speed;
+  document.getElementById('selTimer').value = file.tm || 0;
+  optionCount = file.optionCount || 4;
+  
+  renderOptionHeaders();
+  const tbody = document.getElementById('tBody');
+  tbody.innerHTML = '';
+  
+  if(file.rowsData && file.rowsData.length > 0){
+    file.rowsData.forEach(rd => {
+      appendRow(null, rd.q, rd.opts, rd.type, rd.ans, rd.exp);
+    });
+  } else {
+    appendRow();
+  }
+  switchPage('edit');
+}
+
+function deleteFile(id){
+  if(!confirm('このクイズファイルを削除してもよろしいですか？')) return;
+  let files = getAllFiles();
+  files = files.filter(f => f.id !== id);
+  saveAllFiles(files);
+  renderFileList();
+}
+
+function saveToLocalStorage(){
+  if(!currentFileId) currentFileId = 'quiz_' + Date.now();
+  
+  const title = document.getElementById('qTitle').innerText.trim();
+  const genre = document.getElementById('quizGenre').value.trim();
+  const shuffle = document.getElementById('chkShuffle').checked;
+  const speed = document.getElementById('chkSpeed').checked;
+  const tm = parseInt(document.getElementById('selTimer').value);
+  const rows = document.querySelectorAll('#tBody tr');
+  const rowsData = [];
+  
+  rows.forEach(r => {
+    const qCell = r.querySelector('.q-cell .c-cell');
+    const typeSelect = r.querySelector('.type-select');
+    const ansCell = r.querySelector('.answer-cell');
+    const expCell = r.querySelector('.exp-cell');
+    if(!qCell || !typeSelect || !ansCell) return;
+    
+    const optCells = r.querySelectorAll('.opt-cell');
+    const opts = [];
+    optCells.forEach(cell => {
+      opts.push(cell.querySelector('.c-cell').innerText.trim());
+    });
+    
+    rowsData.push({
+      q: qCell.innerText,
+      type: typeSelect.value,
+      opts: opts,
+      ans: ansCell.innerText,
+      exp: expCell ? expCell.innerText : "",
+      optionCount: optionCount
+    });
+  });
+  
+  let files = getAllFiles();
+  const idx = files.findIndex(f => f.id === currentFileId);
+  const fileData = { id: currentFileId, title, genre, shuffle, speed, tm, optionCount, rowsData };
+  
+  if(idx >= 0){
+    files[idx] = fileData;
+  } else {
+    files.push(fileData);
+  }
+  saveAllFiles(files);
+}
+
+function playFile(id){
+  openFile(id);
+  sQ(false);
+}
+
+function initAudio(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function playSound(type){
+  try{
+    initAudio();
+    if(!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    if(type === 'correct'){
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.3);
+    } else if(type === 'incorrect'){
+      osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(150, audioCtx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.35);
+    }
+  }catch(e){}
+}
 
 function keyFor(i){let s="";i++;while(i>0){i--;s=String.fromCharCode(65+i%26)+s;i=Math.floor(i/26)}return s}
 
@@ -204,28 +487,31 @@ window.onload=()=>{
     try{
       const d=JSON.parse(decodeURIComponent(escape(atob(p.replace(/-/g,'+').replace(/_/g,'/')))));
       quizTitle = d.t || "問題MAKER";
+      quizGenre = d.g || "";
       shuffleMode = !!d.sh;
+      speedBonus = !!d.sb;
       timeLimit = d.tm || 0;
+      
       document.getElementById('pageTitle').innerText = quizTitle;
       document.getElementById('qTitleView').innerText = quizTitle;
+      document.getElementById('genreView').innerText = quizGenre ? `ジャンル: ${quizGenre}` : "";
       
       qD = d.q;
       if(shuffleMode){
         qD.sort(()=>Math.random()-0.5);
       }
       
-      document.getElementById('app').classList.remove('m-mode');
-      document.getElementById('mSec').style.display='none';
-      document.getElementById('pSec').style.display='block';
+      switchPage('play');
       sW();
+      return;
     }catch(e){alert("URLデータが破損しています")}
-  } else {
-    loadFromLocalStorage();
   }
+  
+  switchPage('home');
 
   window.onpopstate = (event) => {
     if(!new URLSearchParams(window.location.search).get('p')) {
-      location.reload();
+      switchPage('home');
     }
   };
 };
@@ -244,8 +530,8 @@ function renderOptionHeaders(){
   for(let i=0;i<optionCount;i++){
     h+=`<th class="opt-head">${keyFor(i)} <button class="del-opt" onclick="removeOption(${i})" title="${keyFor(i)}を削除">×</button></th>`;
   }
-  h+='<th><button class="m-btn add-option" onclick="addOption()" style="padding:5px 10px;font-size:.8rem">＋選択肢追加</button></th>';
-  h+='<th style="text-align:center; width:130px;">形式 / 正解</th>';
+  h+='<th><button class="m-btn add-option" onclick="addOption()" style="padding:4px 8px;font-size:0.75rem">＋選択肢追加</button></th>';
+  h+='<th style="text-align:center; width:120px;">形式 / 正解</th>';
   h+='<th style="width:22%">解説 (任意)</th>';
   head.innerHTML=h;
   updateTableCellsEditable();
@@ -330,7 +616,7 @@ function appendRow(targetTr = null, qText="", opts=[], type="select", ans="A", e
   h+=`<td class="row-del-wrap" style="text-align:center"><button class="del-row" onclick="removeRow(this)" title="この問題を削除">×</button></td>`;
   
   h+=`<td style="text-align:center">
-        <select class="type-select" onchange="onTypeChange(this)" style="width:100%; padding:4px; margin-bottom:6px; font-size:0.9rem; border:1px solid #dcdde1; border-radius:4px;">
+        <select class="type-select" onchange="onTypeChange(this)" style="width:100%; padding:4px; margin-bottom:6px; font-size:0.85rem; border:1px solid #dcdde1; border-radius:4px;">
           <option value="select" ${type==='select'?'selected':''}>選択式</option>
           <option value="text" ${type==='text'?'selected':''}>記入形式</option>
         </select>
@@ -351,6 +637,28 @@ function appendRow(targetTr = null, qText="", opts=[], type="select", ans="A", e
   saveToLocalStorage();
 }
 
+function importText(){
+  const val = document.getElementById('importInput').value.trim();
+  if(!val) return;
+  const parts = val.split(',').map(s=>s.trim());
+  if(parts.length < 6){
+    alert('形式が違います。問題,A,B,C,D,正解 のようにカンマ区切りで入力してください。');
+    return;
+  }
+  const qText = parts[0];
+  const opts = parts.slice(1, parts.length - 1);
+  const ans = parts[parts.length - 1].toUpperCase();
+  
+  if(opts.length > optionCount){
+    optionCount = opts.length;
+    renderOptionHeaders();
+  }
+  
+  appendRow(null, qText, opts, 'select', ans, '');
+  document.getElementById('importInput').value = '';
+  alert('問題を追加しました！');
+}
+
 function clearCell(btn){
   const cell = btn.previousElementSibling;
   if(cell) {
@@ -367,83 +675,6 @@ function removeRow(btn){
   }
   btn.closest('tr').remove();
   saveToLocalStorage();
-}
-
-function resetAll(){
-  if(confirm('入力した内容をすべてリセットしてよろしいですか？')){
-    localStorage.removeItem('quiz_maker_data');
-    document.getElementById('qTitle').innerText = "タイトルを入力";
-    document.getElementById('chkShuffle').checked = false;
-    document.getElementById('selTimer').value = "0";
-    optionCount = 4;
-    initTable();
-  }
-}
-
-function saveToLocalStorage(){
-  const title = document.getElementById('qTitle').innerText.trim();
-  const shuffle = document.getElementById('chkShuffle').checked;
-  const tm = parseInt(document.getElementById('selTimer').value);
-  const rows = document.querySelectorAll('#tBody tr');
-  const rowsData = [];
-  
-  rows.forEach(r => {
-    const qCell = r.querySelector('.q-cell .c-cell');
-    const typeSelect = r.querySelector('.type-select');
-    const ansCell = r.querySelector('.answer-cell');
-    const expCell = r.querySelector('.exp-cell');
-    if(!qCell || !typeSelect || !ansCell) return;
-    
-    const optCells = r.querySelectorAll('.opt-cell');
-    const opts = [];
-    optCells.forEach(cell => {
-      opts.push(cell.querySelector('.c-cell').innerText.trim());
-    });
-    
-    rowsData.push({
-      q: qCell.innerText,
-      type: typeSelect.value,
-      opts: opts,
-      ans: ansCell.innerText,
-      exp: expCell ? expCell.innerText : "",
-      optionCount: optionCount
-    });
-  });
-  
-  const data = { title, shuffle, tm, optionCount, rowsData };
-  localStorage.setItem('quiz_maker_data', JSON.stringify(data));
-}
-
-function loadFromLocalStorage(){
-  const saved = localStorage.getItem('quiz_maker_data');
-  if(saved){
-    try{
-      const data = JSON.parse(saved);
-      if(data.title) {
-        document.getElementById('qTitle').innerText = data.title;
-        document.getElementById('pageTitle').innerText = data.title;
-      }
-      if(data.shuffle !== undefined) document.getElementById('chkShuffle').checked = data.shuffle;
-      if(data.tm !== undefined) document.getElementById('selTimer').value = data.tm;
-      if(data.optionCount) optionCount = data.optionCount;
-      
-      renderOptionHeaders();
-      const tbody = document.getElementById('tBody');
-      tbody.innerHTML = '';
-      
-      if(data.rowsData && data.rowsData.length > 0){
-        data.rowsData.forEach(rd => {
-          appendRow(null, rd.q, rd.opts, rd.type, rd.ans, rd.exp);
-        });
-      } else {
-        appendRow();
-      }
-    }catch(e){
-      initTable();
-    }
-  } else {
-    initTable();
-  }
 }
 
 function oM(b){
@@ -519,11 +750,13 @@ function sQ(gL=false){
   
   if(qD.length===0){alert('問題が入力されていません');return}
   quizTitle=document.getElementById('qTitle').innerText.trim() || "問題MAKER";
+  quizGenre=document.getElementById('quizGenre').value.trim();
   shuffleMode = document.getElementById('chkShuffle').checked;
+  speedBonus = document.getElementById('chkSpeed').checked;
   timeLimit = parseInt(document.getElementById('selTimer').value);
   
   if(gL){
-    const sData = { t: quizTitle, sh: shuffleMode, tm: timeLimit, q: qD };
+    const sData = { t: quizTitle, g: quizGenre, sh: shuffleMode, sb: speedBonus, tm: timeLimit, q: qD };
     const sD=btoa(unescape(encodeURIComponent(JSON.stringify(sData)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
     const url=window.location.protocol+'//'+window.location.host+window.location.pathname+'?p='+sD;
     document.getElementById('shUrl').value=url;
@@ -538,14 +771,19 @@ function sQ(gL=false){
   
   document.getElementById('pageTitle').innerText = quizTitle;
   document.getElementById('qTitleView').innerText = quizTitle;
-  document.getElementById('app').classList.remove('m-mode');
-  document.getElementById('mSec').style.display='none';
-  document.getElementById('pSec').style.display='block';
-  cI=0;sc=0;sW();
+  document.getElementById('genreView').innerText = quizGenre ? `ジャンル: ${quizGenre}` : "";
+  
+  switchPage('play');
+  cI=0; sc=0; totalScore=0;
+  sW();
 }
 
 function sW(){
-  if(cI>=qD.length){sR();return}
+  if(cI>=qD.length){
+    switchPage('result');
+    sR();
+    return;
+  }
   
   if(timerInterval) clearInterval(timerInterval);
   const tView = document.getElementById('timerView');
@@ -553,7 +791,9 @@ function sW(){
   
   const q=qD[cI],p=(cI/qD.length)*100;
   document.getElementById('pBar').style.width=p+'%';
-  const c=document.getElementById('qCard');
+  document.getElementById('scoreLiveView').innerText = `スコア: ${totalScore}`;
+  
+  const c=document.getElementById('pagePlay');
   c.classList.remove('anim');void c.offsetWidth;c.classList.add('anim');
   document.getElementById('qTxt').innerText='Q'+(cI+1)+'. '+q.q;
   
@@ -637,13 +877,23 @@ function handleAnswer(userAns, isTimeout=false){
     }
   }
   
-  if(isCorrect) sc++;
+  if(isCorrect){
+    sc++;
+    playSound('correct');
+    let pts = 100;
+    if(speedBonus && timeLimit > 0){
+      pts += timeLeft * 10;
+    }
+    totalScore += pts;
+  } else {
+    playSound('incorrect');
+  }
   
   const fb = document.getElementById('feedbackBox');
   fb.style.display = 'block';
   let msg = isTimeout ? '⏰ タイムアウト！' : (isCorrect ? '🎉 正解！' : '❌ 残念！不正解…');
   if(currentQ.exp){
-    msg += `<br><span style="font-size:0.95rem; font-weight:normal;">解説: ${currentQ.exp}</span>`;
+    msg += `<br><span style="font-size:0.9rem; font-weight:normal;">解説: ${currentQ.exp}</span>`;
   }
   fb.className = 'feedback-box ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
   fb.innerHTML = msg;
@@ -657,28 +907,69 @@ function handleAnswer(userAns, isTimeout=false){
 }
 
 function sR(){
-  document.getElementById('pBar').style.width='100%';
-  document.getElementById('pSec').style.display='none';
-  document.getElementById('rSec').style.display='block';
   const a=Math.round(sc/qD.length*100);
   document.getElementById('aRate').innerText=a+'%';
-  document.getElementById('sDet').innerText=qD.length+'問中 '+sc+'問正解';
+  document.getElementById('sDet').innerText=`${qD.length}問中 ${sc}問正解 (スコア: ${totalScore}点)`;
   let m='';
   if(a==100)m='パーフェクト！🎉';
   else if(a>=80)m='高得点！✨';
   else if(a>=50)m='ナイス挑戦！👍';
   else m='次は頑張ろう！🔥';
   document.getElementById('rCom').innerText=m;
+  
+  loadRanking();
+}
+
+function saveRanking(){
+  const nameInput = document.getElementById('playerName');
+  const name = nameInput.value.trim() || '名無しさん';
+  const key = 'quiz_ranking_' + btoa(unescape(encodeURIComponent(quizTitle))).slice(0, 15);
+  
+  let rankings = [];
+  try{
+    const saved = localStorage.getItem(key);
+    if(saved) rankings = JSON.parse(saved);
+  }catch(e){}
+  
+  rankings.push({name, score: totalScore, rate: Math.round(sc/qD.length*100)});
+  rankings.sort((a,b)=>b.score - a.score);
+  rankings = rankings.slice(0, 5);
+  
+  localStorage.setItem(key, JSON.stringify(rankings));
+  alert('ランキングに登録しました！');
+  displayRanking(rankings);
+}
+
+function loadRanking(){
+  const key = 'quiz_ranking_' + btoa(unescape(encodeURIComponent(quizTitle))).slice(0, 15);
+  try{
+    const saved = localStorage.getItem(key);
+    if(saved){
+      displayRanking(JSON.parse(saved));
+    }
+  }catch(e){}
+}
+
+function displayRanking(rankings){
+  const container = document.getElementById('rankingContainer');
+  const list = document.getElementById('rankingList');
+  list.innerHTML = '';
+  rankings.forEach((r, idx)=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${idx+1}. ${r.name}</span> <span><b>${r.score}点</b> (${r.rate}%)</span>`;
+    list.appendChild(li);
+  });
+  container.style.display = 'block';
 }
 
 function restartQuiz(){
-  document.getElementById('rSec').style.display='none';
-  document.getElementById('pSec').style.display='block';
+  switchPage('play');
   if(shuffleMode){
     qD.sort(()=>Math.random()-0.5);
   }
   cI=0;
   sc=0;
+  totalScore=0;
   sW();
 }
 
