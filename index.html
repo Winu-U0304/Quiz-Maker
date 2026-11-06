@@ -7,96 +7,96 @@
 <style>
 :root{--p:#4a90e2;--s:#2ecc71;--d:#e74c3c;--b:#f5f7fa;--c:#fff;--t:#2c3e50}
 *{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}
-body{background:var(--b);color:var(--t);padding:20px;display:flex;justify-content:center;align-items:center;min-height:100vh}
-.con{width:100%;max-width:1050px;background:var(--c);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.05);padding:30px;position:relative;overflow:hidden}
+body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-content:center;align-items:center;min-height:100vh}
+.con{width:100%;max-width:1100px;background:var(--c);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.05);padding:20px;position:relative;overflow:hidden}
 @keyframes fI{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes p{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .anim{animation:fI .4s ease forwards}
 
-.t-area{text-align:center;margin-bottom:25px}
-.e-title{font-size:2rem;font-weight:bold;border:2px dashed #dcdde1;padding:6px 16px;border-radius:8px;outline:none;display:inline-block;color:var(--t)}
+.t-area{text-align:center;margin-bottom:20px}
+.e-title{font-size:1.8rem;font-weight:bold;border:2px dashed #dcdde1;padding:6px 16px;border-radius:8px;outline:none;display:inline-block;color:var(--t);max-width:100%;word-break:break-all;}
 .m-mode .e-title:hover,.m-mode .e-title:focus{border-color:var(--p);background:rgba(74,144,226,0.05)}
 
-.t-wrap{overflow-x:auto;margin-bottom:25px;border-radius:8px;border:1px solid #dcdde1}
-table{width:100%;border-collapse:collapse}
-th,td{border:1px solid #dcdde1;padding:12px;text-align:left;position:relative}
+.settings-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; font-size: 0.9rem; align-items: center; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dcdde1; flex-wrap: wrap; }
+.settings-bar label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600; }
+
+.t-wrap{overflow-x:auto;margin-bottom:25px;border-radius:8px;border:1px solid #dcdde1; -webkit-overflow-scrolling: touch;}
+table{width:100%;border-collapse:collapse;min-width:600px;}
+th,td{border:1px solid #dcdde1;padding:10px;text-align:left;position:relative}
 th{background:#f8f9fa;font-weight:600;color:#34495e}
 
-/* セル内のテキストエリアとクリアボタン */
 .cell-wrap { position: relative; padding-right: 22px; }
-.c-cell{min-height:32px;outline:none;width:100%;line-height:1.5}
+.c-cell{min-height:30px;outline:none;width:100%;line-height:1.4;word-break:break-all;}
 .c-cell[contenteditable="false"]{background:#e9ecef;cursor:not-allowed;}
 .clear-cell-btn {
-  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  position: absolute; right: 2px; top: 50%; transform: translateY(-50%);
   border: 0; border-radius: 50%; background: #bdc3c7; color: white;
   width: 18px; height: 18px; font-size: 10px; cursor: pointer;
   display: flex; justify-content: center; align-items: center;
-  opacity: 0; transition: opacity 0.2s; z-index: 5;
+  z-index: 5;
 }
-.cell-wrap:hover .clear-cell-btn { opacity: 1; }
 
-.q-cell{padding-right:28px}
+.q-cell{padding-right:32px}
 
-/* ヘッダー＆行の削除ボタンのホバー演出 */
 .opt-head { position: relative; padding-right: 28px !important; }
 .opt-head .del-opt {
-  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
   border: 0; border-radius: 50%; background: #e74c3c; color: white;
   width: 18px; height: 18px; font-size: 11px; cursor: pointer;
   display: flex; justify-content: center; align-items: center;
-  opacity: 0; transition: opacity 0.2s; z-index: 5;
+  z-index: 5;
 }
-.opt-head:hover .del-opt { opacity: 1; }
 
-.row-del-wrap { position: relative; padding-right: 28px !important; }
+.row-del-wrap { position: relative; padding-right: 30px !important; }
 .del-row {
-  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
   border: 0; border-radius: 4px; background: #e74c3c; color: white;
   width: 22px; height: 22px; font-size: 12px; cursor: pointer;
   display: flex; justify-content: center; align-items: center;
-  opacity: 0; transition: opacity 0.2s; z-index: 5;
+  z-index: 5;
 }
-tr:hover .del-row { opacity: 1; }
 
 .add-option{white-space:nowrap}
-.add-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:var(--s);color:var(--c);border:none;width:22px;height:22px;border-radius:50%;cursor:pointer;display:flex;justify-content:center;align-items:center;font-weight:bold;font-size:12px;opacity:0;transition:opacity .2s;z-index:10}
-td.q-cell:hover .add-btn{opacity:1}
+.add-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:var(--s);color:var(--c);border:none;width:22px;height:22px;border-radius:50%;cursor:pointer;display:flex;justify-content:center;align-items:center;font-weight:bold;font-size:12px;z-index:10}
 
-.btn-con{display:flex;gap:15px;justify-content:center;align-items:center;margin-top:25px}
-.m-btn{background:var(--p);color:var(--c);border:none;padding:12px 28px;font-size:1rem;font-weight:bold;border-radius:24px;cursor:pointer;box-shadow:0 4px 12px rgba(74,144,226,0.3);transition:all .2s}
+.btn-con{display:flex;gap:15px;justify-content:center;align-items:center;margin-top:20px;flex-wrap:wrap;}
+.m-btn{background:var(--p);color:var(--c);border:none;padding:12px 24px;font-size:1rem;font-weight:bold;border-radius:24px;cursor:pointer;box-shadow:0 4px 12px rgba(74,144,226,0.3);transition:all .2s}
 .m-btn:hover{transform:translateY(-2px)}
 .r-btn{background:var(--d);box-shadow:0 4px 12px rgba(231,76,60,0.3);}
 
-/* 共有エリアの綺麗めな整頓 */
-.sh-area{background:#f8f9fa;padding:20px;border-radius:10px;margin-bottom:25px;text-align:center;border:1px solid #dcdde1;display:none}
-.sh-wrap-in { display: flex; gap: 10px; justify-content: center; align-items: center; max-width: 600px; margin: 0 auto; }
-.sh-input{flex:1;padding:10px 14px;border:1px solid #dcdde1;border-radius:6px;outline:none;font-size:0.95rem;background:#fff}
+.sh-area{background:#f8f9fa;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center;border:1px solid #dcdde1;display:none}
+.sh-wrap-in { display: flex; gap: 8px; justify-content: center; align-items: center; max-width: 600px; margin: 0 auto; flex-wrap: wrap;}
+.sh-input{flex:1;min-width:200px;padding:8px 12px;border:1px solid #dcdde1;border-radius:6px;outline:none;font-size:0.9rem;background:#fff}
 
 .q-card{text-align:center}
-.q-title-view{font-size:1.5rem;font-weight:bold;color:var(--p);margin-bottom:20px;}
-.q-text{font-size:1.4rem;margin-bottom:25px;font-weight:bold}
-.o-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:650px;margin:0 auto 25px auto}
+.q-title-view{font-size:1.3rem;font-weight:bold;color:var(--p);margin-bottom:15px;}
+.timer-view{font-size:1.1rem;font-weight:bold;color:var(--d);margin-bottom:10px;}
+.q-text{font-size:1.3rem;margin-bottom:20px;font-weight:bold;word-break:break-all;}
+.o-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:650px;margin:0 auto 20px auto}
 @media(max-width:600px){.o-grid{grid-template-columns:100%}}
-.o-btn{background:#f8f9fa;border:2px solid #dcdde1;padding:14px 18px;font-size:1.05rem;border-radius:10px;cursor:pointer;text-align:left;transition:all .2s}
+.o-btn{background:#f8f9fa;border:2px solid #dcdde1;padding:14px 18px;font-size:1rem;border-radius:10px;cursor:pointer;text-align:left;transition:all .2s}
 .o-btn:hover{border-color:var(--p);transform:translateX(4px);background:#fff}
 
-.text-ans-input { width: 100%; max-width: 450px; padding: 12px 16px; font-size: 1.1rem; border: 2px solid #dcdde1; border-radius: 8px; outline: none; margin: 0 auto 20px auto; display: block; }
+.text-ans-input { width: 100%; max-width: 450px; padding: 12px 16px; font-size: 1.1rem; border: 2px solid #dcdde1; border-radius: 8px; outline: none; margin: 0 auto 15px auto; display: block; }
 .text-ans-input:focus { border-color: var(--p); }
 
-.p-bar-c{width:100%;height:8px;background:#dcdde1;border-radius:4px;margin-bottom:25px;overflow:hidden}
+.feedback-box { margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; display: none; }
+.feedback-correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.feedback-incorrect { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+.p-bar-c{width:100%;height:8px;background:#dcdde1;border-radius:4px;margin-bottom:20px;overflow:hidden}
 .p-bar{height:100%;width:0%;background:var(--p);transition:width .3s}
 
-/* モード切り替えによる非表示制御の確実化 */
 .p-mode{display:none}
 .r-mode{display:none}
 
 .r-card{text-align:center}
-.s-circ{width:130px;height:130px;border-radius:50%;border:6px solid var(--s);display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 auto 20px auto;animation:p 2s infinite}
-.s-num{font-size:2.2rem;font-weight:bold;color:var(--s)}
-.s-lab{font-size:.85rem;color:#7f8c8d}
+.s-circ{width:120px;height:120px;border-radius:50%;border:6px solid var(--s);display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 auto 20px auto;animation:p 2s infinite}
+.s-num{font-size:2rem;font-weight:bold;color:var(--s)}
+.s-lab{font-size:.8rem;color:#7f8c8d}
 
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:100}
-.m-body{background:#fff;padding:25px;border-radius:12px;width:300px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+.m-body{background:#fff;padding:20px;border-radius:12px;width:90%;max-width:300px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
 .m-body h3{margin-bottom:15px;color:var(--t)}
 .m-body label{display:block;margin:12px 0 6px;text-align:left;font-size:0.9rem;font-weight:600}
 .m-body select,.m-body input{width:100%;padding:10px;margin-bottom:10px;border:1px solid #dcdde1;border-radius:6px;font-size:1rem}
@@ -112,19 +112,32 @@ td.q-cell:hover .add-btn{opacity:1}
   <div class="sh-area" id="shArea">
     <div class="sh-wrap-in">
       <input type="text" id="shUrl" class="sh-input" readonly>
-      <button class="m-btn" style="padding:8px 16px;font-size:0.9rem;border-radius:6px;box-shadow:none;" onclick="cpL()">コピー</button>
-      <button class="m-btn" style="padding:8px 16px;font-size:0.9rem;background:#06c755;border-radius:6px;box-shadow:none;" onclick="lineS()">LINE共有</button>
+      <button class="m-btn" style="padding:8px 14px;font-size:0.9rem;border-radius:6px;box-shadow:none;" onclick="cpL()">コピー</button>
+      <button class="m-btn" style="padding:8px 14px;font-size:0.9rem;background:#06c755;border-radius:6px;box-shadow:none;" onclick="lineS()">LINE共有</button>
     </div>
   </div>
 
   <div id="mSec">
+    <div class="settings-bar">
+      <label><input type="checkbox" id="chkShuffle"> 問題と選択肢をシャッフルする</label>
+      <label>制限時間: 
+        <select id="selTimer" style="padding:4px; border:1px solid #dcdde1; border-radius:4px;">
+          <option value="0">なし</option>
+          <option value="10">10秒</option>
+          <option value="15">15秒</option>
+          <option value="30">30秒</option>
+        </select>
+      </label>
+    </div>
+
     <div class="t-wrap">
       <table>
         <thead>
           <tr id="optionHead">
-            <th style="width:30%">問題文</th>
+            <th style="width:25%">問題文</th>
             <th><button class="m-btn add-option" onclick="addOption()" style="padding:5px 10px;font-size:.8rem">＋選択肢追加</button></th>
-            <th style="text-align:center; width:140px;">形式 / 正解</th>
+            <th style="text-align:center; width:130px;">形式 / 正解</th>
+            <th style="width:22%">解説 (任意)</th>
           </tr>
         </thead>
         <tbody id="tBody">
@@ -141,8 +154,10 @@ td.q-cell:hover .add-btn{opacity:1}
     <div class="p-bar-c"><div class="p-bar" id="pBar"></div></div>
     <div class="q-card" id="qCard">
       <div class="q-title-view" id="qTitleView"></div>
+      <div class="timer-view" id="timerView"></div>
       <div class="q-text" id="qTxt"></div>
       <div id="quizArea"></div>
+      <div id="feedbackBox" class="feedback-box"></div>
     </div>
   </div>
 
@@ -177,7 +192,7 @@ td.q-cell:hover .add-btn{opacity:1}
 </div>
 
 <script>
-let qD=[], cI=0, sc=0, tR=null, optionCount=4, quizTitle="問題MAKER";
+let qD=[], cI=0, sc=0, tR=null, optionCount=4, quizTitle="問題MAKER", shuffleMode=false, timeLimit=0, timerInterval=null, timeLeft=0;
 
 function keyFor(i){let s="";i++;while(i>0){i--;s=String.fromCharCode(65+i%26)+s;i=Math.floor(i/26)}return s}
 
@@ -189,9 +204,16 @@ window.onload=()=>{
     try{
       const d=JSON.parse(decodeURIComponent(escape(atob(p.replace(/-/g,'+').replace(/_/g,'/')))));
       quizTitle = d.t || "問題MAKER";
+      shuffleMode = !!d.sh;
+      timeLimit = d.tm || 0;
       document.getElementById('pageTitle').innerText = quizTitle;
       document.getElementById('qTitleView').innerText = quizTitle;
-      qD=d.q;
+      
+      qD = d.q;
+      if(shuffleMode){
+        qD.sort(()=>Math.random()-0.5);
+      }
+      
       document.getElementById('app').classList.remove('m-mode');
       document.getElementById('mSec').style.display='none';
       document.getElementById('pSec').style.display='block';
@@ -218,12 +240,13 @@ function initTable(){
 function renderOptionHeaders(){
   const head=document.getElementById('optionHead');
   if(!head)return;
-  let h='<th style="width:30%">問題文</th>';
+  let h='<th style="width:25%">問題文</th>';
   for(let i=0;i<optionCount;i++){
     h+=`<th class="opt-head">${keyFor(i)} <button class="del-opt" onclick="removeOption(${i})" title="${keyFor(i)}を削除">×</button></th>`;
   }
   h+='<th><button class="m-btn add-option" onclick="addOption()" style="padding:5px 10px;font-size:.8rem">＋選択肢追加</button></th>';
-  h+='<th style="text-align:center; width:140px;">形式 / 正解</th>';
+  h+='<th style="text-align:center; width:130px;">形式 / 正解</th>';
+  h+='<th style="width:22%">解説 (任意)</th>';
   head.innerHTML=h;
   updateTableCellsEditable();
 }
@@ -294,7 +317,7 @@ function removeOption(index){
   saveToLocalStorage();
 }
 
-function appendRow(targetTr = null, qText="", opts=[], type="select", ans="A"){
+function appendRow(targetTr = null, qText="", opts=[], type="select", ans="A", exp=""){
   const r=document.createElement('tr');
   let h=`<td class="q-cell"><div class="cell-wrap"><div class="c-cell" contenteditable="true" oninput="saveToLocalStorage()">${qText}</div><button class="clear-cell-btn" onclick="clearCell(this)" title="クリア">×</button></div><button class="add-btn" onclick="oM(this)">＋</button></td>`;
   
@@ -313,6 +336,9 @@ function appendRow(targetTr = null, qText="", opts=[], type="select", ans="A"){
         </select>
         <div class="cell-wrap"><div class="c-cell answer-cell" contenteditable="true" oninput="saveToLocalStorage()" style="text-align:center;font-weight:bold;color:var(--p)">${ans}</div><button class="clear-cell-btn" onclick="clearCell(this)" title="クリア">×</button></div>
       </td>`;
+      
+  h+=`<td><div class="cell-wrap"><div class="c-cell exp-cell" contenteditable="true" oninput="saveToLocalStorage()">${exp}</div><button class="clear-cell-btn" onclick="clearCell(this)" title="クリア">×</button></div></td>`;
+  
   r.innerHTML=h;
   
   const tbody = document.getElementById('tBody');
@@ -347,6 +373,8 @@ function resetAll(){
   if(confirm('入力した内容をすべてリセットしてよろしいですか？')){
     localStorage.removeItem('quiz_maker_data');
     document.getElementById('qTitle').innerText = "タイトルを入力";
+    document.getElementById('chkShuffle').checked = false;
+    document.getElementById('selTimer').value = "0";
     optionCount = 4;
     initTable();
   }
@@ -354,6 +382,8 @@ function resetAll(){
 
 function saveToLocalStorage(){
   const title = document.getElementById('qTitle').innerText.trim();
+  const shuffle = document.getElementById('chkShuffle').checked;
+  const tm = parseInt(document.getElementById('selTimer').value);
   const rows = document.querySelectorAll('#tBody tr');
   const rowsData = [];
   
@@ -361,6 +391,7 @@ function saveToLocalStorage(){
     const qCell = r.querySelector('.q-cell .c-cell');
     const typeSelect = r.querySelector('.type-select');
     const ansCell = r.querySelector('.answer-cell');
+    const expCell = r.querySelector('.exp-cell');
     if(!qCell || !typeSelect || !ansCell) return;
     
     const optCells = r.querySelectorAll('.opt-cell');
@@ -374,11 +405,12 @@ function saveToLocalStorage(){
       type: typeSelect.value,
       opts: opts,
       ans: ansCell.innerText,
+      exp: expCell ? expCell.innerText : "",
       optionCount: optionCount
     });
   });
   
-  const data = { title, optionCount, rowsData };
+  const data = { title, shuffle, tm, optionCount, rowsData };
   localStorage.setItem('quiz_maker_data', JSON.stringify(data));
 }
 
@@ -391,6 +423,8 @@ function loadFromLocalStorage(){
         document.getElementById('qTitle').innerText = data.title;
         document.getElementById('pageTitle').innerText = data.title;
       }
+      if(data.shuffle !== undefined) document.getElementById('chkShuffle').checked = data.shuffle;
+      if(data.tm !== undefined) document.getElementById('selTimer').value = data.tm;
       if(data.optionCount) optionCount = data.optionCount;
       
       renderOptionHeaders();
@@ -399,7 +433,7 @@ function loadFromLocalStorage(){
       
       if(data.rowsData && data.rowsData.length > 0){
         data.rowsData.forEach(rd => {
-          appendRow(null, rd.q, rd.opts, rd.type, rd.ans);
+          appendRow(null, rd.q, rd.opts, rd.type, rd.ans, rd.exp);
         });
       } else {
         appendRow();
@@ -451,12 +485,14 @@ function sQ(gL=false){
     const qCell = r.querySelector('.q-cell .c-cell');
     const typeSelect = r.querySelector('.type-select');
     const ansCell = r.querySelector('.answer-cell');
+    const expCell = r.querySelector('.exp-cell');
     
     if(!qCell || !typeSelect || !ansCell) continue;
     
     const q = qCell.innerText.trim();
     const type = typeSelect.value;
     const ans = ansCell.innerText.trim();
+    const exp = expCell ? expCell.innerText.trim() : "";
     
     if(!q) continue;
     if(!ans){ alert('正解（または正解の答え）を入力してください'); return; }
@@ -474,24 +510,32 @@ function sQ(gL=false){
         alert('正解欄には入力された選択肢の範囲内('+validAns.join(',')+')でアルファベットを入力してください');
         return;
       }
-      qD.push({q, type, o, ans: ans.toUpperCase()});
+      qD.push({q, type, o, ans: ans.toUpperCase(), exp});
     } else {
       o['text'] = ans;
-      qD.push({q, type, o, ans: ans});
+      qD.push({q, type, o, ans: ans, exp});
     }
   }
   
   if(qD.length===0){alert('問題が入力されていません');return}
   quizTitle=document.getElementById('qTitle').innerText.trim() || "問題MAKER";
+  shuffleMode = document.getElementById('chkShuffle').checked;
+  timeLimit = parseInt(document.getElementById('selTimer').value);
   
   if(gL){
-    const sD=btoa(unescape(encodeURIComponent(JSON.stringify({t:quizTitle,q:qD})))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    const sData = { t: quizTitle, sh: shuffleMode, tm: timeLimit, q: qD };
+    const sD=btoa(unescape(encodeURIComponent(JSON.stringify(sData)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
     const url=window.location.protocol+'//'+window.location.host+window.location.pathname+'?p='+sD;
     document.getElementById('shUrl').value=url;
     document.getElementById('shArea').style.display='block';
     
     history.pushState({play: true}, "", "?p=" + sD);
   }
+  
+  if(shuffleMode){
+    qD.sort(()=>Math.random()-0.5);
+  }
+  
   document.getElementById('pageTitle').innerText = quizTitle;
   document.getElementById('qTitleView').innerText = quizTitle;
   document.getElementById('app').classList.remove('m-mode');
@@ -502,23 +546,49 @@ function sQ(gL=false){
 
 function sW(){
   if(cI>=qD.length){sR();return}
+  
+  if(timerInterval) clearInterval(timerInterval);
+  const tView = document.getElementById('timerView');
+  tView.innerText = "";
+  
   const q=qD[cI],p=(cI/qD.length)*100;
   document.getElementById('pBar').style.width=p+'%';
   const c=document.getElementById('qCard');
   c.classList.remove('anim');void c.offsetWidth;c.classList.add('anim');
   document.getElementById('qTxt').innerText='Q'+(cI+1)+'. '+q.q;
   
+  const feedbackBox = document.getElementById('feedbackBox');
+  feedbackBox.style.display = 'none';
+  feedbackBox.className = 'feedback-box';
+  
   const quizArea = document.getElementById('quizArea');
   quizArea.innerHTML = '';
   
+  if(timeLimit > 0){
+    timeLeft = timeLimit;
+    tView.innerText = `残り時間: ${timeLeft}秒`;
+    timerInterval = setInterval(()=>{
+      timeLeft--;
+      tView.innerText = `残り時間: ${timeLeft}秒`;
+      if(timeLeft <= 0){
+        clearInterval(timerInterval);
+        handleAnswer(null, true);
+      }
+    }, 1000);
+  }
+  
   if(q.type === 'select'){
+    const keys = Object.keys(q.o);
+    if(shuffleMode){
+      keys.sort(()=>Math.random()-0.5);
+    }
     const g=document.createElement('div');
     g.className = 'o-grid';
-    Object.keys(q.o).forEach(k=>{
+    keys.forEach(k=>{
       const b=document.createElement('button');
       b.className='o-btn';
       b.innerText=k+': '+q.o[k];
-      b.onclick=()=>hA(k);
+      b.onclick=()=>handleAnswer(k);
       g.appendChild(b);
     });
     quizArea.appendChild(g);
@@ -540,7 +610,7 @@ function sW(){
     btn.onclick = () => {
       const userAns = input.value;
       if(!userAns.trim()){ alert('答えを入力してください'); return; }
-      hA(userAns);
+      handleAnswer(userAns);
     };
     
     input.onkeydown = (e) => {
@@ -554,19 +624,36 @@ function sW(){
   }
 }
 
-function hA(userAns){
+function handleAnswer(userAns, isTimeout=false){
+  if(timerInterval) clearInterval(timerInterval);
   const currentQ = qD[cI];
   let isCorrect = false;
   
-  if(currentQ.type === 'select'){
-    isCorrect = (userAns.trim().toUpperCase() === currentQ.ans.trim().toUpperCase());
-  } else {
-    isCorrect = (userAns.trim() === currentQ.ans.trim());
+  if(!isTimeout){
+    if(currentQ.type === 'select'){
+      isCorrect = (userAns.trim().toUpperCase() === currentQ.ans.trim().toUpperCase());
+    } else {
+      isCorrect = (userAns.trim() === currentQ.ans.trim());
+    }
   }
   
   if(isCorrect) sc++;
-  cI++;
-  sW();
+  
+  const fb = document.getElementById('feedbackBox');
+  fb.style.display = 'block';
+  let msg = isTimeout ? '⏰ タイムアウト！' : (isCorrect ? '🎉 正解！' : '❌ 残念！不正解…');
+  if(currentQ.exp){
+    msg += `<br><span style="font-size:0.95rem; font-weight:normal;">解説: ${currentQ.exp}</span>`;
+  }
+  fb.className = 'feedback-box ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+  fb.innerHTML = msg;
+  
+  document.querySelectorAll('#quizArea button, #quizArea input').forEach(el => el.disabled = true);
+  
+  setTimeout(()=>{
+    cI++;
+    sW();
+  }, currentQ.exp ? 2500 : 1200);
 }
 
 function sR(){
@@ -587,6 +674,9 @@ function sR(){
 function restartQuiz(){
   document.getElementById('rSec').style.display='none';
   document.getElementById('pSec').style.display='block';
+  if(shuffleMode){
+    qD.sort(()=>Math.random()-0.5);
+  }
   cI=0;
   sc=0;
   sW();
