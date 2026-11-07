@@ -111,8 +111,8 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .opt-badge { font-weight: 800; color: #94a3b8; width: 28px; text-align: center; background: var(--border); padding: 4px; border-radius: 6px; }
 .opt-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; outline: none; transition: all 0.2s; background: var(--input-bg); color: var(--t); }
 .opt-input:focus { border-color: var(--p); }
-.del-opt-btn { background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 1.2rem; padding: 6px; border-radius: 8px; transition: all 0.2s; }
-.del-opt-btn:hover { background: #7f1d1d; color: #fecaca; transform: scale(1.1); }
+.del-opt-btn { background: var(--input-bg); border: 1px solid var(--border); color: #ef4444; cursor: pointer; font-size: 1.1rem; padding: 6px 10px; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.del-opt-btn:hover { background: #7f1d1d; color: #fecaca; border-color: #ef4444; transform: scale(1.05); }
 
 .q-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 18px; margin-top: 12px; flex-wrap: wrap; gap: 12px; }
 .ans-select-group { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #94a3b8; }
@@ -148,7 +148,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .o-btn { background: var(--input-bg); border: 2px solid var(--border); padding: 18px 22px; font-size: 1.1rem; border-radius: 16px; cursor: pointer; text-align: left; transition: all .3s cubic-bezier(0.16, 1, 0.3, 1); font-weight: 600; color: var(--t); animation: fI .4s ease forwards; }
 .o-btn:hover { border-color: var(--p); transform: translateY(-4px); }
 
-.text-ans-input { width: 100%; max-width: 480px; padding: 16px 20px; font-size: 1.2rem; border: 2px solid var(--border); border-radius: 14px; outline: none; margin: 0 auto 25px auto; display: block; transition: all 0.2s; background: var(--input-bg); color: var(--t); font-weight: 600; text-align: center; }
+.text-ans-input { width: 100%; max-width: 480px; padding: 16px 20px; font-size: 1.2rem; border: 2px solid var(--border); border-radius: 14px; outline: none; margin: 0 auto 10px auto; display: block; transition: all 0.2s; background: var(--input-bg); color: var(--t); font-weight: 600; text-align: center; }
+
+.debug-hint { font-size: 0.8rem; color: #64748b; margin-bottom: 15px; }
 
 .feedback-box { margin-top: 25px; padding: 18px; border-radius: 16px; font-weight: bold; font-size: 1.15rem; display: none; animation: pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
 .feedback-correct { background: rgba(16,185,129,0.15); color: var(--s); border: 1px solid var(--s); }
@@ -180,9 +182,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 <body class="theme-blue">
 <div class="con" id="app">
   <header class="site-header">
-    <a class="site-logo" onclick="goHome()">Quester ダッシュボード</a>
+    <a class="site-logo" onclick="goHome()">Quester 管理ダッシュボード</a>
     <nav class="nav-links">
-      <button class="nav-link-btn" onclick="goHome()">クイズ一覧</button>
+      <button class="nav-link-btn" onclick="goHome()">一覧</button>
       <button class="nav-link-btn" onclick="exportJsonFile()">📁 バックアップ</button>
       <button class="nav-link-btn" onclick="document.getElementById('importJsonFile').click()">📥 読み込み</button>
       <input type="file" id="importJsonFile" style="display:none" accept=".json" onchange="importJsonFile(event)">
@@ -202,8 +204,8 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   <!-- ① ダッシュボード（ホーム） -->
   <div id="pageHome" class="home-section active">
     <div class="home-top-bar">
-      <h2>保存されたクイズ</h2>
-      <button class="m-btn s-btn" style="padding:10px 20px; font-size:0.95rem; border-radius:12px;" onclick="createNewQuiz()">＋ 新規クイズ作成</button>
+      <h2>保存されているクイズの一覧</h2>
+      <button class="m-btn s-btn" style="padding:10px 20px; font-size:0.95rem; border-radius:12px;" onclick="createNewQuiz()">＋ 新規作成</button>
     </div>
     <div class="file-grid" id="fileGrid"></div>
   </div>
@@ -213,15 +215,15 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <!-- Googleフォーム風 タブメニュー -->
     <div class="form-tabs">
       <div class="form-tab-item active" id="ftabQuestions" onclick="switchFormTab('questions')">質問</div>
-      <div class="form-tab-item" id="ftabAnswers" onclick="switchFormTab('answers')">回答 (スコア集計)</div>
-      <div class="form-tab-item" id="ftabSettings" onclick="switchFormTab('settings')">設定</div>
+      <div class="form-tab-item" id="ftabAnswers" onclick="switchFormTab('answers')">回答・集計</div>
+      <div class="form-tab-item" id="ftabSettings" onclick="switchFormTab('settings')">詳細設定</div>
     </div>
 
     <!-- 1. 質問タブ -->
     <div id="tabContentQuestions" class="tab-content active">
       <div class="form-header-card pop-anim">
-        <input type="text" id="qTitle" class="e-title" placeholder="クイズのタイトルを入力" oninput="saveToLocalStorage()">
-        <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明やサイトの起源（コンセプト）を入力..." oninput="saveToLocalStorage()">
+        <input type="text" id="qTitle" class="e-title" placeholder="クイズのタイトルを入力してください" oninput="saveToLocalStorage()">
+        <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明文などを入力してください..." oninput="saveToLocalStorage()">
         <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
           <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: プログラミング, 歴史" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:180px; font-size:0.95rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);"></label>
         </div>
@@ -246,7 +248,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <div id="questionsContainer" style="display:flex; flex-direction:column; gap:16px;"></div>
 
       <div class="btn-con" style="display:flex; gap:15px; justify-content:center; margin-top:10px; flex-wrap:wrap;">
-        <button class="m-btn s-btn" onclick="startTestPlay()">▶ プレイしてテスト</button>
+        <button class="m-btn s-btn" onclick="startTestPlay()">▶ テストプレイ</button>
         <button class="m-btn" onclick="generateShareUrl()">🔗 共有URLを発行</button>
         <button class="m-btn" style="background:#475569;" onclick="goHome()">一覧に戻る</button>
       </div>
@@ -255,8 +257,8 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <!-- 2. 回答 (集計) タブ -->
     <div id="tabContentAnswers" class="tab-content">
       <div class="form-header-card">
-        <h3 style="margin-bottom:15px; color:var(--p); font-weight:800;">回答・スコア集計</h3>
-        <p id="answerStatsDesc" style="color:#94a3b8; font-weight:600; margin-bottom:15px;">このクイズのプレイ履歴やランキングデータをここに集計・表示します。</p>
+        <h3 style="margin-bottom:15px; color:var(--p); font-weight:800;">回答およびスコアの集計</h3>
+        <p id="answerStatsDesc" style="color:#94a3b8; font-weight:600; margin-bottom:15px;">このクイズのプレイ履歴やランキングデータをこちらに集計して表示いたします。</p>
         <div id="answerStatsContainer" style="font-weight:600; line-height:1.6;"></div>
       </div>
     </div>
@@ -264,24 +266,24 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <!-- 3. 設定タブ -->
     <div id="tabContentSettings" class="tab-content">
       <div class="settings-bar">
-        <h3 style="color:var(--p); font-weight:800; margin-bottom:5px;">詳細設定 ＆ サイトの起源</h3>
+        <h3 style="color:var(--p); font-weight:800; margin-bottom:5px;">詳細なオプション設定</h3>
         <div class="settings-row">
-          <label><input type="checkbox" id="chkShuffle" onchange="saveToLocalStorage()"> シャッフル出題（問題をランダムにする）</label>
+          <label><input type="checkbox" id="chkShuffle" onchange="saveToLocalStorage()"> シャッフル出題（問題の順番をランダムに入れ替える）</label>
         </div>
         <div class="settings-row">
-          <label><input type="checkbox" id="chkSpeed" onchange="saveToLocalStorage()"> 早押しボーナス（解答が早いほど高得点）</label>
+          <label><input type="checkbox" id="chkSpeed" onchange="saveToLocalStorage()"> 早押しボーナス（解答が早いほど高得点を獲得できる）</label>
         </div>
         <div class="settings-row">
-          <span>制限時間:</span>
+          <span>問題ごとの制限時間:</span>
           <select id="selTimer" onchange="saveToLocalStorage()" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; outline:none; font-weight:600; background:var(--input-bg); color:var(--p);">
-            <option value="0">なし</option>
+            <option value="0">制限時間なし</option>
             <option value="10">10秒</option>
             <option value="15">15秒</option>
             <option value="30">30秒</option>
           </select>
         </div>
         <div style="margin-top:10px; border-top:1px solid var(--border); padding-top:15px;">
-          <span style="font-weight:700; color:#94a3b8; display:block; margin-bottom:8px;">一括インポート (問題,A,B,正解):</span>
+          <span style="font-weight:700; color:#94a3b8; display:block; margin-bottom:8px;">一括インポート機能 (問題文, 選択肢A, 選択肢B, 正解):</span>
           <div style="display:flex; gap:10px;">
             <input type="text" id="importInput" placeholder="例: 日本の首都は?,大阪,東京,B" style="flex:1; padding:10px 14px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); color:var(--t); outline:none;">
             <button class="m-btn" style="padding:8px 16px; font-size:0.9rem;" onclick="importText()">追加</button>
@@ -294,12 +296,12 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   <!-- ③ 使い方ページ -->
   <div id="pageHowToUse" class="page-section">
     <div class="form-header-card pop-anim">
-      <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">Quester の使い方 ＆ 特徴</h2>
-      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1; font-weight:500;">Googleフォームのような「質問」「回答」「設定」タブを採用し、画像や動画の挿入、フォント・説明文のカスタマイズも可能になりました！</p>
+      <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">Quester の使い方と特徴</h2>
+      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1; font-weight:500;">Googleフォームを参考にした「質問」「回答」「設定」タブを採用しており、画像やYouTube動画の挿入、詳細な解説の設定などを行っていただけます。</p>
       <ul style="padding-left:20px; line-height:1.8; color:#94a3b8; font-weight:500; margin-bottom:20px;">
-        <li><b>フォーム風デザイン:</b> 質問ごとに画像やYouTube動画、詳しい解説、テキストブロックを自由に差し込めます。</li>
-        <li><b>ダーク＆ライト対応:</b> すべてのパーツでダークモードの配色を完璧に統一しました。</li>
-        <li><b>データ管理:</b> JSONファイルでのバックアップ・読み込みで、データを安全に引き継げます。</li>
+        <li><b>フォーム風デザイン:</b> 質問ごとに画像や動画、解説文を自由に組み込むことができます。</li>
+        <li><b>ダーク＆ライト対応:</b> お好みに合わせて明るい表示と落ち着いた表示を切り替え可能です。</li>
+        <li><b>データ管理機能:</b> JSONファイルとしてバックアップおよび読み込みが行えます。</li>
       </ul>
       <button class="m-btn" style="font-size:0.95rem; padding:10px 20px; border-radius:12px;" onclick="goHome()">一覧に戻る</button>
     </div>
@@ -309,12 +311,13 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   <div id="pagePlay" class="page-section">
     <div class="play-card-container">
       <div class="p-bar-c"><div class="p-bar" id="pBar"></div></div>
-      <div class="meta-info-view"><span id="genreView"></span><span id="scoreLiveView">スコア: 0</span></div>
+      <div class="meta-info-view"><span id="genreView"></span><span id="scoreLiveView">現在のスコア: 0点</span></div>
       <div class="q-title-view" id="qTitleView"></div>
       <div class="timer-view" id="timerView"></div>
       <div id="playMediaContainer"></div>
       <div class="q-text" id="qTxt"></div>
       <div id="quizArea"></div>
+      <div class="debug-hint" id="debugHint"></div>
       <div id="feedbackBox" class="feedback-box"></div>
       <div style="margin-top:20px;">
         <button class="m-btn" style="background:#475569; font-size:0.85rem; padding:8px 16px;" onclick="exitPlayMode()">編集に戻る / 中断</button>
@@ -334,7 +337,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <p id="sDet" style="color:#94a3b8; margin-bottom:20px; font-weight:600;"></p>
       
       <div style="max-width:320px; margin:0 auto 20px auto;">
-        <input type="text" id="playerName" placeholder="ニックネームを入力" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:10px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);">
+        <input type="text" id="playerName" placeholder="ニックネームを入力してください" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:10px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);">
         <button class="m-btn s-btn" style="padding:10px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="saveRanking()">ランキングに登録する</button>
       </div>
 
@@ -345,7 +348,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
       <div style="display:flex; gap:12px; justify-content:center; margin-top:25px; flex-wrap:wrap;">
         <button class="m-btn s-btn" id="retryWrongBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="retryWrongQuestions()">🔄 間違えた問題だけリトライ</button>
-        <button class="m-btn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="restartQuiz()">もう一度挑戦</button>
+        <button class="m-btn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="restartQuiz()">もう一度挑戦する</button>
         <button class="m-btn" style="background:#475569; font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="goHome()">一覧に戻る</button>
       </div>
     </div>
@@ -413,11 +416,11 @@ function switchPage(pageName){
     renderFileList();
   } else if(pageName === 'edit') {
     document.getElementById('pageEdit').classList.add('active');
-    document.getElementById('pageTitle').innerText = "Quester - 編集";
+    document.getElementById('pageTitle').innerText = "Quester - 編集画面";
     switchFormTab('questions');
   } else if(pageName === 'howtouse') {
     document.getElementById('pageHowToUse').classList.add('active');
-    document.getElementById('pageTitle').innerText = "Quester - 使い方";
+    document.getElementById('pageTitle').innerText = "Quester - 使い方のご案内";
     const tabW = document.getElementById('tabHowTo');
     if(tabW) tabW.classList.add('active');
   } else if(pageName === 'play') {
@@ -470,7 +473,7 @@ function renderFileList(){
   
   const newCard = document.createElement('div');
   newCard.className = 'file-card new-card';
-  newCard.innerHTML = `<div>＋ 新規クイズ作成</div>`;
+  newCard.innerHTML = `<div>＋ 新規作成</div>`;
   newCard.onclick = () => createNewQuiz();
   grid.appendChild(newCard);
   
@@ -507,7 +510,7 @@ function createNewQuiz(){
   document.getElementById('selTimer').value = "0";
   document.getElementById('shArea').style.display = 'none';
   
-  questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", optionCount: 2 }];
+  questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "" }];
   renderQuestionsEditor();
   saveToLocalStorage();
   switchPage('edit');
@@ -532,14 +535,18 @@ function openFile(id){
   
   questionsData = file.questions || [];
   if(questionsData.length === 0) {
-    questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", optionCount: 2 }];
+    questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "" }];
+  } else {
+    questionsData.forEach(q => {
+      if(!q.opts) q.opts = ["", ""];
+    });
   }
   renderQuestionsEditor();
   switchPage('edit');
 }
 
 function deleteFile(id){
-  if(!confirm('このクイズファイルを削除してもよろしいですか？')) return;
+  if(!confirm('こちらのクイズファイルを削除してもよろしいでしょうか？')) return;
   let files = getAllFiles();
   files = files.filter(f => f.id !== id);
   saveAllFiles(files);
@@ -580,26 +587,27 @@ function collectQuestionsFromDOM(){
     const expInput = card.querySelector('.exp-input');
     const imgInput = card.querySelector('.img-input');
     const vidInput = card.querySelector('.vid-input');
-    
+
     if(!qInput || !typeSelect || !ansSelect) return;
-    
+
     const type = typeSelect.value;
-    const optInputs = card.querySelectorAll('.opt-input');
-    const opts = [];
-    optInputs.forEach(inp => opts.push(inp.value));
-    
+    const opts = Array.from(card.querySelectorAll('.option-value-input')).map(inp => inp.value);
+    const textAnswerInput = card.querySelector('.text-answer-input');
+    const answer = type === 'text'
+      ? (textAnswerInput ? textAnswerInput.value : '')
+      : ansSelect.value;
+
     const index = parseInt(card.dataset.index);
     const oldObj = questionsData[index] || {};
-    
+
     newQData.push({
       q: qInput.value,
       type: type,
       opts: opts,
-      ans: ansSelect.value,
+      ans: answer,
       exp: expInput ? expInput.value : "",
       imageUrl: imgInput ? imgInput.value.trim() : (oldObj.imageUrl || ""),
-      videoUrl: vidInput ? vidInput.value.trim() : (oldObj.videoUrl || ""),
-      optionCount: opts.length
+      videoUrl: vidInput ? vidInput.value.trim() : (oldObj.videoUrl || "")
     });
   });
   if(newQData.length > 0) questionsData = newQData;
@@ -614,18 +622,19 @@ function renderQuestionsEditor(){
     card.className = 'form-card';
     card.dataset.index = index;
     
-    let optCount = qObj.optionCount || (qObj.opts ? qObj.opts.length : 2);
+    if(!qObj.opts) qObj.opts = ["", ""];
+    let optCount = qObj.opts.length;
     if(optCount < 2) optCount = 2;
     
     let optionsHtml = '';
     for(let i=0; i<optCount; i++){
       let badge = String.fromCharCode(65 + i);
-      let val = (qObj.opts && qObj.opts[i]) ? qObj.opts[i] : '';
+      let val = qObj.opts[i] !== undefined ? qObj.opts[i] : '';
       optionsHtml += `
         <div class="option-edit-row">
           <span class="opt-badge">${badge}</span>
-          <input type="text" class="opt-input" value="${val}" placeholder="選択肢 ${badge} の内容" oninput="saveToLocalStorage()">
-          ${optCount > 2 ? `<button class="del-opt-btn" onclick="removeOption(${index}, ${i})">×</button>` : ''}
+          <input type="text" class="opt-input option-value-input" value="${val}" placeholder="選択肢 ${badge} の内容を入力してください" oninput="saveToLocalStorage()">
+          ${optCount > 2 ? `<button type="button" class="del-opt-btn" onclick="removeOption(${index}, ${i})">×</button>` : ''}
         </div>
       `;
     }
@@ -637,30 +646,30 @@ function renderQuestionsEditor(){
         ansOptions += `<option value="${badge}" ${qObj.ans === badge ? 'selected' : ''}>${badge}</option>`;
       }
     } else {
-      ansOptions = `<option value="text" selected>自動判定(記入式)</option>`;
+      ansOptions = `<option value="text" selected>自動判定（記入式）</option>`;
     }
     
     card.innerHTML = `
       <div class="q-card-header">
         <span style="font-weight:800; color:var(--p);">質問 ${index + 1}</span>
         <div class="card-actions">
-          <button class="card-action-btn" onclick="duplicateQuestion(${index})" title="複製">複製</button>
-          <button class="card-action-btn del" onclick="deleteQuestion(${index})" title="削除">削除</button>
+          <button type="button" class="card-action-btn" onclick="duplicateQuestion(${index})" title="この質問を複製する">複製</button>
+          <button type="button" class="card-action-btn del" onclick="deleteQuestion(${index})" title="この質問を削除する">削除</button>
         </div>
       </div>
       <input type="text" class="q-input" value="${qObj.q || ''}" placeholder="質問文を入力してください" oninput="saveToLocalStorage()">
       
       <div style="margin: 12px 0; display:flex; flex-direction:column; gap:8px;">
-        <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URL（任意：https://...）" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
+        <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URL（任意: https://...）" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
         <input type="text" class="vid-input opt-input" value="${qObj.videoUrl || ''}" placeholder="YouTube動画URL（任意）" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
       </div>
 
-      <div style="margin: 15px 0 8px 0; font-size:0.9rem; font-weight:700; color:#94a3b8;">回答形式 & 選択肢</div>
+      <div style="margin: 15px 0 8px 0; font-size:0.9rem; font-weight:700; color:#94a3b8;">回答の形式と選択肢</div>
       <div class="options-edit-list">
-        ${qObj.type === 'select' ? optionsHtml : `<input type="text" class="opt-input" value="${qObj.ans || ''}" placeholder="正解の文字列を入力" oninput="saveToLocalStorage()" style="max-width:100%;">`}
+        ${qObj.type === 'select' ? optionsHtml : `<input type="text" class="opt-input text-answer-input" value="${qObj.ans || ''}" placeholder="正解となる文字列を入力してください" oninput="saveToLocalStorage()" style="max-width:100%;">`}
       </div>
       
-      ${qObj.type === 'select' && optCount < 10 ? `<button class="file-action-btn" style="margin-bottom:15px; width:auto; font-weight:700;" onclick="addOptionToQuestion(${index})">＋ 選択肢を追加</button>` : ''}
+      ${qObj.type === 'select' && optCount < 10 ? `<button type="button" class="file-action-btn" style="margin-bottom:15px; width:auto; font-weight:700;" onclick="addOptionToQuestion(${index})">＋ 選択肢を追加</button>` : ''}
       
       <div class="q-card-footer">
         <div class="ans-select-group">
@@ -675,7 +684,7 @@ function renderQuestionsEditor(){
           </select>
         </div>
       </div>
-      <input type="text" class="exp-input" value="${qObj.exp || ''}" placeholder="解説（任意：正解時に表示されます）" oninput="saveToLocalStorage()">
+      <input type="text" class="exp-input" value="${qObj.exp || ''}" placeholder="解説文（任意: 正解した際に表示されます）" oninput="saveToLocalStorage()">
     `;
     container.appendChild(card);
   });
@@ -683,7 +692,7 @@ function renderQuestionsEditor(){
 
 function addQuestionCard(){
   collectQuestionsFromDOM();
-  questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", optionCount: 2 });
+  questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "" });
   renderQuestionsEditor();
   saveToLocalStorage();
 }
@@ -692,7 +701,7 @@ function promptAddTitleText(){
   const txt = prompt('追加するテキストタイトルを入力してください:');
   if(!txt) return;
   collectQuestionsFromDOM();
-  questionsData.push({ q: "【セクション】 " + txt, type: "select", opts: ["次へ進む"], ans: "A", exp: "", imageUrl: "", videoUrl: "", optionCount: 1 });
+  questionsData.push({ q: "【セクション】 " + txt, type: "select", opts: ["次へ進む"], ans: "A", exp: "", imageUrl: "", videoUrl: "" });
   renderQuestionsEditor();
   saveToLocalStorage();
 }
@@ -710,12 +719,12 @@ function promptAddMedia(type){
   }
   renderQuestionsEditor();
   saveToLocalStorage();
-  alert('最新の質問にメディアを追加しました！');
+  alert('最新の質問にメディアを追加いたしました。');
 }
 
 function deleteQuestion(index){
   collectQuestionsFromDOM();
-  if(questionsData.length <= 1){ alert('質問は最低1つ必要です'); return; }
+  if(questionsData.length <= 1){ alert('質問は最低1つ必要です。'); return; }
   questionsData.splice(index, 1);
   renderQuestionsEditor();
   saveToLocalStorage();
@@ -731,8 +740,8 @@ function duplicateQuestion(index){
 
 function addOptionToQuestion(index){
   collectQuestionsFromDOM();
-  if(questionsData[index].optionCount >= 10) return;
-  questionsData[index].optionCount++;
+  if(!questionsData[index].opts) questionsData[index].opts = ["", ""];
+  if(questionsData[index].opts.length >= 10) return;
   questionsData[index].opts.push("");
   renderQuestionsEditor();
   saveToLocalStorage();
@@ -740,9 +749,24 @@ function addOptionToQuestion(index){
 
 function removeOption(qIdx, optIdx){
   collectQuestionsFromDOM();
-  if(questionsData[qIdx].optionCount <= 2) return;
-  questionsData[qIdx].optionCount--;
-  questionsData[qIdx].opts.splice(optIdx, 1);
+  const q = questionsData[qIdx];
+  if(!q || !Array.isArray(q.opts)) return;
+  if(q.opts.length <= 2){
+    alert('選択肢は最低2つ必要です。');
+    return;
+  }
+
+  const oldAnswer = String(q.ans || 'A').toUpperCase();
+  const oldAnswerIndex = oldAnswer.charCodeAt(0) - 65;
+
+  q.opts.splice(optIdx, 1);
+
+  if(oldAnswerIndex === optIdx){
+    q.ans = 'A';
+  } else if(oldAnswerIndex > optIdx && oldAnswerIndex >= 0){
+    q.ans = String.fromCharCode(65 + oldAnswerIndex - 1);
+  }
+
   renderQuestionsEditor();
   saveToLocalStorage();
 }
@@ -751,7 +775,7 @@ function changeQuestionType(index, newType){
   collectQuestionsFromDOM();
   questionsData[index].type = newType;
   if(newType === 'text'){
-    questionsData[index].ans = questionsData[index].opts[0] || "";
+    questionsData[index].ans = questionsData[index].ans || "";
   } else {
     questionsData[index].ans = "A";
   }
@@ -764,7 +788,7 @@ function importText(){
   if(!val) return;
   const parts = val.split(',').map(s=>s.trim());
   if(parts.length < 4){
-    alert('形式が違います。問題,A,B,正解 のようにカンマ区切りで入力してください。');
+    alert('入力形式が異なります。「問題, 選択肢A, 選択肢B, 正解」のようにカンマ区切りで入力してください。');
     return;
   }
   collectQuestionsFromDOM();
@@ -779,13 +803,12 @@ function importText(){
     ans: ans,
     exp: "",
     imageUrl: "",
-    videoUrl: "",
-    optionCount: opts.length
+    videoUrl: ""
   });
   document.getElementById('importInput').value = '';
   renderQuestionsEditor();
   saveToLocalStorage();
-  alert('質問を追加しました！');
+  alert('新しい質問を追加いたしました。');
 }
 
 function renderAnswerStats(){
@@ -802,10 +825,10 @@ function renderAnswerStats(){
       html += `</ul>`;
       container.innerHTML = html;
     } else {
-      container.innerHTML = `<p style="color:#94a3b8;">まだプレイ履歴やランキングデータがありません。テストプレイして登録してみましょう！</p>`;
+      container.innerHTML = `<p style="color:#94a3b8;">まだプレイ履歴やランキングデータが記録されておりません。</p>`;
     }
   }catch(e){
-    container.innerHTML = `<p style="color:#94a3b8;">集計データを読み込めませんでした。</p>`;
+    container.innerHTML = `<p style="color:#94a3b8;">集計データの読み込みに失敗いたしました。</p>`;
   }
 }
 
@@ -830,10 +853,10 @@ function importJsonFile(event){
         if(Array.isArray(importedFiles)){
           saveAllFiles(importedFiles);
           renderFileList();
-          alert('バックアップデータを正常に読み込みました！');
+          alert('バックアップデータを正常に読み込みました。');
         }
       }catch(err){
-        alert('ファイルの読み込みに失敗しました。正しいJSONファイルを選択してください。');
+        alert('ファイルの読み込みに失敗いたしました。');
       }
     };
   }
@@ -846,10 +869,10 @@ function playFile(id){
 
 function startTestPlay(){
   collectQuestionsFromDOM();
-  if(questionsData.length === 0){alert('質問が入力されていません');return}
+  if(questionsData.length === 0){alert('質問が入力されていません。');return}
   for(let i=0; i<questionsData.length; i++){
     if(!questionsData[i].q.trim()){
-      alert(`質問 ${i+1} の問題文が空です`);
+      alert(`質問 ${i+1} の問題文が空欄になっております。`);
       return;
     }
   }
@@ -875,7 +898,7 @@ function retryWrongQuestions(){
 
 function generateShareUrl(){
   collectQuestionsFromDOM();
-  if(questionsData.length === 0){alert('質問が入力されていません');return}
+  if(questionsData.length === 0){alert('質問が入力されていません。');return}
   
   quizTitle = document.getElementById('qTitle').value.trim() || "クイズ";
   quizDesc = document.getElementById('qDesc').value.trim();
@@ -952,7 +975,7 @@ window.onload=()=>{
       isRetryMode = false;
       beginQuizPlay();
       return;
-    }catch(e){alert("URLデータが破損しています")}
+    }catch(e){alert("URLデータが破損しております。")}
   }
   
   switchPage('home');
@@ -990,7 +1013,7 @@ function sW(){
   
   const q=activePlayData[cI], p=(cI/activePlayData.length)*100;
   document.getElementById('pBar').style.width=p+'%';
-  document.getElementById('scoreLiveView').innerText = `スコア: ${totalScore}`;
+  document.getElementById('scoreLiveView').innerText = `現在のスコア: ${totalScore}点`;
   
   document.getElementById('qTxt').innerText='Q'+(cI+1)+'. '+q.q;
   
@@ -1030,6 +1053,13 @@ function sW(){
   const quizArea = document.getElementById('quizArea');
   quizArea.innerHTML = '';
   
+  const debugHint = document.getElementById('debugHint');
+  if(q.type === 'text') {
+    debugHint.innerText = `[デバッグ表示] 登録されている正解: "${q.ans}"`;
+  } else {
+    debugHint.innerText = `[デバッグ表示] 正解の選択肢: "${q.ans}"`;
+  }
+  
   if(timeLimit > 0){
     timeLeft = timeLimit;
     tView.innerText = `残り時間: ${timeLeft}秒`;
@@ -1044,7 +1074,7 @@ function sW(){
   }
   
   if(q.type === 'select'){
-    const optCount = q.optionCount || q.opts.length;
+    const optCount = q.opts ? q.opts.length : 2;
     const g=document.createElement('div');
     g.className = 'o-grid';
     for(let j=0; j<optCount; j++){
@@ -1069,12 +1099,12 @@ function sW(){
     
     const btn = document.createElement('button');
     btn.className = 'm-btn s-btn';
-    btn.innerText = '解答する';
+    btn.innerText = '回答する';
     btn.style.width = '100%';
     
     btn.onclick = () => {
       const userAns = input.value;
-      if(!userAns.trim()){ alert('答えを入力してください'); return; }
+      if(!userAns.trim()){ alert('答えを入力してください。'); return; }
       handleAnswer(userAns);
     };
     
@@ -1089,6 +1119,20 @@ function sW(){
   }
 }
 
+// 完全に確実な一致判定を行うための正規化関数
+function normalizeAnswer(str) {
+  if (!str) return "";
+  return String(str)
+    .trim()
+    .toLowerCase()
+    // 全角英数字を半角に変換
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    })
+    // あらゆる空白・タブ・改行を完全に削除
+    .replace(/[\s\u3000]+/g, "");
+}
+
 function handleAnswer(userAns, isTimeout=false){
   if(timerInterval) clearInterval(timerInterval);
   const currentQ = activePlayData[cI];
@@ -1098,7 +1142,10 @@ function handleAnswer(userAns, isTimeout=false){
     if(currentQ.type === 'select'){
       isCorrect = (userAns.trim().toUpperCase() === currentQ.ans.trim().toUpperCase());
     } else {
-      isCorrect = (userAns.trim().toLowerCase() === currentQ.ans.trim().toLowerCase());
+      // 記入式：余計な空白や全角半角を無視した状態で完全に一致するか比較
+      const cleanUserAns = normalizeAnswer(userAns);
+      const cleanCorrectAns = normalizeAnswer(currentQ.ans);
+      isCorrect = (cleanUserAns === cleanCorrectAns);
     }
   }
   
@@ -1119,7 +1166,7 @@ function handleAnswer(userAns, isTimeout=false){
   
   const fb = document.getElementById('feedbackBox');
   fb.style.display = 'block';
-  let msg = isTimeout ? 'タイムアウト！' : (isCorrect ? '正解！' : '残念！不正解…');
+  let msg = isTimeout ? '制限時間が終了いたしました。' : (isCorrect ? '正解です！' : '残念、不正解となります…');
   if(currentQ.exp){
     msg += `<br><span style="font-size:0.95rem; font-weight:normal; margin-top:8px; display:block;">解説: ${currentQ.exp}</span>`;
   }
@@ -1137,12 +1184,12 @@ function handleAnswer(userAns, isTimeout=false){
 function sR(){
   const a=Math.round(sc/activePlayData.length*100);
   document.getElementById('aRate').innerText=a+'%';
-  document.getElementById('sDet').innerText=`${activePlayData.length}問中 ${sc}問正解 (スコア: ${totalScore}点)`;
+  document.getElementById('sDet').innerText=`${activePlayData.length}問中 ${sc}問正解いたしました (総合スコア: ${totalScore}点)`;
   let m='';
-  if(a==100)m='パーフェクト！お見事です！';
-  else if(a>=80)m='高得点！素晴らしい！';
-  else if(a>=50)m='ナイス挑戦！よく頑張りました！';
-  else m='次はもっといける！リベンジしよう！';
+  if(a==100)m='パーフェクト達成です！素晴らしい成績ですね！';
+  else if(a>=80)m='高得点を獲得されました！お見事です！';
+  else if(a>=50)m='よく頑張りました！その調子です！';
+  else m='次はさらに高得点を目指してリベンジしましょう！';
   document.getElementById('rCom').innerText=m;
   
   const retryBtn = document.getElementById('retryWrongBtn');
@@ -1171,7 +1218,7 @@ function saveRanking(){
   rankings = rankings.slice(0, 5);
   
   localStorage.setItem(key, JSON.stringify(rankings));
-  alert('ランキングに登録しました！');
+  alert('ランキングにスコアを登録いたしました！');
   displayRanking(rankings);
 }
 
@@ -1215,7 +1262,7 @@ function cpL(){
   const i=document.getElementById('shUrl');
   i.select();
   document.execCommand('copy');
-  alert('URLをコピーしました！');
+  alert('共有用URLをコピーいたしました。');
 }
 
 function lineS(){
