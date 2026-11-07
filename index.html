@@ -5,19 +5,44 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title id="pageTitle">Quester - ダッシュボード</title>
 <style>
-/* 爽やかな水色＆黄緑アクセント */
-:root{--p:#0284c7;--p-light:#e0f2fe;--s:#10b981;--d:#ef4444;--b:#f8fafc;--c:#fff;--t:#1e293b;--border:#e2e8f0}
+/* デフォルト（ブルー・ダーク） */
+:root {
+  --p: #6366f1; --p-light: #1e1b4b; --s: #10b981; --d: #ef4444;
+  --b: #0f172a; --c: #1e293b; --t: #f8fafc; --border: #334155; --input-bg: #090d16;
+}
+
+/* ライトモード共通 */
+body.light-mode {
+  --b: #f0f4f8; --c: #ffffff; --t: #1e293b; --border: #cbd5e1; --input-bg: #f8fafc;
+}
+
+/* カラーテーマ別アクセント（ブルー） */
+body.theme-blue { --p: #6366f1; --p-light: #1e1b4b; }
+body.light-mode.theme-blue { --p: #0284c7; --p-light: #e0f2fe; }
+
+/* カラーテーマ別（イエロー） */
+body.theme-yellow { --p: #f59e0b; --p-light: #451a03; }
+body.light-mode.theme-yellow { --p: #d97706; --p-light: #fef3c7; }
+
+/* カラーテーマ別（グリーン） */
+body.theme-green { --p: #10b981; --p-light: #064e3b; }
+body.light-mode.theme-green { --p: #059669; --p-light: #ecfdf5; }
+
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-content:center;align-items:center;min-height:100vh;padding-bottom:90px}
-.con{width:100%;max-width:800px;background:transparent;padding:10px;position:relative;display:flex;flex-direction:column;gap:20px}
+body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-content:center;align-items:center;min-height:100vh;padding-bottom:100px;transition:background 0.3s, color 0.3s}
+.con{width:100%;max-width:850px;background:transparent;padding:10px;position:relative;display:flex;flex-direction:column;gap:20px}
 
 /* ヘッダー */
-.site-header { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 16px 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); backdrop-filter: blur(10px); }
+.site-header { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 16px 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); backdrop-filter: blur(10px); transition: background 0.3s, border 0.3s; }
 .site-logo { font-size: 1.3rem; font-weight: 800; color: var(--p); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
 .site-logo:hover { transform: scale(1.02); }
-.nav-links { display: flex; gap: 8px; }
-.nav-link-btn { background: #f1f5f9; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--t); transition: all 0.2s; }
-.nav-link-btn:hover { background: #e2e8f0; transform: translateY(-1px); }
+.nav-links { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.nav-link-btn { background: var(--border); border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; color: var(--t); transition: all 0.2s; }
+.nav-link-btn:hover { opacity: 0.8; transform: translateY(-1px); }
+
+/* テーマ切り替えコントロール */
+.theme-controls { display: flex; gap: 6px; align-items: center; margin-left: 5px; }
+.theme-controls select { background: var(--input-bg); color: var(--t); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; }
 
 @keyframes fI{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pop{0%{transform:scale(0.94);opacity:0}70%{transform:scale(1.02)}100%{transform:scale(1);opacity:1}}
@@ -29,44 +54,53 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 /* ホーム（ファイル一覧） */
 .home-section { display: none; flex-direction: column; gap: 15px; }
 .home-section.active { display: flex; }
-.home-top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+.home-top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); transition: background 0.3s; }
 .home-top-bar h2 { font-size: 1.2rem; color: var(--t); font-weight: 700; }
 
 .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
-.file-card { background: var(--c); border: 1px solid var(--border); border-radius: 20px; padding: 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; display: flex; flex-direction: column; justify-content: space-between; height: 170px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); animation: fI .4s ease forwards; }
-.file-card:hover { transform: translateY(-6px); border-color: var(--p); box-shadow: 0 16px 35px rgba(2,132,199,0.15); }
-.file-card.new-card { border: 2px dashed var(--s); background: #ecfdf5; justify-content: center; align-items: center; text-align: center; color: var(--s); font-weight: bold; }
+.file-card { background: var(--c); border: 1px solid var(--border); border-radius: 20px; padding: 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; display: flex; flex-direction: column; justify-content: space-between; height: 170px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fI .4s ease forwards; }
+.file-card:hover { transform: translateY(-6px); border-color: var(--p); box-shadow: 0 16px 35px rgba(0,0,0,0.25); }
+.file-card.new-card { border: 2px dashed var(--s); background: var(--p-light); justify-content: center; align-items: center; text-align: center; color: var(--s); font-weight: bold; }
 .file-card.new-card:hover { animation: pulse-subtle 1.5s infinite; }
 .file-card-title { font-size: 1.15rem; font-weight: bold; color: var(--t); word-break: break-all; margin-bottom: 6px; }
-.file-card-meta { font-size: 0.85rem; color: #64748b; }
+.file-card-meta { font-size: 0.85rem; color: #94a3b8; }
 .file-card-actions { display: flex; gap: 8px; margin-top: 10px; }
-.file-action-btn { background: #f1f5f9; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 600; color: #475569; transition: all 0.2s; }
-.file-action-btn:hover { background: #e2e8f0; transform: translateY(-1px); }
-.file-action-btn.del { background: #fee2e2; color: #dc2626; }
-.file-action-btn.del:hover { background: #fecaca; }
+.file-action-btn { background: var(--border); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 600; color: var(--t); transition: all 0.2s; }
+.file-action-btn:hover { opacity: 0.8; transform: translateY(-1px); }
+.file-action-btn.del { background: #7f1d1d; color: #fecaca; }
 
 /* ページセクション共通 */
 .page-section { display: none; flex-direction: column; gap: 20px; }
 .page-section.active { display: flex; }
 
-/* フォーム風カードデザイン */
-.form-header-card { background: var(--c); border-radius: 20px; border-top: 8px solid var(--p); box-shadow: 0 10px 30px rgba(0,0,0,0.04); padding: 26px; transition: all 0.3s; }
-.form-card { background: var(--c); border-radius: 20px; border: 1px solid var(--border); border-left: 6px solid transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.04); padding: 26px; transition: all 0.3s; position: relative; animation: pop .3s ease forwards; }
-.form-card:focus-within { border-left-color: var(--p); box-shadow: 0 12px 35px rgba(2,132,199,0.1); transform: translateY(-2px); }
+/* Googleフォーム風 タブメニュー */
+.form-tabs { display: flex; justify-content: center; gap: 30px; background: var(--c); padding: 0 20px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.form-tab-item { padding: 14px 10px; font-weight: 700; color: #94a3b8; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; font-size: 0.95rem; }
+.form-tab-item.active { color: var(--p); border-bottom-color: var(--p); }
 
-.e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); padding-bottom: 4px; transition: border-color 0.2s; }
+.tab-content { display: none; flex-direction: column; gap: 20px; }
+.tab-content.active { display: flex; animation: fI .3s ease forwards; }
+
+/* フォーム風カードデザイン */
+.form-header-card { background: var(--c); border-radius: 20px; border-top: 8px solid var(--p); box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 26px; transition: all 0.3s; position: relative; }
+.form-card { background: var(--c); border-radius: 20px; border: 1px solid var(--border); border-left: 6px solid transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 26px; transition: all 0.3s; position: relative; animation: pop .3s ease forwards; }
+.form-card:focus-within { border-left-color: var(--p); box-shadow: 0 12px 35px rgba(0,0,0,0.2); transform: translateY(-2px); }
+
+.e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); padding-bottom: 4px; transition: border-color 0.2s; background: transparent; }
 .e-title:hover, .e-title:focus { border-bottom-color: var(--p); }
 
-.settings-bar { background: var(--c); padding: 18px 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; justify-content: center; gap: 24px; font-size: 0.95rem; align-items: center; flex-wrap: wrap; }
-.settings-bar label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; color: #475569; transition: color 0.2s; }
-.settings-bar label:hover { color: var(--p); }
-.settings-bar input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--p); cursor: pointer; transition: transform 0.2s; }
-.settings-bar input[type="checkbox"]:active { transform: scale(1.2); }
+.e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; transition: border-color 0.2s; }
+.e-desc:focus { border-bottom-color: var(--p); }
 
-.toolbar-sub { background: var(--c); padding: 18px 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-.import-box { display: flex; gap: 10px; align-items: center; flex: 1; min-width: 280px; font-size: 0.9rem; color: #64748b; font-weight: 600; }
-.import-box input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; outline: none; transition: all 0.2s; background: #f8fafc; }
-.import-box input:focus { border-color: var(--p); background: #fff; box-shadow: 0 0 0 3px rgba(2,132,199,0.15); }
+/* Googleフォーム風 フロートツールバー */
+.floating-toolbar { display: flex; justify-content: center; gap: 12px; background: var(--c); padding: 12px 20px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.15); align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+.ft-btn:hover { border-color: var(--p); background: var(--p-light); color: var(--p); transform: translateY(-2px); }
+
+.settings-bar { background: var(--c); padding: 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-weight: 600; font-size: 0.95rem; }
+.settings-row label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--t); }
+.settings-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--p); cursor: pointer; }
 
 .q-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
 .q-input { flex: 1; font-size: 1.15rem; font-weight: bold; border: none; border-bottom: 2px solid var(--border); padding: 8px 0; outline: none; transition: border-color 0.2s; color: var(--t); background: transparent; }
@@ -74,103 +108,66 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
 .options-edit-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
 .option-edit-row { display: flex; align-items: center; gap: 12px; animation: fI .3s ease forwards; }
-.opt-badge { font-weight: 800; color: #64748b; width: 28px; text-align: center; background: #f1f5f9; padding: 4px; border-radius: 6px; }
-.opt-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; outline: none; transition: all 0.2s; background: #f8fafc; }
-.opt-input:focus { border-color: var(--p); background: #fff; box-shadow: 0 0 0 3px rgba(2,132,199,0.15); }
+.opt-badge { font-weight: 800; color: #94a3b8; width: 28px; text-align: center; background: var(--border); padding: 4px; border-radius: 6px; }
+.opt-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; outline: none; transition: all 0.2s; background: var(--input-bg); color: var(--t); }
+.opt-input:focus { border-color: var(--p); }
 .del-opt-btn { background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 1.2rem; padding: 6px; border-radius: 8px; transition: all 0.2s; }
-.del-opt-btn:hover { background: #fee2e2; color: #dc2626; transform: scale(1.1); }
+.del-opt-btn:hover { background: #7f1d1d; color: #fecaca; transform: scale(1.1); }
 
 .q-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 18px; margin-top: 12px; flex-wrap: wrap; gap: 12px; }
-.ans-select-group { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #64748b; }
-.ans-select-group select, .ans-select-group input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; font-weight: bold; color: var(--p); outline: none; background: #f8fafc; cursor: pointer; transition: all 0.2s; }
-.ans-select-group select:focus { border-color: var(--p); box-shadow: 0 0 0 3px rgba(2,132,199,0.15); }
-.exp-input { width: 100%; margin-top: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; outline: none; background: #f8fafc; transition: all 0.2s; }
-.exp-input:focus { border-color: var(--p); background: #fff; box-shadow: 0 0 0 3px rgba(2,132,199,0.15); }
+.ans-select-group { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #94a3b8; }
+.ans-select-group select, .ans-select-group input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; font-weight: bold; color: var(--p); outline: none; background: var(--input-bg); cursor: pointer; transition: all 0.2s; }
+.exp-input { width: 100%; margin-top: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; outline: none; background: var(--input-bg); color: var(--t); transition: all 0.2s; }
 
 .card-actions { display: flex; gap: 8px; align-items: center; }
-.card-action-btn { background: #f1f5f9; border: none; cursor: pointer; padding: 8px 12px; border-radius: 10px; color: #64748b; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
-.card-action-btn:hover { background: #e2e8f0; color: var(--t); transform: translateY(-1px); }
-.card-action-btn.del:hover { background: #fee2e2; color: #dc2626; }
+.card-action-btn { background: var(--border); border: none; cursor: pointer; padding: 8px 12px; border-radius: 10px; color: var(--t); transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+.card-action-btn:hover { opacity: 0.8; transform: translateY(-1px); }
+.card-action-btn.del:hover { background: #7f1d1d; color: #fecaca; }
 
-.add-q-fab { background: var(--c); border: 2px dashed var(--s); color: var(--s); font-weight: bold; padding: 18px; border-radius: 20px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.02); display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 1.05rem; }
-.add-q-fab:hover { background: #ecfdf5; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(16,185,129,0.15); }
+.m-btn { background: var(--p); color: #fff; border: none; padding: 14px 28px; font-size: 1.05rem; font-weight: 800; border-radius: 30px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.m-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
+.m-btn:active { transform: translateY(-1px); }
+.s-btn { background: var(--s); color: #0f172a; }
 
-.m-btn{background:var(--p);color:var(--c);border:none;padding:14px 28px;font-size:1.05rem;font-weight:800;border-radius:30px;cursor:pointer;box-shadow:0 8px 20px rgba(2,132,199,0.35);transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display:inline-flex; align-items:center; justify-content:center; gap:8px;}
-.m-btn:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(2,132,199,0.45)}
-.m-btn:active{transform:translateY(-1px)}
-.r-btn{background:var(--d);box-shadow:0 8px 20px rgba(239,68,68,0.35);}
-.s-btn{background:var(--s);box-shadow:0 8px 20px rgba(16,185,129,0.35);}
-.s-btn:hover{box-shadow:0 12px 28px rgba(16,185,129,0.45);}
+.sh-area { background: var(--c); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); text-align: center; display: none; animation: pop .3s ease forwards; }
+.sh-wrap-in { display: flex; gap: 10px; justify-content: center; align-items: center; max-width: 650px; margin: 0 auto; flex-wrap: wrap; }
+.sh-input { flex: 1; min-width: 220px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; outline: none; font-size: 0.95rem; background: var(--input-bg); color: var(--t); }
 
-.sh-area{background:var(--c);padding:20px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.04);text-align:center;display:none; animation: pop .3s ease forwards;}
-.sh-wrap-in { display: flex; gap: 10px; justify-content: center; align-items: center; max-width: 650px; margin: 0 auto; flex-wrap: wrap;}
-.sh-input{flex:1;min-width:220px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;outline:none;font-size:0.95rem;background:#f8fafc}
+/* プレイ画面 */
+.play-card-container { background: var(--c); border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 16px 40px rgba(0,0,0,0.3); padding: 40px 30px; text-align: center; position: relative; overflow: hidden; animation: pop .4s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: background 0.3s; }
+.p-bar-c { width: 100%; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 25px; }
+.p-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--p), #818cf8); transition: width .4s cubic-bezier(0.16, 1, 0.3, 1); }
 
-/* プレイ画面（問題のみのシンプル＆美麗デザイン） */
-.play-card-container { background: var(--c); border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 16px 40px rgba(0,0,0,0.06); padding: 40px 30px; text-align: center; position: relative; overflow: hidden; animation: pop .4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.p-bar-c{width:100%;height:10px;background:#f1f5f9;border-radius:5px;overflow:hidden; margin-bottom: 25px;}
-.p-bar{height:100%;width:0%;background:linear-gradient(90deg, var(--p), #38bdf8);transition:width .4s cubic-bezier(0.16, 1, 0.3, 1)}
+.meta-info-view { display: flex; justify-content: space-between; font-weight: 700; color: #94a3b8; margin-bottom: 20px; font-size: 1rem; }
+.timer-view { font-size: 1.15rem; font-weight: 800; color: var(--d); margin-bottom: 15px; animation: pulse-subtle 1s infinite alternate; }
+.q-title-view { font-size: 1.3rem; font-weight: 800; color: var(--p); margin-bottom: 12px; }
+.q-text { font-size: 1.5rem; margin-bottom: 20px; font-weight: 800; color: var(--t); word-break: break-all; line-height: 1.4; }
 
-.meta-info-view { display: flex; justify-content: space-between; font-weight: 700; color: #64748b; margin-bottom: 20px; font-size: 1rem; }
-.timer-view{font-size:1.15rem;font-weight:800;color:var(--d);margin-bottom:15px; animation: pulse-subtle 1s infinite alternate;}
-.q-title-view{font-size:1.3rem;font-weight:800;color:var(--p);margin-bottom:12px;}
-.q-text{font-size:1.5rem;margin-bottom:30px;font-weight:800;color:var(--t);word-break:break-all; line-height: 1.4;}
-
-.o-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:650px;margin:0 auto 20px auto}
+.o-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 650px; margin: 0 auto 20px auto; }
 @media(max-width:600px){.o-grid{grid-template-columns:100%}}
-.o-btn{background:#f8fafc;border:2px solid var(--border);padding:18px 22px;font-size:1.1rem;border-radius:16px;cursor:pointer;text-align:left;transition:all .3s cubic-bezier(0.16, 1, 0.3, 1); font-weight: 600; color: #334155; animation: fI .4s ease forwards;}
-.o-btn:hover{border-color:var(--p);transform:translateY(-4px);background:#fff;box-shadow:0 10px 25px rgba(2,132,199,0.15)}
-.o-btn:active{transform:scale(0.98)}
+.o-btn { background: var(--input-bg); border: 2px solid var(--border); padding: 18px 22px; font-size: 1.1rem; border-radius: 16px; cursor: pointer; text-align: left; transition: all .3s cubic-bezier(0.16, 1, 0.3, 1); font-weight: 600; color: var(--t); animation: fI .4s ease forwards; }
+.o-btn:hover { border-color: var(--p); transform: translateY(-4px); }
 
-.text-ans-input { width: 100%; max-width: 480px; padding: 16px 20px; font-size: 1.2rem; border: 2px solid var(--border); border-radius: 14px; outline: none; margin: 0 auto 25px auto; display: block; transition: all 0.2s; background: #f8fafc; font-weight: 600; text-align: center; }
-.text-ans-input:focus { border-color: var(--p); background: #fff; box-shadow: 0 0 0 4px rgba(2,132,199,0.15); }
+.text-ans-input { width: 100%; max-width: 480px; padding: 16px 20px; font-size: 1.2rem; border: 2px solid var(--border); border-radius: 14px; outline: none; margin: 0 auto 25px auto; display: block; transition: all 0.2s; background: var(--input-bg); color: var(--t); font-weight: 600; text-align: center; }
 
-.feedback-box { margin-top: 25px; padding: 18px; border-radius: 16px; font-weight: bold; font-size: 1.15rem; display: none; animation: pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
-.feedback-correct { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
-.feedback-incorrect { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.feedback-box { margin-top: 25px; padding: 18px; border-radius: 16px; font-weight: bold; font-size: 1.15rem; display: none; animation: pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+.feedback-correct { background: rgba(16,185,129,0.15); color: var(--s); border: 1px solid var(--s); }
+.feedback-incorrect { background: rgba(239,68,68,0.15); color: var(--d); border: 1px solid var(--d); }
 
 /* 結果発表 */
-.r-card{background: var(--c); border-radius: 24px; padding: 45px 25px; text-align: center; box-shadow: 0 16px 40px rgba(0,0,0,0.06); animation: pop .4s cubic-bezier(0.16, 1, 0.3, 1) forwards;}
-.s-circ{width:140px;height:140px;border-radius:50%;border:8px solid var(--s);display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0 auto 25px auto;animation: pulse-subtle 1.5s infinite alternate; background: #ecfdf5;}
-.s-num{font-size:2.4rem;font-weight:800;color:var(--s)}
-.s-lab{font-size:.9rem;color:#64748b;font-weight:700;}
+.r-card { background: var(--c); border-radius: 24px; padding: 45px 25px; text-align: center; box-shadow: 0 16px 40px rgba(0,0,0,0.3); border: 1px solid var(--border); animation: pop .4s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: background 0.3s; }
+.s-circ { width: 140px; height: 140px; border-radius: 50%; border: 8px solid var(--s); display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto 25px auto; animation: pulse-subtle 1.5s infinite alternate; background: rgba(16,185,129,0.1); }
+.s-num { font-size: 2.4rem; font-weight: 800; color: var(--s); }
+.s-lab { font-size: .9rem; color: #94a3b8; font-weight: 700; }
 
-.ranking-box { max-width: 420px; margin: 25px auto; background: #f8fafc; border: 1px solid var(--border); border-radius: 16px; padding: 18px; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+.ranking-box { max-width: 420px; margin: 25px auto; background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px; text-align: left; }
 .ranking-box h4 { text-align: center; margin-bottom: 14px; color: var(--t); font-weight: 800; }
 .ranking-list { list-style: none; font-size: 1rem; }
 .ranking-list li { display: flex; justify-content: space-between; padding: 8px 4px; border-bottom: 1px dashed var(--border); font-weight: 600; animation: fI .3s ease forwards; }
 
-/* iPhone風すりガラス＆LINE風ボトムナビバー */
-.mobile-tab-bar {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; width: 100%;
-  height: 68px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  z-index: 1000;
-  justify-content: space-around;
-  align-items: center;
-  padding-bottom: env(safe-area-inset-bottom);
-  box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
-}
-.tab-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  height: 100%;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: #64748b;
-  font-size: 0.75rem;
-  font-weight: 700;
-  transition: all 0.2s;
-}
+/* スマホ専用 LINE風ボトムナビバー */
+.mobile-tab-bar { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 68px; background: var(--c); backdrop-filter: blur(20px); border-top: 1px solid var(--border); z-index: 1000; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.3); transition: background 0.3s; }
+.tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; background: transparent; border: none; cursor: pointer; color: #94a3b8; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; }
 .tab-item.active { color: var(--p); }
 
 @media(max-width: 768px) {
@@ -180,13 +177,25 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 }
 </style>
 </head>
-<body>
+<body class="theme-blue">
 <div class="con" id="app">
   <header class="site-header">
     <a class="site-logo" onclick="goHome()">Quester ダッシュボード</a>
     <nav class="nav-links">
       <button class="nav-link-btn" onclick="goHome()">クイズ一覧</button>
-      <button class="nav-link-btn" onclick="switchPage('howtouse')">使い方ガイド</button>
+      <button class="nav-link-btn" onclick="exportJsonFile()">📁 バックアップ</button>
+      <button class="nav-link-btn" onclick="document.getElementById('importJsonFile').click()">📥 読み込み</button>
+      <input type="file" id="importJsonFile" style="display:none" accept=".json" onchange="importJsonFile(event)">
+      <button class="nav-link-btn" onclick="switchPage('howtouse')">使い方</button>
+      
+      <div class="theme-controls">
+        <button class="nav-link-btn" id="modeToggleBtn" onclick="toggleLightDarkMode()">☀️ ライト</button>
+        <select id="themeSelect" onchange="changeColorTheme(this.value)">
+          <option value="blue">ブルー</option>
+          <option value="yellow">イエロー</option>
+          <option value="green">グリーン</option>
+        </select>
+      </div>
     </nav>
   </header>
 
@@ -199,83 +208,116 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <div class="file-grid" id="fileGrid"></div>
   </div>
 
-  <!-- ② 編集ページ -->
+  <!-- ② 編集ページ（Googleフォーム風タブ対応） -->
   <div id="pageEdit" class="page-section">
-    <div class="form-header-card pop-anim">
-      <input type="text" id="qTitle" class="e-title" placeholder="クイズのタイトルを入力" oninput="saveToLocalStorage()">
-      <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
-        <label style="font-size:0.95rem; font-weight:700; color:#64748b; display:flex; align-items:center; gap:6px;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: プログラミング, 一般常識" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:180px; font-size:0.95rem; outline:none; font-weight:600; background:#f8fafc;"></label>
+    <!-- Googleフォーム風 タブメニュー -->
+    <div class="form-tabs">
+      <div class="form-tab-item active" id="ftabQuestions" onclick="switchFormTab('questions')">質問</div>
+      <div class="form-tab-item" id="ftabAnswers" onclick="switchFormTab('answers')">回答 (スコア集計)</div>
+      <div class="form-tab-item" id="ftabSettings" onclick="switchFormTab('settings')">設定</div>
+    </div>
+
+    <!-- 1. 質問タブ -->
+    <div id="tabContentQuestions" class="tab-content active">
+      <div class="form-header-card pop-anim">
+        <input type="text" id="qTitle" class="e-title" placeholder="クイズのタイトルを入力" oninput="saveToLocalStorage()">
+        <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明やサイトの起源（コンセプト）を入力..." oninput="saveToLocalStorage()">
+        <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: プログラミング, 歴史" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:180px; font-size:0.95rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);"></label>
+        </div>
+      </div>
+
+      <div class="sh-area" id="shArea">
+        <div class="sh-wrap-in">
+          <input type="text" id="shUrl" class="sh-input" readonly>
+          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;border-radius:10px;box-shadow:none;" onclick="cpL()">コピー</button>
+          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#06c755;border-radius:10px;box-shadow:none; color:#fff;" onclick="lineS()">LINE共有</button>
+        </div>
+      </div>
+
+      <!-- Googleフォーム風 フロートツールバー -->
+      <div class="floating-toolbar">
+        <button class="ft-btn" onclick="addQuestionCard()">＋ 質問を追加</button>
+        <button class="ft-btn" onclick="promptAddTitleText()">TT テキスト追加</button>
+        <button class="ft-btn" onclick="promptAddMedia('image')">🖼 画像挿入</button>
+        <button class="ft-btn" onclick="promptAddMedia('video')">▶ 動画挿入</button>
+      </div>
+
+      <div id="questionsContainer" style="display:flex; flex-direction:column; gap:16px;"></div>
+
+      <div class="btn-con" style="display:flex; gap:15px; justify-content:center; margin-top:10px; flex-wrap:wrap;">
+        <button class="m-btn s-btn" onclick="startTestPlay()">▶ プレイしてテスト</button>
+        <button class="m-btn" onclick="generateShareUrl()">🔗 共有URLを発行</button>
+        <button class="m-btn" style="background:#475569;" onclick="goHome()">一覧に戻る</button>
       </div>
     </div>
-    
-    <div class="sh-area" id="shArea">
-      <div class="sh-wrap-in">
-        <input type="text" id="shUrl" class="sh-input" readonly>
-        <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;border-radius:10px;box-shadow:none;" onclick="cpL()">コピー</button>
-        <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#06c755;border-radius:10px;box-shadow:none;" onclick="lineS()">LINE共有</button>
+
+    <!-- 2. 回答 (集計) タブ -->
+    <div id="tabContentAnswers" class="tab-content">
+      <div class="form-header-card">
+        <h3 style="margin-bottom:15px; color:var(--p); font-weight:800;">回答・スコア集計</h3>
+        <p id="answerStatsDesc" style="color:#94a3b8; font-weight:600; margin-bottom:15px;">このクイズのプレイ履歴やランキングデータをここに集計・表示します。</p>
+        <div id="answerStatsContainer" style="font-weight:600; line-height:1.6;"></div>
       </div>
     </div>
 
-    <div class="settings-bar">
-      <label><input type="checkbox" id="chkShuffle" onchange="saveToLocalStorage()"> シャッフル出題</label>
-      <label><input type="checkbox" id="chkSpeed" onchange="saveToLocalStorage()"> 早押しボーナス</label>
-      <label>制限時間: 
-        <select id="selTimer" onchange="saveToLocalStorage()" style="padding:6px 10px; border:1px solid var(--border); border-radius:8px; outline:none; font-weight:600; background:#f8fafc; color:var(--p);">
-          <option value="0">なし</option>
-          <option value="10">10秒</option>
-          <option value="15">15秒</option>
-          <option value="30">30秒</option>
-        </select>
-      </label>
-    </div>
-
-    <div class="toolbar-sub">
-      <div class="import-box">
-        <span>一括インポート(問題,A,B,正解):</span>
-        <input type="text" id="importInput" placeholder="例: 日本の首都は?,大阪,東京,B">
-        <button class="m-btn" style="padding:8px 14px;font-size:0.85rem;border-radius:10px;box-shadow:none;" onclick="importText()">追加</button>
+    <!-- 3. 設定タブ -->
+    <div id="tabContentSettings" class="tab-content">
+      <div class="settings-bar">
+        <h3 style="color:var(--p); font-weight:800; margin-bottom:5px;">詳細設定 ＆ サイトの起源</h3>
+        <div class="settings-row">
+          <label><input type="checkbox" id="chkShuffle" onchange="saveToLocalStorage()"> シャッフル出題（問題をランダムにする）</label>
+        </div>
+        <div class="settings-row">
+          <label><input type="checkbox" id="chkSpeed" onchange="saveToLocalStorage()"> 早押しボーナス（解答が早いほど高得点）</label>
+        </div>
+        <div class="settings-row">
+          <span>制限時間:</span>
+          <select id="selTimer" onchange="saveToLocalStorage()" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; outline:none; font-weight:600; background:var(--input-bg); color:var(--p);">
+            <option value="0">なし</option>
+            <option value="10">10秒</option>
+            <option value="15">15秒</option>
+            <option value="30">30秒</option>
+          </select>
+        </div>
+        <div style="margin-top:10px; border-top:1px solid var(--border); padding-top:15px;">
+          <span style="font-weight:700; color:#94a3b8; display:block; margin-bottom:8px;">一括インポート (問題,A,B,正解):</span>
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="importInput" placeholder="例: 日本の首都は?,大阪,東京,B" style="flex:1; padding:10px 14px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); color:var(--t); outline:none;">
+            <button class="m-btn" style="padding:8px 16px; font-size:0.9rem;" onclick="importText()">追加</button>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div id="questionsContainer" style="display:flex; flex-direction:column; gap:16px;"></div>
-
-    <div class="add-q-fab" onclick="addQuestionCard()">
-      ＋ 新しい質問を追加する
-    </div>
-
-    <div class="btn-con" style="display:flex; gap:15px; justify-content:center; margin-top:10px;">
-      <button class="m-btn s-btn" onclick="startTestPlay()">▶ プレイしてテスト</button>
-      <button class="m-btn" onclick="generateShareUrl()">🔗 共有URLを発行</button>
-      <button class="m-btn" style="background:#64748b;" onclick="goHome()">一覧に戻る</button>
     </div>
   </div>
 
   <!-- ③ 使い方ページ -->
   <div id="pageHowToUse" class="page-section">
     <div class="form-header-card pop-anim">
-      <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">Quester の使い方</h2>
-      <p style="line-height:1.7; margin-bottom:12px; color:#475569; font-weight:500;">水色と黄緑を基調としたクリーンなデザインのクイズ作成・挑戦ツールです。</p>
-      <ul style="padding-left:20px; line-height:1.8; color:#64748b; font-weight:500; margin-bottom:20px;">
-        <li><b>直感的なカード編集:</b> 1問ずつブロック形式で、すっきりした2択から自由にカスタマイズできます。</li>
-        <li><b>問題のみのプレイ画面:</b> 実際にプレイするときは余計な項目が一切なくなり、問題に集中できます。</li>
-        <li><b>URL共有＆ランキング:</b> 発行されたURLで友達や誰とでもクイズを共有でき、スコアやランキングも楽しめます。</li>
+      <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">Quester の使い方 ＆ 特徴</h2>
+      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1; font-weight:500;">Googleフォームのような「質問」「回答」「設定」タブを採用し、画像や動画の挿入、フォント・説明文のカスタマイズも可能になりました！</p>
+      <ul style="padding-left:20px; line-height:1.8; color:#94a3b8; font-weight:500; margin-bottom:20px;">
+        <li><b>フォーム風デザイン:</b> 質問ごとに画像やYouTube動画、詳しい解説、テキストブロックを自由に差し込めます。</li>
+        <li><b>ダーク＆ライト対応:</b> すべてのパーツでダークモードの配色を完璧に統一しました。</li>
+        <li><b>データ管理:</b> JSONファイルでのバックアップ・読み込みで、データを安全に引き継げます。</li>
       </ul>
       <button class="m-btn" style="font-size:0.95rem; padding:10px 20px; border-radius:12px;" onclick="goHome()">一覧に戻る</button>
     </div>
   </div>
 
-  <!-- ④ プレイページ（問題のみのシンプル画面） -->
+  <!-- ④ プレイページ -->
   <div id="pagePlay" class="page-section">
     <div class="play-card-container">
       <div class="p-bar-c"><div class="p-bar" id="pBar"></div></div>
       <div class="meta-info-view"><span id="genreView"></span><span id="scoreLiveView">スコア: 0</span></div>
       <div class="q-title-view" id="qTitleView"></div>
       <div class="timer-view" id="timerView"></div>
+      <div id="playMediaContainer"></div>
       <div class="q-text" id="qTxt"></div>
       <div id="quizArea"></div>
       <div id="feedbackBox" class="feedback-box"></div>
       <div style="margin-top:20px;">
-        <button class="m-btn" style="background:#64748b; font-size:0.85rem; padding:8px 16px;" onclick="exitPlayMode()">編集に戻る / 中断</button>
+        <button class="m-btn" style="background:#475569; font-size:0.85rem; padding:8px 16px;" onclick="exitPlayMode()">編集に戻る / 中断</button>
       </div>
     </div>
   </div>
@@ -289,10 +331,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <div class="s-lab">正答率</div>
       </div>
       <p id="rCom" style="font-size:1.2rem;margin-bottom:10px;font-weight:800;color:var(--p);"></p>
-      <p id="sDet" style="color:#64748b; margin-bottom:20px; font-weight:600;"></p>
+      <p id="sDet" style="color:#94a3b8; margin-bottom:20px; font-weight:600;"></p>
       
       <div style="max-width:320px; margin:0 auto 20px auto;">
-        <input type="text" id="playerName" placeholder="ニックネームを入力" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:10px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:#f8fafc; transition:all 0.2s;">
+        <input type="text" id="playerName" placeholder="ニックネームを入力" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:10px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);">
         <button class="m-btn s-btn" style="padding:10px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="saveRanking()">ランキングに登録する</button>
       </div>
 
@@ -301,9 +343,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <ul class="ranking-list" id="rankingList"></ul>
       </div>
 
-      <div style="display:flex; gap:12px; justify-content:center; margin-top:25px;">
-        <button class="m-btn s-btn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="restartQuiz()">もう一度挑戦</button>
-        <button class="m-btn" style="background:#64748b; font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="goHome()">一覧に戻る</button>
+      <div style="display:flex; gap:12px; justify-content:center; margin-top:25px; flex-wrap:wrap;">
+        <button class="m-btn s-btn" id="retryWrongBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="retryWrongQuestions()">🔄 間違えた問題だけリトライ</button>
+        <button class="m-btn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="restartQuiz()">もう一度挑戦</button>
+        <button class="m-btn" style="background:#475569; font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="goHome()">一覧に戻る</button>
       </div>
     </div>
   </div>
@@ -320,7 +363,43 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 </nav>
 
 <script>
-let questionsData=[], cI=0, sc=0, totalScore=0, quizTitle="新しいクイズ", quizGenre="", shuffleMode=false, speedBonus=false, timeLimit=0, timerInterval=null, timeLeft=0, audioCtx=null, currentFileId=null, isSharedMode=false;
+let questionsData=[], activePlayData=[], wrongQuestionsData=[], cI=0, sc=0, totalScore=0, quizTitle="新しいクイズ", quizDesc="", quizGenre="", shuffleMode=false, speedBonus=false, timeLimit=0, timerInterval=null, timeLeft=0, audioCtx=null, currentFileId=null, isSharedMode=false, isRetryMode=false;
+
+// ライト・ダークモード / テーマカラー切り替え処理
+function toggleLightDarkMode(){
+  const body = document.body;
+  const btn = document.getElementById('modeToggleBtn');
+  if(body.classList.contains('light-mode')){
+    body.classList.remove('light-mode');
+    btn.innerText = "☀️ ライト";
+    localStorage.setItem('quester_mode', 'dark');
+  } else {
+    body.classList.add('light-mode');
+    btn.innerText = "🌙 ダーク";
+    localStorage.setItem('quester_mode', 'light');
+  }
+}
+
+function changeColorTheme(themeName){
+  const body = document.body;
+  body.classList.remove('theme-blue', 'theme-yellow', 'theme-green');
+  body.classList.add('theme-' + themeName);
+  localStorage.setItem('quester_theme', themeName);
+}
+
+// 起動時に保存されたテーマを復元
+window.addEventListener('DOMContentLoaded', () => {
+  const savedMode = localStorage.getItem('quester_mode');
+  const savedTheme = localStorage.getItem('quester_theme') || 'blue';
+  
+  if(savedMode === 'light'){
+    document.body.classList.add('light-mode');
+    document.getElementById('modeToggleBtn').innerText = "🌙 ダーク";
+  }
+  
+  changeColorTheme(savedTheme);
+  document.getElementById('themeSelect').value = savedTheme;
+});
 
 function switchPage(pageName){
   document.querySelectorAll('.home-section, .page-section').forEach(el => el.classList.remove('active'));
@@ -335,6 +414,7 @@ function switchPage(pageName){
   } else if(pageName === 'edit') {
     document.getElementById('pageEdit').classList.add('active');
     document.getElementById('pageTitle').innerText = "Quester - 編集";
+    switchFormTab('questions');
   } else if(pageName === 'howtouse') {
     document.getElementById('pageHowToUse').classList.add('active');
     document.getElementById('pageTitle').innerText = "Quester - 使い方";
@@ -347,8 +427,26 @@ function switchPage(pageName){
   }
 }
 
+function switchFormTab(tabName){
+  document.querySelectorAll('.form-tab-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+
+  if(tabName === 'questions'){
+    document.getElementById('ftabQuestions').classList.add('active');
+    document.getElementById('tabContentQuestions').classList.add('active');
+  } else if(tabName === 'answers'){
+    document.getElementById('ftabAnswers').classList.add('active');
+    document.getElementById('tabContentAnswers').classList.add('active');
+    renderAnswerStats();
+  } else if(tabName === 'settings'){
+    document.getElementById('ftabSettings').classList.add('active');
+    document.getElementById('tabContentSettings').classList.add('active');
+  }
+}
+
 function goHome(){
   isSharedMode = false;
+  isRetryMode = false;
   switchPage('home');
   if(history.pushState) {
     history.pushState(null, '', window.location.pathname);
@@ -357,13 +455,13 @@ function goHome(){
 
 function getAllFiles(){
   try{
-    const saved = localStorage.getItem('quester_files');
+    const saved = localStorage.getItem('quester_files_v5');
     return saved ? JSON.parse(saved) : [];
   }catch(e){ return []; }
 }
 
 function saveAllFiles(files){
-  localStorage.setItem('quester_files', JSON.stringify(files));
+  localStorage.setItem('quester_files_v5', JSON.stringify(files));
 }
 
 function renderFileList(){
@@ -387,7 +485,7 @@ function renderFileList(){
       </div>
       <div class="file-card-actions" onclick="event.stopPropagation()">
         <button class="file-action-btn" onclick="openFile('${file.id}')">編集</button>
-        <button class="file-action-btn s-btn" style="color:#fff;" onclick="playFile('${file.id}')">プレイ</button>
+        <button class="file-action-btn s-btn" onclick="playFile('${file.id}')">プレイ</button>
         <button class="file-action-btn del" onclick="deleteFile('${file.id}')">削除</button>
       </div>
     `;
@@ -399,15 +497,17 @@ function renderFileList(){
 function createNewQuiz(){
   currentFileId = 'quiz_' + Date.now();
   quizTitle = "新しいクイズ";
+  quizDesc = "";
   quizGenre = "";
   document.getElementById('qTitle').value = quizTitle;
+  document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizGenre').value = quizGenre;
   document.getElementById('chkShuffle').checked = false;
   document.getElementById('chkSpeed').checked = false;
   document.getElementById('selTimer').value = "0";
   document.getElementById('shArea').style.display = 'none';
   
-  questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", optionCount: 2 }];
+  questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", optionCount: 2 }];
   renderQuestionsEditor();
   saveToLocalStorage();
   switchPage('edit');
@@ -420,8 +520,10 @@ function openFile(id){
   
   currentFileId = file.id;
   quizTitle = file.title || "クイズ";
+  quizDesc = file.desc || "";
   quizGenre = file.genre || "";
   document.getElementById('qTitle').value = quizTitle;
+  document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizGenre').value = quizGenre;
   document.getElementById('chkShuffle').checked = !!file.shuffle;
   document.getElementById('chkSpeed').checked = !!file.speed;
@@ -430,7 +532,7 @@ function openFile(id){
   
   questionsData = file.questions || [];
   if(questionsData.length === 0) {
-    questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", optionCount: 2 }];
+    questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", optionCount: 2 }];
   }
   renderQuestionsEditor();
   switchPage('edit');
@@ -448,6 +550,7 @@ function saveToLocalStorage(){
   if(!currentFileId) currentFileId = 'quiz_' + Date.now();
   
   quizTitle = document.getElementById('qTitle').value.trim() || "無題のクイズ";
+  quizDesc = document.getElementById('qDesc').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim();
   const shuffle = document.getElementById('chkShuffle').checked;
   const speed = document.getElementById('chkSpeed').checked;
@@ -457,7 +560,7 @@ function saveToLocalStorage(){
   
   let files = getAllFiles();
   const idx = files.findIndex(f => f.id === currentFileId);
-  const fileData = { id: currentFileId, title: quizTitle, genre: quizGenre, shuffle, speed, tm, questions: questionsData };
+  const fileData = { id: currentFileId, title: quizTitle, desc: quizDesc, genre: quizGenre, shuffle, speed, tm, questions: questionsData };
   
   if(idx >= 0){
     files[idx] = fileData;
@@ -475,6 +578,8 @@ function collectQuestionsFromDOM(){
     const typeSelect = card.querySelector('.type-select');
     const ansSelect = card.querySelector('.ans-select');
     const expInput = card.querySelector('.exp-input');
+    const imgInput = card.querySelector('.img-input');
+    const vidInput = card.querySelector('.vid-input');
     
     if(!qInput || !typeSelect || !ansSelect) return;
     
@@ -483,12 +588,17 @@ function collectQuestionsFromDOM(){
     const opts = [];
     optInputs.forEach(inp => opts.push(inp.value));
     
+    const index = parseInt(card.dataset.index);
+    const oldObj = questionsData[index] || {};
+    
     newQData.push({
       q: qInput.value,
       type: type,
       opts: opts,
       ans: ansSelect.value,
       exp: expInput ? expInput.value : "",
+      imageUrl: imgInput ? imgInput.value.trim() : (oldObj.imageUrl || ""),
+      videoUrl: vidInput ? vidInput.value.trim() : (oldObj.videoUrl || ""),
       optionCount: opts.length
     });
   });
@@ -540,7 +650,12 @@ function renderQuestionsEditor(){
       </div>
       <input type="text" class="q-input" value="${qObj.q || ''}" placeholder="質問文を入力してください" oninput="saveToLocalStorage()">
       
-      <div style="margin: 15px 0 8px 0; font-size:0.9rem; font-weight:700; color:#64748b;">回答形式 & 選択肢</div>
+      <div style="margin: 12px 0; display:flex; flex-direction:column; gap:8px;">
+        <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URL（任意：https://...）" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
+        <input type="text" class="vid-input opt-input" value="${qObj.videoUrl || ''}" placeholder="YouTube動画URL（任意）" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
+      </div>
+
+      <div style="margin: 15px 0 8px 0; font-size:0.9rem; font-weight:700; color:#94a3b8;">回答形式 & 選択肢</div>
       <div class="options-edit-list">
         ${qObj.type === 'select' ? optionsHtml : `<input type="text" class="opt-input" value="${qObj.ans || ''}" placeholder="正解の文字列を入力" oninput="saveToLocalStorage()" style="max-width:100%;">`}
       </div>
@@ -568,9 +683,34 @@ function renderQuestionsEditor(){
 
 function addQuestionCard(){
   collectQuestionsFromDOM();
-  questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", optionCount: 2 });
+  questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", optionCount: 2 });
   renderQuestionsEditor();
   saveToLocalStorage();
+}
+
+function promptAddTitleText(){
+  const txt = prompt('追加するテキストタイトルを入力してください:');
+  if(!txt) return;
+  collectQuestionsFromDOM();
+  questionsData.push({ q: "【セクション】 " + txt, type: "select", opts: ["次へ進む"], ans: "A", exp: "", imageUrl: "", videoUrl: "", optionCount: 1 });
+  renderQuestionsEditor();
+  saveToLocalStorage();
+}
+
+function promptAddMedia(type){
+  collectQuestionsFromDOM();
+  if(questionsData.length === 0) addQuestionCard();
+  const lastQ = questionsData[questionsData.length - 1];
+  if(type === 'image'){
+    const url = prompt('挿入する画像のURLを入力してください:');
+    if(url) lastQ.imageUrl = url;
+  } else {
+    const url = prompt('埋め込むYouTube動画のURLを入力してください:');
+    if(url) lastQ.videoUrl = url;
+  }
+  renderQuestionsEditor();
+  saveToLocalStorage();
+  alert('最新の質問にメディアを追加しました！');
 }
 
 function deleteQuestion(index){
@@ -638,12 +778,65 @@ function importText(){
     opts: opts,
     ans: ans,
     exp: "",
+    imageUrl: "",
+    videoUrl: "",
     optionCount: opts.length
   });
   document.getElementById('importInput').value = '';
   renderQuestionsEditor();
   saveToLocalStorage();
   alert('質問を追加しました！');
+}
+
+function renderAnswerStats(){
+  const container = document.getElementById('answerStatsContainer');
+  const key = 'quiz_ranking_v5_' + btoa(unescape(encodeURIComponent(quizTitle))).slice(0, 15);
+  try{
+    const saved = localStorage.getItem(key);
+    if(saved){
+      const rankings = JSON.parse(saved);
+      let html = `<ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">`;
+      rankings.forEach((r, i)=>{
+        html += `<li style="padding:10px; background:var(--input-bg); border-radius:10px; display:flex; justify-content:space-between; border:1px solid var(--border);"><span>${i+1}. ${r.name}</span> <b>${r.score}点 (${r.rate}%)</b></li>`;
+      });
+      html += `</ul>`;
+      container.innerHTML = html;
+    } else {
+      container.innerHTML = `<p style="color:#94a3b8;">まだプレイ履歴やランキングデータがありません。テストプレイして登録してみましょう！</p>`;
+    }
+  }catch(e){
+    container.innerHTML = `<p style="color:#94a3b8;">集計データを読み込めませんでした。</p>`;
+  }
+}
+
+function exportJsonFile(){
+  collectQuestionsFromDOM();
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getAllFiles(), null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", "quester_backup.json");
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+}
+
+function importJsonFile(event){
+  const fileReader = new FileReader();
+  if(event.target.files[0]){
+    fileReader.readAsText(event.target.files[0], "UTF-8");
+    fileReader.onload = (e) => {
+      try{
+        const importedFiles = JSON.parse(e.target.result);
+        if(Array.isArray(importedFiles)){
+          saveAllFiles(importedFiles);
+          renderFileList();
+          alert('バックアップデータを正常に読み込みました！');
+        }
+      }catch(err){
+        alert('ファイルの読み込みに失敗しました。正しいJSONファイルを選択してください。');
+      }
+    };
+  }
 }
 
 function playFile(id){
@@ -661,12 +854,22 @@ function startTestPlay(){
     }
   }
   quizTitle = document.getElementById('qTitle').value.trim() || "クイズ";
+  quizDesc = document.getElementById('qDesc').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim();
   shuffleMode = document.getElementById('chkShuffle').checked;
   speedBonus = document.getElementById('chkSpeed').checked;
   timeLimit = parseInt(document.getElementById('selTimer').value);
   
   isSharedMode = false;
+  isRetryMode = false;
+  activePlayData = JSON.parse(JSON.stringify(questionsData));
+  beginQuizPlay();
+}
+
+function retryWrongQuestions(){
+  if(wrongQuestionsData.length === 0) return;
+  activePlayData = JSON.parse(JSON.stringify(wrongQuestionsData));
+  isRetryMode = true;
   beginQuizPlay();
 }
 
@@ -675,12 +878,13 @@ function generateShareUrl(){
   if(questionsData.length === 0){alert('質問が入力されていません');return}
   
   quizTitle = document.getElementById('qTitle').value.trim() || "クイズ";
+  quizDesc = document.getElementById('qDesc').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim();
   shuffleMode = document.getElementById('chkShuffle').checked;
   speedBonus = document.getElementById('chkSpeed').checked;
   timeLimit = parseInt(document.getElementById('selTimer').value);
   
-  const sData = { t: quizTitle, g: quizGenre, sh: shuffleMode, sb: speedBonus, tm: timeLimit, q: questionsData };
+  const sData = { t: quizTitle, d: quizDesc, g: quizGenre, sh: shuffleMode, sb: speedBonus, tm: timeLimit, q: questionsData };
   const sD=btoa(unescape(encodeURIComponent(JSON.stringify(sData)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
   const url=window.location.protocol+'//'+window.location.host+window.location.pathname+'?p='+sD;
   document.getElementById('shUrl').value=url;
@@ -734,6 +938,7 @@ window.onload=()=>{
     try{
       const d=JSON.parse(decodeURIComponent(escape(atob(p.replace(/-/g,'+').replace(/_/g,'/')))));
       quizTitle = d.t || "クイズ";
+      quizDesc = d.d || "";
       quizGenre = d.g || "";
       shuffleMode = !!d.sh;
       speedBonus = !!d.sb;
@@ -742,7 +947,9 @@ window.onload=()=>{
       document.getElementById('pageTitle').innerText = quizTitle;
       
       questionsData = d.q;
+      activePlayData = JSON.parse(JSON.stringify(questionsData));
       isSharedMode = true;
+      isRetryMode = false;
       beginQuizPlay();
       return;
     }catch(e){alert("URLデータが破損しています")}
@@ -758,19 +965,20 @@ window.onload=()=>{
 };
 
 function beginQuizPlay(){
-  if(shuffleMode){
-    questionsData.sort(()=>Math.random()-0.5);
+  if(shuffleMode && !isRetryMode){
+    activePlayData.sort(()=>Math.random()-0.5);
   }
   document.getElementById('qTitleView').innerText = quizTitle;
   document.getElementById('genreView').innerText = quizGenre ? `ジャンル: ${quizGenre}` : "";
   
   switchPage('play');
   cI=0; sc=0; totalScore=0;
+  if(!isRetryMode) wrongQuestionsData = [];
   sW();
 }
 
 function sW(){
-  if(cI>=questionsData.length){
+  if(cI>=activePlayData.length){
     switchPage('result');
     sR();
     return;
@@ -780,11 +988,40 @@ function sW(){
   const tView = document.getElementById('timerView');
   tView.innerText = "";
   
-  const q=questionsData[cI], p=(cI/questionsData.length)*100;
+  const q=activePlayData[cI], p=(cI/activePlayData.length)*100;
   document.getElementById('pBar').style.width=p+'%';
   document.getElementById('scoreLiveView').innerText = `スコア: ${totalScore}`;
   
   document.getElementById('qTxt').innerText='Q'+(cI+1)+'. '+q.q;
+  
+  const mediaBox = document.getElementById('playMediaContainer');
+  mediaBox.innerHTML = '';
+  if(q.imageUrl){
+    const img = document.createElement('img');
+    img.src = q.imageUrl;
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '220px';
+    img.style.borderRadius = '12px';
+    img.style.marginBottom = '15px';
+    mediaBox.appendChild(img);
+  }
+  if(q.videoUrl){
+    let embedUrl = q.videoUrl;
+    if(embedUrl.includes('watch?v=')){
+      embedUrl = embedUrl.replace('watch?v=', 'embed/');
+    } else if(embedUrl.includes('youtu.be/')){
+      embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+    }
+    const iframe = document.createElement('iframe');
+    iframe.src = embedUrl;
+    iframe.style.width = '100%';
+    iframe.style.height = '220px';
+    iframe.style.borderRadius = '12px';
+    iframe.style.border = 'none';
+    iframe.style.marginBottom = '15px';
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    mediaBox.appendChild(iframe);
+  }
   
   const feedbackBox = document.getElementById('feedbackBox');
   feedbackBox.style.display = 'none';
@@ -854,7 +1091,7 @@ function sW(){
 
 function handleAnswer(userAns, isTimeout=false){
   if(timerInterval) clearInterval(timerInterval);
-  const currentQ = questionsData[cI];
+  const currentQ = activePlayData[cI];
   let isCorrect = false;
   
   if(!isTimeout && userAns != null){
@@ -875,6 +1112,9 @@ function handleAnswer(userAns, isTimeout=false){
     totalScore += pts;
   } else {
     playSound('incorrect');
+    if(!isRetryMode){
+      wrongQuestionsData.push(currentQ);
+    }
   }
   
   const fb = document.getElementById('feedbackBox');
@@ -895,9 +1135,9 @@ function handleAnswer(userAns, isTimeout=false){
 }
 
 function sR(){
-  const a=Math.round(sc/questionsData.length*100);
+  const a=Math.round(sc/activePlayData.length*100);
   document.getElementById('aRate').innerText=a+'%';
-  document.getElementById('sDet').innerText=`${questionsData.length}問中 ${sc}問正解 (スコア: ${totalScore}点)`;
+  document.getElementById('sDet').innerText=`${activePlayData.length}問中 ${sc}問正解 (スコア: ${totalScore}点)`;
   let m='';
   if(a==100)m='パーフェクト！お見事です！';
   else if(a>=80)m='高得点！素晴らしい！';
@@ -905,13 +1145,20 @@ function sR(){
   else m='次はもっといける！リベンジしよう！';
   document.getElementById('rCom').innerText=m;
   
+  const retryBtn = document.getElementById('retryWrongBtn');
+  if(wrongQuestionsData.length > 0 && !isRetryMode){
+    retryBtn.style.display = 'inline-flex';
+  } else {
+    retryBtn.style.display = 'none';
+  }
+  
   loadRanking();
 }
 
 function saveRanking(){
   const nameInput = document.getElementById('playerName');
   const name = nameInput.value.trim() || '名無しさん';
-  const key = 'quiz_ranking_' + btoa(unescape(encodeURIComponent(quizTitle))).slice(0, 15);
+  const key = 'quiz_ranking_v5_' + btoa(unescape(encodeURIComponent(quizTitle))).slice(0, 15);
   
   let rankings = [];
   try{
@@ -919,7 +1166,7 @@ function saveRanking(){
     if(saved) rankings = JSON.parse(saved);
   }catch(e){}
   
-  rankings.push({name, score: totalScore, rate: Math.round(sc/questionsData.length*100)});
+  rankings.push({name, score: totalScore, rate: Math.round(sc/activePlayData.length*100)});
   rankings.sort((a,b)=>b.score - a.score);
   rankings = rankings.slice(0, 5);
   
@@ -929,7 +1176,7 @@ function saveRanking(){
 }
 
 function loadRanking(){
-  const key = 'quiz_ranking_' + btoa(unescape(encodeURIComponent(quizTitle))).slice(0, 15);
+  const key = 'quiz_ranking_v5_' + btoa(unescape(encodeURIComponent(quizTitle))).slice(0, 15);
   try{
     const saved = localStorage.getItem(key);
     if(saved){
@@ -951,13 +1198,16 @@ function displayRanking(rankings){
 }
 
 function restartQuiz(){
+  isRetryMode = false;
+  activePlayData = JSON.parse(JSON.stringify(questionsData));
   switchPage('play');
   if(shuffleMode){
-    questionsData.sort(()=>Math.random()-0.5);
+    activePlayData.sort(()=>Math.random()-0.5);
   }
   cI=0;
   sc=0;
   totalScore=0;
+  wrongQuestionsData = [];
   sW();
 }
 
