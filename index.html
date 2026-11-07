@@ -130,8 +130,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .s-btn { background: var(--s); color: #0f172a; }
 
 .sh-area { background: var(--c); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); text-align: center; display: none; animation: pop .3s ease forwards; }
+
+/* 修正：スマホなどの縦画面でもURL入力欄とボタンがしっかり収まり、押しやすくなるように変更 */
 .sh-wrap-in { display: flex; gap: 10px; justify-content: center; align-items: center; max-width: 650px; margin: 0 auto; flex-wrap: wrap; }
-.sh-input { flex: 1; min-width: 220px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; outline: none; font-size: 0.95rem; background: var(--input-bg); color: var(--t); }
+.sh-input { flex: 1; min-width: 220px; width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; outline: none; font-size: 0.95rem; background: var(--input-bg); color: var(--t); }
 
 /* プレイ画面 */
 .play-card-container { background: var(--c); border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 16px 40px rgba(0,0,0,0.3); padding: 40px 30px; text-align: center; position: relative; overflow: hidden; animation: pop .4s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: background 0.3s; }
@@ -150,7 +152,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
 .text-ans-input { width: 100%; max-width: 480px; padding: 16px 20px; font-size: 1.2rem; border: 2px solid var(--border); border-radius: 14px; outline: none; margin: 0 auto 10px auto; display: block; transition: all 0.2s; background: var(--input-bg); color: var(--t); font-weight: 600; text-align: center; }
 
-.debug-hint { font-size: 0.8rem; color: #64748b; margin-bottom: 15px; }
 
 .feedback-box { margin-top: 25px; padding: 18px; border-radius: 16px; font-weight: bold; font-size: 1.15rem; display: none; animation: pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
 .feedback-correct { background: rgba(16,185,129,0.15); color: var(--s); border: 1px solid var(--s); }
@@ -176,6 +177,18 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   .site-header { display: none; }
   .mobile-tab-bar { display: flex; }
   body { padding: 12px; padding-bottom: 90px; }
+  
+  /* スマホの縦画面などの狭い画面で共有エリア内のボタンや入力欄が押しやすく綺麗に並ぶよう調整 */
+  .sh-wrap-in {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sh-wrap-in .sh-input {
+    width: 100%;
+  }
+  .sh-wrap-in .m-btn {
+    width: 100%;
+  }
 }
 </style>
 </head>
@@ -225,7 +238,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <input type="text" id="qTitle" class="e-title" placeholder="クイズのタイトルを入力してください" oninput="saveToLocalStorage()">
         <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明文などを入力してください..." oninput="saveToLocalStorage()">
         <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: プログラミング, 歴史" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:180px; font-size:0.95rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="ジャンルを入力" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:180px; font-size:0.95rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);"></label>
         </div>
       </div>
 
@@ -258,7 +271,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <div id="tabContentAnswers" class="tab-content">
       <div class="form-header-card">
         <h3 style="margin-bottom:15px; color:var(--p); font-weight:800;">回答およびスコアの集計</h3>
-        <p id="answerStatsDesc" style="color:#94a3b8; font-weight:600; margin-bottom:15px;">このクイズのプレイ履歴やランキングデータをこちらに集計して表示いたします。</p>
+        <p id="answerStatsDesc" style="color:#94a3b8; font-weight:600; margin-bottom:15px;">このクイズのプレイ履歴やランキングデータをこちらに集計して表示します。</p>
         <div id="answerStatsContainer" style="font-weight:600; line-height:1.6;"></div>
       </div>
     </div>
@@ -317,7 +330,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <div id="playMediaContainer"></div>
       <div class="q-text" id="qTxt"></div>
       <div id="quizArea"></div>
-      <div class="debug-hint" id="debugHint"></div>
       <div id="feedbackBox" class="feedback-box"></div>
       <div style="margin-top:20px;">
         <button class="m-btn" style="background:#475569; font-size:0.85rem; padding:8px 16px;" onclick="exitPlayMode()">編集に戻る / 中断</button>
@@ -1052,13 +1064,6 @@ function sW(){
   
   const quizArea = document.getElementById('quizArea');
   quizArea.innerHTML = '';
-  
-  const debugHint = document.getElementById('debugHint');
-  if(q.type === 'text') {
-    debugHint.innerText = `[デバッグ表示] 登録されている正解: "${q.ans}"`;
-  } else {
-    debugHint.innerText = `[デバッグ表示] 正解の選択肢: "${q.ans}"`;
-  }
   
   if(timeLimit > 0){
     timeLeft = timeLimit;
