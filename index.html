@@ -297,11 +297,11 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   <div id="pageHowToUse" class="page-section">
     <div class="form-header-card pop-anim">
       <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">Quester の使い方と特徴</h2>
-      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1; font-weight:500;">Googleフォームを参考にした「質問」「回答」「設定」タブを採用しており、画像やYouTube動画の挿入、詳細な解説の設定などを行っていただけます。</p>
+      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1; font-weight:500;">「質問」「回答」「設定」タブを採用、画像やYouTube動画の挿入、詳細な解説の設定が可能</p>
       <ul style="padding-left:20px; line-height:1.8; color:#94a3b8; font-weight:500; margin-bottom:20px;">
-        <li><b>フォーム風デザイン:</b> 質問ごとに画像や動画、解説文を自由に組み込むことができます。</li>
-        <li><b>ダーク＆ライト対応:</b> お好みに合わせて明るい表示と落ち着いた表示を切り替え可能です。</li>
-        <li><b>データ管理機能:</b> JSONファイルとしてバックアップおよび読み込みが行えます。</li>
+        <li><b>フォーム風デザイン:</b> 質問ごとに画像や動画、解説文を自由に組み込むことが可能</li>
+        <li><b>ダーク＆ライト対応:</b> お好みに合わせて明るい表示と落ち着いた表示を切り替え可能</li>
+        <li><b>データ管理機能:</b> JSONファイルとしてバックアップおよび読み込みが可能</li>
       </ul>
       <button class="m-btn" style="font-size:0.95rem; padding:10px 20px; border-radius:12px;" onclick="goHome()">一覧に戻る</button>
     </div>
@@ -684,7 +684,7 @@ function renderQuestionsEditor(){
           </select>
         </div>
       </div>
-      <input type="text" class="exp-input" value="${qObj.exp || ''}" placeholder="解説文（任意: 正解した際に表示されます）" oninput="saveToLocalStorage()">
+      <input type="text" class="exp-input" value="${qObj.exp || ''}" placeholder="解説文（任意: 正解した際に表示）" oninput="saveToLocalStorage()">
     `;
     container.appendChild(card);
   });
@@ -719,12 +719,12 @@ function promptAddMedia(type){
   }
   renderQuestionsEditor();
   saveToLocalStorage();
-  alert('最新の質問にメディアを追加いたしました。');
+  alert('最新の質問にメディアを追加');
 }
 
 function deleteQuestion(index){
   collectQuestionsFromDOM();
-  if(questionsData.length <= 1){ alert('質問は最低1つ必要です。'); return; }
+  if(questionsData.length <= 1){ alert('質問は最低1つ必要です'); return; }
   questionsData.splice(index, 1);
   renderQuestionsEditor();
   saveToLocalStorage();
@@ -752,7 +752,7 @@ function removeOption(qIdx, optIdx){
   const q = questionsData[qIdx];
   if(!q || !Array.isArray(q.opts)) return;
   if(q.opts.length <= 2){
-    alert('選択肢は最低2つ必要です。');
+    alert('選択肢は最低2つ必要です');
     return;
   }
 
@@ -808,7 +808,7 @@ function importText(){
   document.getElementById('importInput').value = '';
   renderQuestionsEditor();
   saveToLocalStorage();
-  alert('新しい質問を追加いたしました。');
+  alert('新しい質問を追加');
 }
 
 function renderAnswerStats(){
@@ -825,10 +825,10 @@ function renderAnswerStats(){
       html += `</ul>`;
       container.innerHTML = html;
     } else {
-      container.innerHTML = `<p style="color:#94a3b8;">まだプレイ履歴やランキングデータが記録されておりません。</p>`;
+      container.innerHTML = `<p style="color:#94a3b8;">プレイ記録、ランキングデータの読み込みに失敗</p>`;
     }
   }catch(e){
-    container.innerHTML = `<p style="color:#94a3b8;">集計データの読み込みに失敗いたしました。</p>`;
+    container.innerHTML = `<p style="color:#94a3b8;">集計データの読み込みに失敗</p>`;
   }
 }
 
@@ -853,10 +853,10 @@ function importJsonFile(event){
         if(Array.isArray(importedFiles)){
           saveAllFiles(importedFiles);
           renderFileList();
-          alert('バックアップデータを正常に読み込みました。');
+          alert('バックアップデータを正常に読み込みました');
         }
       }catch(err){
-        alert('ファイルの読み込みに失敗いたしました。');
+        alert('ファイルの読み込みに失敗しました。正しいJSON形式のファイルを選択してください。');
       }
     };
   }
@@ -869,10 +869,10 @@ function playFile(id){
 
 function startTestPlay(){
   collectQuestionsFromDOM();
-  if(questionsData.length === 0){alert('質問が入力されていません。');return}
+  if(questionsData.length === 0){alert('質問が入力されていません');return}
   for(let i=0; i<questionsData.length; i++){
     if(!questionsData[i].q.trim()){
-      alert(`質問 ${i+1} の問題文が空欄になっております。`);
+      alert(`質問 ${i+1} の問題文が空欄になっております`);
       return;
     }
   }
@@ -898,7 +898,7 @@ function retryWrongQuestions(){
 
 function generateShareUrl(){
   collectQuestionsFromDOM();
-  if(questionsData.length === 0){alert('質問が入力されていません。');return}
+  if(questionsData.length === 0){alert('質問が入力されていません');return}
   
   quizTitle = document.getElementById('qTitle').value.trim() || "クイズ";
   quizDesc = document.getElementById('qDesc').value.trim();
@@ -975,7 +975,7 @@ window.onload=()=>{
       isRetryMode = false;
       beginQuizPlay();
       return;
-    }catch(e){alert("URLデータが破損しております。")}
+    }catch(e){alert("URLデータが破損")}
   }
   
   switchPage('home');
@@ -1104,7 +1104,7 @@ function sW(){
     
     btn.onclick = () => {
       const userAns = input.value;
-      if(!userAns.trim()){ alert('答えを入力してください。'); return; }
+      if(!userAns.trim()){ alert('答えを入力してください'); return; }
       handleAnswer(userAns);
     };
     
@@ -1166,7 +1166,7 @@ function handleAnswer(userAns, isTimeout=false){
   
   const fb = document.getElementById('feedbackBox');
   fb.style.display = 'block';
-  let msg = isTimeout ? '制限時間が終了いたしました。' : (isCorrect ? '正解です！' : '残念、不正解となります…');
+  let msg = isTimeout ? '制限時間終了' : (isCorrect ? '正解！' : '不正解…');
   if(currentQ.exp){
     msg += `<br><span style="font-size:0.95rem; font-weight:normal; margin-top:8px; display:block;">解説: ${currentQ.exp}</span>`;
   }
@@ -1186,10 +1186,10 @@ function sR(){
   document.getElementById('aRate').innerText=a+'%';
   document.getElementById('sDet').innerText=`${activePlayData.length}問中 ${sc}問正解いたしました (総合スコア: ${totalScore}点)`;
   let m='';
-  if(a==100)m='パーフェクト達成です！素晴らしい成績ですね！';
-  else if(a>=80)m='高得点を獲得されました！お見事です！';
-  else if(a>=50)m='よく頑張りました！その調子です！';
-  else m='次はさらに高得点を目指してリベンジしましょう！';
+  if(a==100)m='パーフェクト達成！';
+  else if(a>=80)m='高得点を獲得！';
+  else if(a>=50)m='あと少しで合格！';
+  else m='高得点をリベンジ';
   document.getElementById('rCom').innerText=m;
   
   const retryBtn = document.getElementById('retryWrongBtn');
@@ -1218,7 +1218,7 @@ function saveRanking(){
   rankings = rankings.slice(0, 5);
   
   localStorage.setItem(key, JSON.stringify(rankings));
-  alert('ランキングにスコアを登録いたしました！');
+  alert('ランキングにスコアを登録しました');
   displayRanking(rankings);
 }
 
@@ -1262,7 +1262,7 @@ function cpL(){
   const i=document.getElementById('shUrl');
   i.select();
   document.execCommand('copy');
-  alert('共有用URLをコピーいたしました。');
+  alert('共有用URLをコピー');
 }
 
 function lineS(){
