@@ -99,7 +99,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .sh-wrap-in { display: flex; gap: 10px; justify-content: center; align-items: center; max-width: 650px; margin: 0 auto; flex-wrap: wrap; }
 .sh-input { flex: 1; min-width: 220px; width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--input-bg); color: var(--t); }
 
-/* QRコードモーダルのレイアウト修正（スマホ対応・中央配置） */
 .qr-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; padding: 16px; }
 .qr-modal-content { background: var(--c); border: 1px solid var(--border); padding: 24px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-width: 360px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; max-height: 90vh; overflow-y: auto; }
 #qrcodeCanvas { background: #ffffff; padding: 10px; border-radius: 12px; display: block; margin: 0 auto; max-width: 100%; height: auto; }
@@ -187,8 +186,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <input type="text" id="qTitle" class="e-title" placeholder="タイトルを入力" oninput="saveToLocalStorage()">
         <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明を入力" oninput="saveToLocalStorage()">
         <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="saveToLocalStorage()" placeholder="例: 学校" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="saveToLocalStorage()" placeholder="例: 学校" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">タグ: <input type="text" id="quizTag" oninput="saveToLocalStorage()" placeholder="例: 歴史, 計算" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
         </div>
       </div>
 
@@ -218,7 +218,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       </div>
     </div>
 
-    <!-- 回答・集計 -->
+    <!-- 回答・集計（比較機能付き） -->
     <div id="tabContentAnswers" class="tab-content">
       <div class="form-header-card" id="statsExportArea">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
@@ -248,6 +248,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
             <option value="form">フォームモード（アンケート・自動集計：正解なし）</option>
           </select>
         </div>
+        <div class="settings-row">
+          <span>ランダム出題数（0で全問）:</span>
+          <input type="number" id="numRandomCount" min="0" value="0" oninput="saveToLocalStorage()" style="padding:8px 12px; border:1px solid var(--border); border-radius:8px; width:100px; background:var(--input-bg); color:var(--t); font-weight:bold;">
+        </div>
         <div class="settings-row"><label><input type="checkbox" id="chkShuffle" onchange="saveToLocalStorage()"> シャッフル出題</label></div>
         <div class="settings-row"><label><input type="checkbox" id="chkSpeed" onchange="saveToLocalStorage()"> 早押しボーナス</label></div>
         <div class="settings-row">
@@ -266,16 +270,17 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   <div id="pageHowToUse" class="page-section">
     <div class="form-header-card pop-anim">
       <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">FormApp の使い方</h2>
-      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1;">回答時は必ず「次へ進む」ボタンで進み、最後の結果画面で送信ボタンを押してデータを確定させます。集計画面では右上のメニューから4種類の表示形式（全体円グラフ含む）を切り替えたり、「画像保存」ボタンで結果を保存できます！</p>
+      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1;">回答時は必ず「次へ進む」ボタンで進み、最後の結果画面で送信ボタンを押してデータを確定させます。集計画面では右上のメニューから4種類の表示形式（全体円グラフ含む）を切り替えたり、「画像保存」ボタンで結果を保存できます！難易度（★☆☆〜★★★）や配点も問題ごとに自由に変更可能です。</p>
       <button class="m-btn" style="font-size:0.95rem; padding:10px 20px; border-radius:12px;" onclick="goHome()">ホームに戻る</button>
     </div>
   </div>
 
-  <!-- ④ プレイページ -->
+  <!-- ④ プレイページ（演出・コンボ付き） -->
   <div id="pagePlay" class="page-section">
     <div class="play-card-container">
       <div class="p-bar-c"><div class="p-bar" id="pBar"></div></div>
       <div class="meta-info-view"><span id="genreView"></span><span id="scoreLiveView"></span></div>
+      <div id="comboBadge" style="font-size:0.9rem; font-weight:800; color:var(--s); margin-bottom:8px; min-height:20px;"></div>
       <div class="q-title-view" id="qTitleView"></div>
       <div class="timer-view" id="timerView"></div>
       <div id="playMediaContainer"></div>
@@ -289,22 +294,19 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     </div>
   </div>
 
-  <!-- ⑤ 結果発表・送信ページ -->
+  <!-- ⑤ 結果発表・送信ページ（前回比較付き） -->
   <div id="pageResult" class="page-section">
     <div class="r-card">
       <h2 style="margin-bottom:15px; font-size:1.5rem; font-weight:800;" id="resultHeaderTitle">解答終了・結果確認</h2>
+      <div id="rankDisplay" style="font-size:2rem; font-weight:900; margin-bottom:10px; color:var(--p);"></div>
       <div class="s-circ" id="scoreCircleContainer">
         <div class="s-num" id="aRate">0%</div>
         <div class="s-lab">正答率</div>
       </div>
       <p id="rCom" style="font-size:1.2rem;margin-bottom:10px;font-weight:800;color:var(--p);"></p>
-      <p id="sDet" style="color:#94a3b8; margin-bottom:20px; font-weight:600;"></p>
+      <p id="sDet" style="color:#94a3b8; margin-bottom:10px; font-weight:600;"></p>
+      <div id="comparisonBox" style="font-size:0.95rem; font-weight:700; color:var(--s); margin-bottom:20px;"></div>
       
-      <div id="reviewSection" style="margin:20px 0; text-align:left; display:none;">
-        <h4 style="margin-bottom:10px; font-weight:800; color:var(--t);">📝 解答の振り返り</h4>
-        <div id="reviewListContainer" style="display:flex; flex-direction:column; gap:10px; max-height:300px; overflow-y:auto; padding-right:5px;"></div>
-      </div>
-
       <div id="rankingRegisterSection" style="max-width:360px; margin:0 auto 25px auto; background:var(--input-bg); padding:18px; border-radius:16px; border:1px solid var(--border);">
         <p style="font-size:0.85rem; color:#94a3b8; font-weight:700; margin-bottom:10px; line-height:1.4;">※名前を入力し、「回答を送信・登録する」ボタンを押してデータを確定させてください。</p>
         <input type="text" id="playerName" placeholder="名前を入力" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:12px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:var(--c); color:var(--t);">
@@ -340,7 +342,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 </div>
 
 <script>
-let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, quizTitle="", quizDesc="", quizGenre="", quizCategory="一般", appMode="quiz", shuffleMode=false, speedBonus=false, timeLimit=0, timerInterval=null, timeLeft=0, audioCtx=null, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [];
+let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, maxPossibleScore=0, currentCombo=0, quizTitle="", quizDesc="", quizGenre="", quizCategory="一般", quizTag="", appMode="quiz", shuffleMode=false, speedBonus=false, timeLimit=0, randomCount=0, timerInterval=null, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [];
 
 function truncateText(str, maxLen = 4) {
   if (!str) return "";
@@ -431,13 +433,13 @@ function goHome(){
 
 function getAllFiles(){
   try{
-    const saved = localStorage.getItem('formapp_files_v5');
+    const saved = localStorage.getItem('formapp_files_v6');
     return saved ? JSON.parse(saved) : [];
   }catch(e){ return []; }
 }
 
 function saveAllFiles(files){
-  localStorage.setItem('formapp_files_v5', JSON.stringify(files));
+  localStorage.setItem('formapp_files_v6', JSON.stringify(files));
 }
 
 function renderFileList(){
@@ -477,8 +479,8 @@ function renderFileList(){
       <div>
         <div class="file-card-title">${file.title || '無題'}</div>
         <div class="file-card-meta">
-          <span>カテゴリ: ${truncateText(fileCat, 5)}</span>
-          <span>ジャンル: ${truncateText(file.genre || '一般', 5)} / ${file.mode === 'form' ? 'フォーム' : 'クイズ'} (${file.questions ? file.questions.length : 0}問)</span>
+          <span>タグ: ${truncateText(file.tag || '一般', 8)}</span>
+          <span>${file.mode === 'form' ? 'フォーム' : 'クイズ'} (${file.questions ? file.questions.length : 0}問)</span>
         </div>
       </div>
       <div class="file-card-actions" onclick="event.stopPropagation()">
@@ -494,17 +496,19 @@ function renderFileList(){
 
 function createNewQuiz(){
   currentFileId = 'form_' + Date.now();
-  quizTitle = ""; quizDesc = ""; quizGenre = ""; quizCategory = "一般"; appMode = "quiz";
+  quizTitle = ""; quizDesc = ""; quizGenre = ""; quizCategory = "一般"; quizTag = ""; appMode = "quiz";
   document.getElementById('qTitle').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizGenre').value = quizGenre;
   document.getElementById('quizCategory').value = quizCategory;
+  document.getElementById('quizTag').value = quizTag;
   document.getElementById('selAppMode').value = appMode;
+  document.getElementById('numRandomCount').value = 0;
   document.getElementById('chkShuffle').checked = false;
   document.getElementById('chkSpeed').checked = false;
   document.getElementById('selTimer').value = "0";
   document.getElementById('shArea').style.display = 'none';
-  questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false }];
+  questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false }];
   renderQuestionsEditor();
   saveToLocalStorage();
   switchPage('edit');
@@ -519,18 +523,21 @@ function openFile(id){
   quizDesc = file.desc || "";
   quizGenre = file.genre || "";
   quizCategory = file.category || "一般";
+  quizTag = file.tag || "";
   appMode = file.mode || "quiz";
   document.getElementById('qTitle').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizGenre').value = quizGenre;
   document.getElementById('quizCategory').value = quizCategory;
+  document.getElementById('quizTag').value = quizTag;
   document.getElementById('selAppMode').value = appMode;
+  document.getElementById('numRandomCount').value = file.randomCount || 0;
   document.getElementById('chkShuffle').checked = !!file.shuffle;
   document.getElementById('chkSpeed').checked = !!file.speed;
   document.getElementById('selTimer').value = file.tm || 0;
   document.getElementById('shArea').style.display = 'none';
   questionsData = file.questions || [];
-  if(questionsData.length === 0) questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false }];
+  if(questionsData.length === 0) questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false }];
   renderQuestionsEditor();
   switchPage('edit');
 }
@@ -547,11 +554,16 @@ function saveToLocalStorage(){
   quizDesc = document.getElementById('qDesc').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim();
   quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
+  quizTag = document.getElementById('quizTag').value.trim();
   appMode = document.getElementById('selAppMode').value;
   collectQuestionsFromDOM();
   let files = getAllFiles();
   const idx = files.findIndex(f => f.id === currentFileId);
-  const fileData = { id: currentFileId, title: quizTitle, desc: quizDesc, genre: quizGenre, category: quizCategory, mode: appMode, shuffle: document.getElementById('chkShuffle').checked, speed: document.getElementById('chkSpeed').checked, tm: parseInt(document.getElementById('selTimer').value), questions: questionsData };
+  const fileData = { 
+    id: currentFileId, title: quizTitle, desc: quizDesc, genre: quizGenre, category: quizCategory, tag: quizTag, mode: appMode, 
+    randomCount: parseInt(document.getElementById('numRandomCount').value) || 0,
+    shuffle: document.getElementById('chkShuffle').checked, speed: document.getElementById('chkSpeed').checked, tm: parseInt(document.getElementById('selTimer').value), questions: questionsData 
+  };
   if(idx >= 0) files[idx] = fileData; else files.push(fileData);
   saveAllFiles(files);
 }
@@ -567,6 +579,8 @@ function collectQuestionsFromDOM(){
     const imgInput = card.querySelector('.img-input');
     const vidInput = card.querySelector('.vid-input');
     const reqCheck = card.querySelector('.req-checkbox');
+    const diffSelect = card.querySelector('.diff-select');
+    const scoreInput = card.querySelector('.score-input');
     if(!qInput) return;
     const type = typeSelect ? typeSelect.value : 'select';
     const opts = Array.from(card.querySelectorAll('.option-value-input')).map(inp => inp.value);
@@ -577,6 +591,8 @@ function collectQuestionsFromDOM(){
     newQData.push({
       q: qInput.value, type, opts, ans: answer,
       exp: expInput ? expInput.value : "",
+      diff: diffSelect ? diffSelect.value : (oldObj.diff || '★☆☆'),
+      score: scoreInput ? parseInt(scoreInput.value) || 10 : (oldObj.score || 10),
       imageUrl: imgInput ? imgInput.value.trim() : (oldObj.imageUrl || ""),
       videoUrl: vidInput ? vidInput.value.trim() : (oldObj.videoUrl || ""),
       required: reqCheck ? reqCheck.checked : (oldObj.required || false)
@@ -624,6 +640,14 @@ function renderQuestionsEditor(){
     card.innerHTML = `
       <div class="q-card-header">
         <span style="font-weight:800; color:var(--p);">質問 ${index + 1}</span>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <select class="diff-select" onchange="saveToLocalStorage()" style="padding:4px 8px; border-radius:6px; background:var(--input-bg); color:var(--t); border:1px solid var(--border); font-size:0.85rem;">
+            <option value="★☆☆" ${qObj.diff==='★☆☆'?'selected':''}>★☆☆ (易)</option>
+            <option value="★★☆" ${qObj.diff==='★★☆'?'selected':''}>★★☆ (中)</option>
+            <option value="★★★" ${qObj.diff==='★★★'?'selected':''}>★★★ (難)</option>
+          </select>
+          <input type="number" class="score-input" value="${qObj.score || 10}" min="1" max="100" placeholder="配点" oninput="saveToLocalStorage()" style="width:60px; padding:4px 8px; border-radius:6px; background:var(--input-bg); color:var(--t); border:1px solid var(--border); font-size:0.85rem;">点
+        </div>
         <div class="card-actions">
           ${index > 0 ? `<button type="button" class="card-action-btn" onclick="moveQuestion(${index}, -1)">↑</button>` : ''}
           ${index < questionsData.length - 1 ? `<button type="button" class="card-action-btn" onclick="moveQuestion(${index}, 1)">↓</button>` : ''}
@@ -660,8 +684,8 @@ function renderQuestionsEditor(){
   });
 }
 
-function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false }); renderQuestionsEditor(); saveToLocalStorage(); }
-function promptAddTitleText(){ const t = prompt('テキスト:'); if(t){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション】 " + t, type: "select", opts: ["次へ"], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false }); renderQuestionsEditor(); saveToLocalStorage(); } }
+function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false }); renderQuestionsEditor(); saveToLocalStorage(); }
+function promptAddTitleText(){ const t = prompt('テキスト:'); if(t){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション】 " + t, type: "select", opts: ["次へ"], ans: "A", exp: "", diff: "★☆☆", score: 0, imageUrl: "", videoUrl: "", required: false }); renderQuestionsEditor(); saveToLocalStorage(); } }
 function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = prompt(type==='image'?'画像URL:':'YouTubeURL:'); if(u){ if(type==='image') questionsData[questionsData.length-1].imageUrl=u; else questionsData[questionsData.length-1].videoUrl=u; renderQuestionsEditor(); saveToLocalStorage(); } }
 function deleteQuestion(index){ collectQuestionsFromDOM(); if(questionsData.length<=1){alert('最低1問必要です');return;} questionsData.splice(index,1); renderQuestionsEditor(); saveToLocalStorage(); }
 function duplicateQuestion(index){ collectQuestionsFromDOM(); questionsData.splice(index+1, 0, JSON.parse(JSON.stringify(questionsData[index]))); renderQuestionsEditor(); saveToLocalStorage(); }
@@ -699,7 +723,6 @@ function generateConicPieChart(items, totalVotes) {
   `;
 }
 
-/* 4つの集計表示形式のレンダリングエンジン */
 function renderAnswerStats(){
   const container = document.getElementById('answerStatsContainer');
   const mode = document.getElementById('statDisplayMode').value;
@@ -718,13 +741,11 @@ function renderAnswerStats(){
       if(q.type === 'select' && q.opts){
         let counts = {};
         q.opts.forEach((opt, oIdx) => { counts[String.fromCharCode(65 + oIdx)] = 0; });
-        let otherTexts = [];
         
         records.forEach(rec => {
           if(rec.answers && rec.answers[qIdx] !== undefined){
             let ans = rec.answers[qIdx];
-            if(ans.startsWith("OTHER:")) { counts["OTHER"] = (counts["OTHER"]||0)+1; otherTexts.push(ans.replace("OTHER:", "")); }
-            else if(counts[ans] !== undefined) counts[ans]++;
+            if(counts[ans] !== undefined) counts[ans]++;
           }
         });
         
@@ -764,7 +785,6 @@ function renderAnswerStats(){
   }
 }
 
-/* 統計結果の画像保存（html2canvas使用） */
 function exportStatsImage(){
   const targetArea = document.getElementById('statsExportArea');
   if(!targetArea) return;
@@ -809,13 +829,21 @@ function startTestPlay(){
   quizDesc = document.getElementById('qDesc').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim();
   quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
+  quizTag = document.getElementById('quizTag').value.trim();
   appMode = document.getElementById('selAppMode').value;
   shuffleMode = document.getElementById('chkShuffle').checked;
   speedBonus = document.getElementById('chkSpeed').checked;
   timeLimit = parseInt(document.getElementById('selTimer').value);
+  randomCount = parseInt(document.getElementById('numRandomCount').value) || 0;
+  
   isSharedMode = false; isRetryMode = false;
   userFormAnswers = []; userPlayHistory = [];
-  activePlayData = JSON.parse(JSON.stringify(questionsData));
+  
+  let tempQ = JSON.parse(JSON.stringify(questionsData));
+  if(shuffleMode) tempQ.sort(()=>Math.random()-0.5);
+  if(randomCount > 0 && randomCount < tempQ.length) tempQ = tempQ.slice(0, randomCount);
+  
+  activePlayData = tempQ;
   beginQuizPlay();
 }
 
@@ -830,16 +858,14 @@ async function shortenURL(longUrl) {
     try {
         const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
         return res.ok ? await res.text() : longUrl;
-    } catch (e) {
-        return longUrl;
-    }
+    } catch (e) { return longUrl; }
 }
 
 async function generateShareUrl(){
   collectQuestionsFromDOM();
   if(questionsData.length === 0){alert('質問がありません');return}
   quizTitle = document.getElementById('qTitle').value.trim() || "無題";
-  const sData = { id: currentFileId, t: quizTitle, d: document.getElementById('qDesc').value.trim(), g: document.getElementById('quizGenre').value.trim(), cat: document.getElementById('quizCategory').value.trim() || "一般", m: appMode, sh: document.getElementById('chkShuffle').checked, sb: document.getElementById('chkSpeed').checked, tm: parseInt(document.getElementById('selTimer').value), q: questionsData };
+  const sData = { id: currentFileId, t: quizTitle, d: document.getElementById('qDesc').value.trim(), g: document.getElementById('quizGenre').value.trim(), cat: document.getElementById('quizCategory').value.trim() || "一般", tag: document.getElementById('quizTag').value.trim(), m: appMode, rc: document.getElementById('numRandomCount').value, sh: document.getElementById('chkShuffle').checked, sb: document.getElementById('chkSpeed').checked, tm: parseInt(document.getElementById('selTimer').value), q: questionsData };
   const sD = btoa(unescape(encodeURIComponent(JSON.stringify(sData)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
   const longUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?p=' + sD;
   
@@ -858,7 +884,7 @@ function showQrModal(){
   try {
     const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
     const canvas = document.getElementById('qrcodeCanvas'), ctx = canvas.getContext('2d');
-    const mod = qr.getModuleCount(), size = mod * 4 + 16; // スマホでも収まりが良いドットサイズに調整
+    const mod = qr.getModuleCount(), size = mod * 4 + 16;
     canvas.width = size; canvas.height = size;
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
     ctx.fillStyle = '#000000';
@@ -890,12 +916,13 @@ window.onload=()=>{
 };
 
 function beginQuizPlay(){
-  if(shuffleMode && !isRetryMode) activePlayData.sort(()=>Math.random()-0.5);
   document.getElementById('qTitleView').innerText = quizTitle;
   document.getElementById('genreView').innerText = quizGenre ? `ジャンル: ${quizGenre}` : "";
   document.getElementById('scoreLiveView').innerText = appMode === 'form' ? '' : `スコア: ${totalScore}点`;
   switchPage('play');
-  cI=0; sc=0; totalScore=0; if(!isRetryMode) wrongQuestionsData = []; userPlayHistory = [];
+  cI=0; sc=0; totalScore=0; currentCombo=0;
+  maxPossibleScore = activePlayData.reduce((acc, q) => acc + (q.score || 10), 0);
+  if(!isRetryMode) wrongQuestionsData = []; userPlayHistory = [];
   sW();
 }
 
@@ -907,7 +934,8 @@ function sW(){
   document.getElementById('pBar').style.width = (cI/activePlayData.length)*100+'%';
   if(appMode !== 'form') document.getElementById('scoreLiveView').innerText = `スコア: ${totalScore}点`;
   
-  document.getElementById('qTxt').innerHTML = 'Q'+(cI+1)+'. '+q.q + (q.required ? '<span style="color:var(--d); font-size:0.9rem; margin-left:6px;">*必須</span>' : '');
+  document.getElementById('comboBadge').innerText = currentCombo > 1 ? `🔥 ${currentCombo} 連続正解中！` : "";
+  document.getElementById('qTxt').innerHTML = `[${q.diff || '★☆☆'}] Q` + (cI+1) + '. ' + q.q + (q.required ? '<span style="color:var(--d); font-size:0.9rem; margin-left:6px;">*必須</span>' : '');
   
   const mediaBox = document.getElementById('playMediaContainer'); mediaBox.innerHTML = '';
   if(q.imageUrl) mediaBox.innerHTML += `<img src="${q.imageUrl}" style="max-width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;">`;
@@ -966,8 +994,17 @@ function proceedNextPlay(){
       else if(currentQ.type === 'multi') isCorrect = (String(currentSelectedAns).split(',').map(s=>s.trim().toUpperCase()).sort().join(',') === currentQ.ans.split(',').map(s=>s.trim().toUpperCase()).sort().join(','));
       else isCorrect = (String(currentSelectedAns).trim().toLowerCase() === currentQ.ans.trim().toLowerCase());
     }
-    if(isCorrect){ sc++; totalScore += 100; }
-    else if(!isRetryMode) wrongQuestionsData.push(currentQ);
+    
+    let qScore = currentQ.score || 10;
+    if(isCorrect){ 
+      sc++; 
+      currentCombo++;
+      let bonus = Math.floor(qScore * (currentCombo * 0.1)); // コンボボーナス
+      totalScore += (qScore + bonus); 
+    } else {
+      currentCombo = 0;
+      if(!isRetryMode) wrongQuestionsData.push(currentQ);
+    }
     userPlayHistory.push({ q: currentQ.q, userAns: currentSelectedAns || '未回答', correctAns: currentQ.ans, isCorrect, exp: currentQ.exp });
   }
   cI++; sW();
@@ -978,10 +1015,47 @@ function sR(){
   document.getElementById('resultHeaderTitle').innerText = appMode === 'form' ? "回答終了・送信画面" : "結果発表・送信画面";
   document.getElementById('scoreCircleContainer').style.display = appMode === 'form' ? 'none' : 'flex';
   document.getElementById('aRate').innerText = a+'%';
-  document.getElementById('rCom').innerText = appMode === 'form' ? "ご回答ありがとうございました！" : (a==100?'パーフェクト！':(a>=80?'高得点！':'お疲れ様でした！'));
-  document.getElementById('sDet').innerText = appMode === 'form' ? "すべての質問に回答しました。" : `${activePlayData.length}問中 ${sc}問正解 (スコア: ${totalScore}点)`;
+  
+  // ランク付け演出
+  let rankText = "";
+  if(a === 100) rankText = "👑 ランク: S (神マスター)";
+  else if(a >= 85) rankText = "🌟 ランク: A (優秀)";
+  else if(a >= 70) rankText = "✨ ランク: B (良好)";
+  else if(a >= 50) rankText = "👍 ランク: C (合格)";
+  else rankText = "🔥 ランク: D (要復習)";
+  document.getElementById('rankDisplay').innerText = appMode === 'form' ? "" : rankText;
+
+  document.getElementById('rCom').innerText = appMode === 'form' ? "ご回答ありがとうございました！" : (a==100?'パーフェクトおめでとうございます！':(a>=80?'素晴らしい成績です！':'お疲れ様でした！'));
+  document.getElementById('sDet').innerText = appMode === 'form' ? "すべての質問に回答しました。" : `${activePlayData.length}問中 ${sc}問正解 (総合スコア: ${totalScore}点)`;
+  
+  // 前回との成績比較機能
+  compareWithPreviousScore(a, totalScore);
+
   document.getElementById('retryWrongBtn').style.display = (wrongQuestionsData.length > 0 && !isRetryMode) ? 'inline-flex' : 'none';
   loadRanking();
+}
+
+function compareWithPreviousScore(currentRate, currentScore){
+  const storageKey = 'formapp_rankings_' + (currentFileId || 'default');
+  let records = [];
+  try{ const saved = localStorage.getItem(storageKey); if(saved) records = JSON.parse(saved); }catch(e){}
+  
+  const compBox = document.getElementById('comparisonBox');
+  if(appMode === 'form' || records.length === 0){
+    compBox.innerText = "";
+    return;
+  }
+  
+  // 直近の記録（自分以外の名前で直近のもの、または最後に行った記録）を取得
+  const lastRecord = records[records.length - 1];
+  if(lastRecord && lastRecord.score !== undefined){
+    let diff = currentScore - lastRecord.score;
+    if(diff > 0) compBox.innerText = `📈 前回よりスコアが ${diff}点 アップしました！`;
+    else if(diff < 0) compBox.innerText = `📉 前回よりスコアが ${Math.abs(diff)}点 下がりました。次頑張ろう！`;
+    else compBox.innerText = `⚖️ 前回と全く同じスコアです！`;
+  } else {
+    compBox.innerText = "";
+  }
 }
 
 function saveRanking(){
@@ -1011,9 +1085,12 @@ function displayRanking(records){
 
 function restartQuiz(){
   isRetryMode = false; userFormAnswers = []; userPlayHistory = [];
-  activePlayData = JSON.parse(JSON.stringify(questionsData));
-  switchPage('play'); if(shuffleMode) activePlayData.sort(()=>Math.random()-0.5);
-  cI=0; sc=0; totalScore=0; wrongQuestionsData = []; sW();
+  let tempQ = JSON.parse(JSON.stringify(questionsData));
+  if(shuffleMode) tempQ.sort(()=>Math.random()-0.5);
+  if(randomCount > 0 && randomCount < tempQ.length) tempQ = tempQ.slice(0, randomCount);
+  activePlayData = tempQ;
+  switchPage('play');
+  cI=0; sc=0; totalScore=0; currentCombo=0; wrongQuestionsData = []; sW();
 }
 
 function cpL(){ const i = document.getElementById('shUrl'); i.select(); document.execCommand('copy'); alert('コピーしました'); }
