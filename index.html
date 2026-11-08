@@ -66,7 +66,14 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .form-tab-item.active { color: var(--p); border-bottom-color: var(--p); }
 
 .tab-content { display: none; flex-direction: column; gap: 20px; }
-.tab-content.active { display: flex; animation: fI .3s ease forwards; }
+.tab-content.active { display: flex; animation: tabFade .3s ease forwards; }
+
+/* スマホ固定ツールバーを親要素のtransformに閉じ込めないよう、
+   タブ切り替えアニメーションはopacityだけにする */
+@keyframes tabFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 .form-header-card { background: var(--c); border-radius: 20px; border-top: 8px solid var(--p); box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 26px; }
 .form-card { background: var(--c); border-radius: 20px; border: 1px solid var(--border); border-left: 6px solid transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 26px; cursor: grab; user-select: none; transition: transform 0.2s, border-color 0.2s; }
@@ -76,7 +83,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); background: transparent; }
 .e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; }
 
-/* 追従バー：スマホ表示でもしっかり固定されて見えるよう調整 */
 .floating-toolbar { position: sticky; bottom: 20px; z-index: 100; display: flex; justify-content: center; gap: 8px; background: var(--c); padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: 10px 0; width: 100%; }
 .ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 700; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .ft-btn:hover { background: var(--p); border-color: var(--p); }
@@ -102,10 +108,11 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
 .q-input { flex: 1; font-size: 1.15rem; font-weight: bold; border: none; border-bottom: 2px solid var(--border); padding: 8px 0; outline: none; color: var(--t); background: transparent; }
 .options-edit-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
-.option-edit-row { display: flex; align-items: center; gap: 12px; }
+.option-edit-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--input-bg); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--border); }
 .opt-badge { font-weight: 800; color: #94a3b8; width: 28px; text-align: center; background: var(--border); padding: 4px; border-radius: 6px; }
-.opt-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; outline: none; background: var(--input-bg); color: var(--t); }
-.del-opt-btn { background: var(--input-bg); border: 1px solid var(--border); color: #ef4444; cursor: pointer; font-size: 1.1rem; padding: 6px 10px; border-radius: 8px; }
+.opt-input { flex: 1; min-width: 140px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; outline: none; background: var(--c); color: var(--t); }
+.cond-jump-select { padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; font-weight: bold; background: var(--c); color: var(--p); outline: none; cursor: pointer; }
+.del-opt-btn { background: var(--c); border: 1px solid var(--border); color: #ef4444; cursor: pointer; font-size: 1.1rem; padding: 6px 10px; border-radius: 8px; }
 
 .q-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 18px; margin-top: 12px; flex-wrap: wrap; gap: 12px; }
 .ans-select-group { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #94a3b8; flex-wrap: wrap; }
@@ -651,7 +658,7 @@ function createNewQuiz(){
   document.getElementById('selTimer').value = "0";
   document.getElementById('shArea').style.display = 'none';
   updateLogoPreview();
-  questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0, condVal: "" }];
+  questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
   renderQuestionsEditor();
   saveToLocalStorage();
   switchPage('edit');
@@ -663,26 +670,26 @@ function createFromTemplate(type){
   if(type === 'event'){
     quizTitle = "イベント出欠確認"; quizDesc = "次回のイベントの参加状況をお知らせください。"; quizGenre = "イベント"; quizCategory = "行事"; quizTag = "出欠, 予定";
     questionsData = [
-      { q: "ご参加いただけますか？", type: "select", opts: ["参加する", "欠席する", "未定"], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0, condVal: "" },
-      { q: "当日のご要望や質問があればご記入ください", type: "text", opts: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 200, condVal: "" }
+      { q: "ご参加いただけますか？", type: "select", opts: ["参加する", "欠席する", "未定"], optJumps: ["", "", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 },
+      { q: "当日のご要望や質問があればご記入ください", type: "text", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 200 }
     ];
   } else if(type === 'survey'){
     quizTitle = "満足度アンケート"; quizDesc = "サービスの改善に向け、ご意見をお聞かせください。"; quizGenre = "アンケート"; quizCategory = "一般"; quizTag = "感想, 評価";
     questionsData = [
-      { q: "今回の満足度はいかがでしたか？", type: "select", opts: ["とても満足", "満足", "普通", "不満"], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0, condVal: "" },
-      { q: "具体的な感想や改善点を教えてください", type: "text", opts: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 300, condVal: "" }
+      { q: "今回の満足度はいかがでしたか？", type: "select", opts: ["とても満足", "満足", "普通", "不満"], optJumps: ["", "", "", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 },
+      { q: "具体的な感想や改善点を教えてください", type: "text", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 300 }
     ];
   } else if(type === 'booking'){
     quizTitle = "面談・予約フォーム"; quizDesc = "ご希望の日時を選択してください。"; quizGenre = "予約"; quizCategory = "スケジュール"; quizTag = "日時, 面談";
     questionsData = [
-      { q: "希望日を選択してください", type: "date", opts: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0, condVal: "" },
-      { q: "ご希望の時間帯", type: "select", opts: ["午前 (10:00~)", "午後 (13:00~)", "夕方 (16:00~)"], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0, condVal: "" }
+      { q: "希望日を選択してください", type: "date", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 },
+      { q: "ご希望の時間帯", type: "select", opts: ["午前 (10:00~)", "午後 (13:00~)", "夕方 (16:00~)"], optJumps: ["", "", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 }
     ];
   } else if(type === 'contact'){
     quizTitle = "連絡先・プロフィール登録"; quizDesc = "必要情報を入力してください。"; quizGenre = "連絡先"; quizCategory = "プロフィール"; quizTag = "登録, 連絡先";
     questionsData = [
-      { q: "お名前（フルネーム）", type: "text", opts: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 50, condVal: "" },
-      { q: "年齢（数値）", type: "number", opts: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0, condVal: "" }
+      { q: "お名前（フルネーム）", type: "text", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 50 },
+      { q: "年齢（数値）", type: "number", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }
     ];
   }
   
@@ -736,7 +743,10 @@ function openFile(id){
   document.getElementById('shArea').style.display = 'none';
   updateLogoPreview();
   questionsData = file.questions || [];
-  if(questionsData.length === 0) questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0, condVal: "" }];
+  questionsData.forEach(q => {
+    if(!q.optJumps && q.opts) q.optJumps = q.opts.map(() => "");
+  });
+  if(questionsData.length === 0) questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
   renderQuestionsEditor();
   switchPage('edit');
 }
@@ -784,16 +794,16 @@ function collectQuestionsFromDOM(){
     const diffSelect = card.querySelector('.diff-select');
     const scoreInput = card.querySelector('.score-input');
     const maxLenInput = card.querySelector('.maxlen-input');
-    const condInput = card.querySelector('.cond-input');
     if(!qInput) return;
     const type = typeSelect ? typeSelect.value : 'select';
     const opts = Array.from(card.querySelectorAll('.option-value-input')).map(inp => inp.value);
+    const optJumps = Array.from(card.querySelectorAll('.cond-jump-select')).map(sel => sel.value);
     const textAnswerInput = card.querySelector('.text-answer-input');
     const answer = (type === 'text' || type === 'date' || type === 'number') ? (textAnswerInput ? textAnswerInput.value : '') : (ansSelect ? ansSelect.value : 'A');
     const index = parseInt(card.dataset.index);
     const oldObj = questionsData[index] || {};
     newQData.push({
-      q: qInput.value, type, opts, ans: answer,
+      q: qInput.value, type, opts, optJumps, ans: answer,
       exp: expInput ? expInput.value : "",
       hint: hintInput ? hintInput.value : (oldObj.hint || ""),
       diff: diffSelect ? diffSelect.value : (oldObj.diff || '★☆☆'),
@@ -801,8 +811,7 @@ function collectQuestionsFromDOM(){
       imageUrl: imgInput ? imgInput.value.trim() : (oldObj.imageUrl || ""),
       videoUrl: vidInput ? vidInput.value.trim() : (oldObj.videoUrl || ""),
       required: reqCheck ? reqCheck.checked : (oldObj.required || false),
-      maxLen: maxLenInput ? parseInt(maxLenInput.value) || 0 : (oldObj.maxLen || 0),
-      condVal: condInput ? condInput.value.trim() : (oldObj.condVal || "")
+      maxLen: maxLenInput ? parseInt(maxLenInput.value) || 0 : (oldObj.maxLen || 0)
     });
   });
   if(newQData.length > 0) questionsData = newQData;
@@ -820,6 +829,7 @@ function renderQuestionsEditor(){
     card.draggable = true;
     
     if(!qObj.opts) qObj.opts = ["", ""];
+    if(!qObj.optJumps) qObj.optJumps = qObj.opts.map(() => "");
     let optCount = qObj.opts.length < 2 ? 2 : qObj.opts.length;
     let isInfoText = (qObj.type === 'info');
     
@@ -828,10 +838,21 @@ function renderQuestionsEditor(){
       for(let i=0; i<optCount; i++){
         let badge = String.fromCharCode(65 + i);
         let val = qObj.opts[i] !== undefined ? qObj.opts[i] : '';
+        let jumpVal = qObj.optJumps && qObj.optJumps[i] !== undefined ? qObj.optJumps[i] : '';
+        
+        let jumpOptions = `<option value="">➡ 次の質問へ進む</option><option value="finish" ${jumpVal==='finish'?'selected':''}>🏁 すぐ結果・送信画面へ</option>`;
+        questionsData.forEach((targetQ, tIdx) => {
+          if(tIdx !== index){
+            let tLabel = `Q${tIdx+1}: ${truncateText(targetQ.q || '無題', 10)}`;
+            jumpOptions += `<option value="${tIdx}" ${jumpVal==String(tIdx)?'selected':''}>➡ ${tLabel} へジャンプ</option>`;
+          }
+        });
+
         optionsHtml += `
           <div class="option-edit-row">
             <span class="opt-badge">${badge}</span>
             <input type="text" class="opt-input option-value-input" value="${val}" placeholder="選択肢 ${badge}" oninput="saveToLocalStorage()">
+            <select class="cond-jump-select" onchange="saveToLocalStorage()">${jumpOptions}</select>
             ${optCount > 2 ? `<button type="button" class="del-opt-btn" onclick="removeOption(${index}, ${i})">×</button>` : ''}
           </div>`;
       }
@@ -899,7 +920,7 @@ function renderQuestionsEditor(){
         
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px; background:var(--input-bg); padding:10px; border-radius:10px; border:1px solid var(--border);">
           ${qObj.type === 'text' ? `<label style="font-size:0.85rem; color:#94a3b8; font-weight:600;">文字数上限: <input type="number" class="maxlen-input opt-input" value="${qObj.maxLen || 0}" min="0" placeholder="0で無制限" oninput="saveToLocalStorage()" style="width:80px; padding:4px; font-size:0.85rem; display:inline-block;"></label>` : ''}
-          <label style="font-size:0.85rem; color:#94a3b8; font-weight:600;">条件分岐(直前の質問が「〇〇」なら表示): <input type="text" class="cond-input opt-input" value="${qObj.condVal || ''}" placeholder="例: A または 参加する" oninput="saveToLocalStorage()" style="width:160px; padding:4px; font-size:0.85rem; display:inline-block;"></label>
+          <span style="font-size:0.85rem; color:#94a3b8;">💡 各選択肢の右側のプルダウンからジャンプ先を指定できます。</span>
         </div>
 
         <div class="q-card-footer">
@@ -994,8 +1015,8 @@ function handleMediaFileUpload(e, index, type){
   reader.readAsDataURL(file);
 }
 
-function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0, condVal: "" }); renderQuestionsEditor(); saveToLocalStorage(); }
-function addTextSection(){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション説明】", type: "info", opts: [], ans: "", exp: "", hint: "", diff: "★☆☆", score: 0, imageUrl: "", videoUrl: "", required: false, maxLen: 0, condVal: "" }); renderQuestionsEditor(); saveToLocalStorage(); }
+function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); saveToLocalStorage(); }
+function addTextSection(){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション説明】", type: "info", opts: [], optJumps: [], ans: "", exp: "", hint: "", diff: "★☆☆", score: 0, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); saveToLocalStorage(); }
 function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = prompt(type==='image'?'画像URLを入力してください:':'YouTube動画URLを入力してください:'); if(u){ if(type==='image') questionsData[questionsData.length-1].imageUrl=u; else questionsData[questionsData.length-1].videoUrl=u; renderQuestionsEditor(); saveToLocalStorage(); } }
 function deleteQuestion(index){ collectQuestionsFromDOM(); if(questionsData.length<=1){alert('最低1問必要です');return;} questionsData.splice(index,1); renderQuestionsEditor(); saveToLocalStorage(); }
 function duplicateQuestion(index){ collectQuestionsFromDOM(); questionsData.splice(index+1, 0, JSON.parse(JSON.stringify(questionsData[index]))); renderQuestionsEditor(); saveToLocalStorage(); }
@@ -1013,8 +1034,8 @@ function moveQuestionPrompt(index){
     }
   }
 }
-function addOptionToQuestion(index){ collectQuestionsFromDOM(); if(questionsData[index].opts.length<10) questionsData[index].opts.push(""); renderQuestionsEditor(); saveToLocalStorage(); }
-function removeOption(qIdx, optIdx){ collectQuestionsFromDOM(); if(questionsData[qIdx].opts.length<=2){alert('最低2つ必要です');return;} questionsData[qIdx].opts.splice(optIdx,1); renderQuestionsEditor(); saveToLocalStorage(); }
+function addOptionToQuestion(index){ collectQuestionsFromDOM(); if(questionsData[index].opts.length<10){ questionsData[index].opts.push(""); questionsData[index].optJumps.push(""); } renderQuestionsEditor(); saveToLocalStorage(); }
+function removeOption(qIdx, optIdx){ collectQuestionsFromDOM(); if(questionsData[qIdx].opts.length<=2){alert('最低2つ必要です');return;} questionsData[qIdx].opts.splice(optIdx,1); questionsData[qIdx].optJumps.splice(optIdx,1); renderQuestionsEditor(); saveToLocalStorage(); }
 function changeQuestionType(index, newType){ collectQuestionsFromDOM(); questionsData[index].type = newType; questionsData[index].ans = (newType==='text'||newType==='date'||newType==='number')?'': 'A'; renderQuestionsEditor(); saveToLocalStorage(); }
 
 function generateConicPieChart(items, totalVotes) {
@@ -1219,29 +1240,10 @@ function startTestPlay(){
   isSharedMode = false; isRetryMode = false;
   userFormAnswers = []; userPlayHistory = [];
   
-  let tempQ = JSON.parse(JSON.stringify(questionsData));
-  if(shuffleMode) tempQ.sort(()=>Math.random()-0.5);
-  if(randomCount > 0 && randomCount < tempQ.length) tempQ = tempQ.slice(0, randomCount);
+  activePlayData = JSON.parse(JSON.stringify(questionsData));
+  if(randomCount > 0 && randomCount < activePlayData.length) activePlayData = activePlayData.slice(0, randomCount);
   
-  activePlayData = tempQ;
-  filterConditionalQuestions();
   beginQuizPlay();
-}
-
-function filterConditionalQuestions(){
-  let filtered = [];
-  let lastAns = "";
-  activePlayData.forEach((q, idx) => {
-    if(q.condVal && q.condVal.trim() !== ""){
-      if(lastAns.toUpperCase() === q.condVal.trim().toUpperCase() || lastAns.includes(q.condVal.trim())){
-        filtered.push(q);
-      }
-    } else {
-      filtered.push(q);
-    }
-    if(q.opts && q.opts.length > 0) lastAns = "A"; 
-  });
-  if(filtered.length > 0) activePlayData = filtered;
 }
 
 function retryWrongQuestions(){
@@ -1348,20 +1350,6 @@ function beginQuizPlay(){
 }
 
 function sW(){
-  while(cI < activePlayData.length){
-    const q = activePlayData[cI];
-    if(q.condVal && q.condVal.trim() !== "" && cI > 0){
-      let prevAns = userFormAnswers[userFormAnswers.length - 1] || "";
-      let match = prevAns.toUpperCase() === q.condVal.trim().toUpperCase() || prevAns.includes(q.condVal.trim());
-      if(!match){
-        userFormAnswers.push("(条件非該当のためスキップ)");
-        cI++;
-        continue;
-      }
-    }
-    break;
-  }
-
   if(cI >= activePlayData.length){ switchPage('result'); sR(); return; }
   if(timerInterval) clearInterval(timerInterval);
   document.getElementById('timerView').innerText = "";
@@ -1427,6 +1415,8 @@ function sW(){
         } else {
           g.querySelectorAll('.o-btn').forEach(btn => btn.classList.remove('selected'));
           b.classList.add('selected'); currentSelectedAns = k;
+          // 選択された瞬間にジャンプ先が設定されていれば一時保存
+          q.selectedJumpIndex = q.optJumps ? q.optJumps[j] : "";
         }
       };
       g.appendChild(b);
@@ -1496,6 +1486,21 @@ function proceedNextPlay(){
     }
     userPlayHistory.push({ q: currentQ.q, userAns: currentSelectedAns || '未回答', correctAns: currentQ.ans, isCorrect, exp: currentQ.exp });
   }
+
+  // 条件分岐（ジャンプ先）の判定
+  if(currentQ.selectedJumpIndex !== undefined && currentQ.selectedJumpIndex !== ""){
+    if(currentQ.selectedJumpIndex === 'finish'){
+      cI = activePlayData.length; // すぐ結果へ
+    } else {
+      let targetIdx = parseInt(currentQ.selectedJumpIndex);
+      if(!isNaN(targetIdx) && targetIdx >= 0 && targetIdx < activePlayData.length){
+        cI = targetIdx;
+        sW();
+        return;
+      }
+    }
+  }
+
   cI++; sW();
 }
 
@@ -1559,7 +1564,7 @@ function saveRanking(){
     localStorage.setItem('formapp_submitted_' + currentFileId, 'true');
   }
 
-  alert('回答の送信が完了しました！');
+  alert('回答者のデータを送信・登録しました！');
   displayRanking(records);
 }
 
@@ -1576,10 +1581,8 @@ function displayRanking(records){
 
 function restartQuiz(){
   isRetryMode = false; userFormAnswers = []; userPlayHistory = [];
-  let tempQ = JSON.parse(JSON.stringify(questionsData));
-  if(shuffleMode) tempQ.sort(()=>Math.random()-0.5);
-  if(randomCount > 0 && randomCount < tempQ.length) tempQ = tempQ.slice(0, randomCount);
-  activePlayData = tempQ;
+  activePlayData = JSON.parse(JSON.stringify(questionsData));
+  if(randomCount > 0 && randomCount < activePlayData.length) activePlayData = activePlayData.slice(0, randomCount);
   switchPage('play');
   cI=0; sc=0; totalScore=0; currentCombo=0; wrongQuestionsData = []; sW();
 }
