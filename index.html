@@ -99,9 +99,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .sh-wrap-in { display: flex; gap: 10px; justify-content: center; align-items: center; max-width: 650px; margin: 0 auto; flex-wrap: wrap; }
 .sh-input { flex: 1; min-width: 220px; width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--input-bg); color: var(--t); }
 
-.qr-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; }
-.qr-modal-content { background: var(--c); border: 1px solid var(--border); padding: 30px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-width: 320px; width: 90%; display: flex; flex-direction: column; align-items: center; gap: 18px; }
-#qrcodeCanvas { background: #ffffff; padding: 12px; border-radius: 12px; display: block; margin: 0 auto; }
+/* QRコードモーダルのレイアウト修正（スマホ対応・中央配置） */
+.qr-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; padding: 16px; }
+.qr-modal-content { background: var(--c); border: 1px solid var(--border); padding: 24px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-width: 360px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; max-height: 90vh; overflow-y: auto; }
+#qrcodeCanvas { background: #ffffff; padding: 10px; border-radius: 12px; display: block; margin: 0 auto; max-width: 100%; height: auto; }
 
 .play-card-container { background: var(--c); border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 16px 40px rgba(0,0,0,0.3); padding: 40px 30px; text-align: center; }
 .p-bar-c { width: 100%; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 25px; }
@@ -198,7 +199,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
           <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#06c755;border-radius:10px;color:#fff;" onclick="lineS()">LINE共有</button>
           <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#475569;border-radius:10px;color:#fff;" onclick="showQrModal()">📱 QRコード</button>
         </div>
-        <p style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">💡 URL短縮（TinyURL）でQRコードが読み取りやすくなります。</p>
+        <p style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">💡 URL短縮（TinyURL）でQRコードがスッキリ読み取りやすくなります。</p>
       </div>
 
       <div class="floating-toolbar">
@@ -217,7 +218,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       </div>
     </div>
 
-    <!-- 回答・集計（4つの表示切替 ＆ 全体円グラフ ＆ 画像保存） -->
+    <!-- 回答・集計 -->
     <div id="tabContentAnswers" class="tab-content">
       <div class="form-header-card" id="statsExportArea">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
@@ -331,10 +332,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
 <div class="qr-modal-overlay" id="qrModal" onclick="closeQrModal(event)">
   <div class="qr-modal-content" onclick="event.stopPropagation()">
-    <h3>共有用 QRコード</h3>
+    <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--p);">共有用 QRコード</h3>
     <canvas id="qrcodeCanvas"></canvas>
-    <p style="font-size:0.85rem; color:#94a3b8; word-break:break-all;" id="qrModalUrlText"></p>
-    <button class="m-btn" style="padding:10px 24px; font-size:0.9rem; width:100%; border-radius:12px;" onclick="closeQrModalDirect()">OK (閉じる)</button>
+    <p style="font-size: 0.75rem; color: #94a3b8; word-break: break-all; max-width: 100%;" id="qrModalUrlText"></p>
+    <button class="m-btn" style="padding: 10px 24px; font-size: 0.9rem; width: 100%; border-radius: 12px;" onclick="closeQrModalDirect()">OK (閉じる)</button>
   </div>
 </div>
 
@@ -857,11 +858,11 @@ function showQrModal(){
   try {
     const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
     const canvas = document.getElementById('qrcodeCanvas'), ctx = canvas.getContext('2d');
-    const mod = qr.getModuleCount(), size = mod * 5 + 24;
+    const mod = qr.getModuleCount(), size = mod * 4 + 16; // スマホでも収まりが良いドットサイズに調整
     canvas.width = size; canvas.height = size;
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
     ctx.fillStyle = '#000000';
-    for(let r=0; r<mod; r++){ for(let c=0; c<mod; c++){ if(qr.isDark(r, c)) ctx.fillRect(12 + c * 5, 12 + r * 5, 5, 5); } }
+    for(let r=0; r<mod; r++){ for(let c=0; c<mod; c++){ if(qr.isDark(r, c)) ctx.fillRect(8 + c * 4, 8 + r * 4, 4, 4); } }
   }catch(e){}
   document.getElementById('qrModal').style.display = 'flex';
 }
