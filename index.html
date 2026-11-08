@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title id="pageTitle">FormApp - ホーム</title>
+<title id="pageTitle">FormApp - クラウド版</title>
 <style>
 :root {
   --p: #6366f1; --p-light: #1e1b4b; --s: #10b981; --d: #ef4444;
@@ -41,6 +41,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .home-top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
 .home-top-bar h2 { font-size: 1.2rem; color: var(--t); font-weight: 700; }
 
+.auth-box { background: var(--c); padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 10px; }
+.auth-box input { padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--input-bg); color: var(--t); font-size: 0.9rem; outline: none; }
+
 .template-section { background: var(--c); padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 12px; }
 .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
 .template-btn { background: var(--input-bg); border: 1px solid var(--border); padding: 12px; border-radius: 14px; cursor: pointer; text-align: left; font-weight: 700; color: var(--t); transition: all 0.2s; font-size: 0.9rem; }
@@ -54,7 +57,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .file-card { background: var(--c); border: 1px solid var(--border); border-radius: 20px; padding: 22px; cursor: pointer; transition: all 0.3s; position: relative; display: flex; flex-direction: column; justify-content: space-between; height: 185px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); user-select: none; }
 .file-card:hover { transform: translateY(-6px); border-color: var(--p); }
 .file-card.new-card { border: 2px dashed var(--s); background: var(--p-light); justify-content: center; align-items: center; text-align: center; color: var(--s); font-weight: bold; }
-.file-card.dragging { opacity: 0.4; }
 .file-card-title { font-size: 1.15rem; font-weight: bold; color: var(--t); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
 .file-card-meta { font-size: 0.85rem; color: #94a3b8; display:flex; flex-direction:column; gap:3px; }
 .file-card-actions { display: flex; gap: 8px; margin-top: 10px; }
@@ -66,19 +68,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .form-tab-item.active { color: var(--p); border-bottom-color: var(--p); }
 
 .tab-content { display: none; flex-direction: column; gap: 20px; }
-.tab-content.active { display: flex; animation: tabFade .3s ease forwards; }
-
-/* スマホ固定ツールバーを親要素のtransformに閉じ込めないよう、
-   タブ切り替えアニメーションはopacityだけにする */
-@keyframes tabFade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+.tab-content.active { display: flex; animation: fI .3s ease forwards; }
 
 .form-header-card { background: var(--c); border-radius: 20px; border-top: 8px solid var(--p); box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 26px; }
 .form-card { background: var(--c); border-radius: 20px; border: 1px solid var(--border); border-left: 6px solid transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 26px; cursor: grab; user-select: none; transition: transform 0.2s, border-color 0.2s; }
-.form-card:active { cursor: grabbing; }
-.form-card.dragging { opacity: 0.4; }
 
 .e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); background: transparent; }
 .e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; }
@@ -88,23 +81,14 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .ft-btn:hover { background: var(--p); border-color: var(--p); }
 
 @media(max-width: 768px) {
-  .floating-toolbar {
-    position: fixed;
-    bottom: 74px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 24px);
-    max-width: 850px;
-    z-index: 999;
-  }
+  .floating-toolbar { position: fixed; bottom: 74px; left: 50%; transform: translateX(-50%); width: calc(100% - 24px); max-width: 850px; z-index: 999; }
 }
 
 .settings-bar { background: var(--c); padding: 22px; border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
 .settings-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-weight: 600; font-size: 0.95rem; }
 
 .q-card-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-.q-card-header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 8px; }
-.q-card-header-bottom { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 8px; }
+.q-card-header-top, .q-card-header-bottom { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 8px; }
 
 .q-input { flex: 1; font-size: 1.15rem; font-weight: bold; border: none; border-bottom: 2px solid var(--border); padding: 8px 0; outline: none; color: var(--t); background: transparent; }
 .options-edit-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
@@ -172,13 +156,14 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   body { padding: 12px; padding-bottom: 160px; }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body class="theme-blue">
 <div class="con" id="app">
   <header class="site-header">
-    <a class="site-logo" id="headerLogoText" onclick="goHome()">FormApp - ホーム</a>
+    <a class="site-logo" id="headerLogoText" onclick="goHome()">FormApp - クラウド版</a>
     <nav class="nav-links">
       <button class="nav-link-btn" onclick="goHome()">ホーム</button>
       <button class="nav-link-btn" onclick="exportJsonFile()">📁 バックアップ</button>
@@ -198,12 +183,34 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
   <!-- ① ホーム -->
   <div id="pageHome" class="home-section active">
-    <div class="home-top-bar">
-      <h2>ホーム（一覧・テンプレート選択可）</h2>
+    <!-- 🔐 ログイン・アカウント管理エリア -->
+    <div class="auth-box" id="auth-container">
+      <div id="auth-logged-out">
+        <h3 style="font-size: 1rem; color: var(--p); font-weight: 800; margin-bottom: 4px;">🔐 クイズ作成者としてログイン</h3>
+        <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">自分専用のクイズを作成・保存し、回答データを集計するにはログインが必要です。</p>
+        <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+            <input type="email" id="auth-email" placeholder="メールアドレス" style="flex: 1; min-width: 180px;">
+            <input type="password" id="auth-password" placeholder="パスワード" style="flex: 1; min-width: 180px;">
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button onclick="handleSignIn()" class="m-btn" style="padding: 8px 16px; font-size: 0.85rem; border-radius: 10px;">ログイン</button>
+          <button onclick="handleSignUp()" class="m-btn s-btn" style="padding: 8px 16px; font-size: 0.85rem; border-radius: 10px;">新規アカウント登録</button>
+        </div>
+      </div>
+      <div id="auth-logged-in" style="display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <span style="font-weight: bold; color: var(--s);">● ログイン中:</span>
+          <span id="user-display-email" style="margin-left: 5px; font-size: 0.9rem; font-weight: 600;"></span>
+        </div>
+        <button onclick="handleSignOut()" class="file-action-btn del" style="padding: 6px 14px;">ログアウト</button>
+      </div>
+    </div>
+
+    <div class="home-top-bar" id="my-forms-section" style="display:none;">
+      <h2>マイフォーム一覧</h2>
       <button class="m-btn s-btn" style="padding:10px 20px; font-size:0.95rem; border-radius:12px;" onclick="createNewQuiz()">＋ 新規作成</button>
     </div>
 
-    <!-- テンプレート選択セクション -->
     <div class="template-section">
       <h3 style="font-size: 1rem; color: var(--p); font-weight: 800;">💡 テンプレートから作成</h3>
       <div class="template-grid">
@@ -233,17 +240,17 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
             <span id="logoPlaceholderTxt" style="font-size: 0.75rem; color: #94a3b8;">ロゴ</span>
           </div>
           <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 6px;">
-            <input type="text" id="quizLogo" class="opt-input" placeholder="ロゴ画像URL (任意)" oninput="updateLogoPreview(); saveToLocalStorage();" style="font-size: 0.85rem;">
+            <input type="text" id="quizLogo" class="opt-input" placeholder="ロゴ画像URL (任意)" oninput="updateLogoPreview(); autoSaveCloud();" style="font-size: 0.85rem;">
             <input type="file" id="logoFileSelect" style="display:none" accept="image/*" onchange="handleLogoFileUpload(event)">
             <button type="button" class="file-action-btn s-btn" onclick="document.getElementById('logoFileSelect').click()" style="width: fit-content; padding: 4px 10px; font-size: 0.75rem;">📁 ロゴ画像ファイルを選択</button>
           </div>
         </div>
-        <input type="text" id="qTitle" class="e-title" placeholder="タイトルを入力" oninput="updatePageTitle(); saveToLocalStorage();">
-        <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明を入力" oninput="saveToLocalStorage()">
+        <input type="text" id="quiz-title-input" class="e-title" placeholder="タイトルを入力" oninput="updatePageTitle(); autoSaveCloud();">
+        <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明を入力" oninput="autoSaveCloud()">
         <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="saveToLocalStorage()" placeholder="例: 学校" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">タグ: <input type="text" id="quizTag" oninput="saveToLocalStorage()" placeholder="例: 歴史, 計算" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="autoSaveCloud()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="autoSaveCloud()" placeholder="例: 学校" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">タグ: <input type="text" id="quizTag" oninput="autoSaveCloud()" placeholder="例: 歴史, 計算" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
         </div>
       </div>
 
@@ -259,7 +266,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
       <div id="questionsContainer" style="display:flex; flex-direction:column; gap:16px;"></div>
 
-      <!-- 追従ツールバー -->
       <div class="floating-toolbar">
         <button class="ft-btn" onclick="addQuestionCard()">＋ 質問追加</button>
         <button class="ft-btn" onclick="addTextSection()">TT テキスト追加</button>
@@ -268,7 +274,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
       <div style="display:flex; gap:15px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
         <button class="m-btn s-btn" onclick="startTestPlay()">▶ プレビュー / テスト</button>
-        <button class="m-btn" onclick="generateShareUrl()">🔗 共有URLを発行</button>
+        <button class="m-btn" onclick="saveAndGenerateShareUrl()">🔗 共有URLを発行</button>
         <button class="m-btn" style="background:#475569;" onclick="goHome()">ホームに戻る</button>
       </div>
     </div>
@@ -277,7 +283,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <div id="tabContentAnswers" class="tab-content">
       <div class="form-header-card" id="statsExportArea">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-          <h3 style="color:var(--p); font-weight:800;">回答・集計データ（作成者用）</h3>
+          <h3 style="color:var(--p); font-weight:800;">回答・集計データ（クラウド同期）</h3>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <button class="m-btn s-btn" style="padding:6px 14px; font-size:0.85rem; border-radius:8px;" onclick="exportStatsImage()">📷 統計結果を画像保存</button>
             <button class="m-btn" style="padding:6px 14px; font-size:0.85rem; border-radius:8px; background:#059669;" onclick="exportAnswersCSV()">📥 回答をCSVでダウンロード</button>
@@ -290,7 +296,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
             </select>
           </div>
         </div>
-        <div id="answerStatsContainer" style="font-weight:600; line-height:1.6;"></div>
+        <div id="answerStatsContainer" style="font-weight:600; line-height:1.6;">読込中...</div>
       </div>
     </div>
 
@@ -299,25 +305,25 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <h3 style="color:var(--p); font-weight:800; margin-bottom:5px;">詳細なオプション設定</h3>
         <div class="settings-row">
           <span>モード選択:</span>
-          <select id="selAppMode" onchange="saveToLocalStorage(); renderQuestionsEditor();" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--p); font-weight:bold;">
+          <select id="selAppMode" onchange="autoSaveCloud(); renderQuestionsEditor();" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--p); font-weight:bold;">
             <option value="quiz">クイズモード（正解判定・得点あり）</option>
             <option value="form">フォームモード（アンケート・自動集計：正解なし）</option>
           </select>
         </div>
         <div class="settings-row">
           <span>ランダム出題数（0で全問）:</span>
-          <input type="number" id="numRandomCount" min="0" value="0" oninput="saveToLocalStorage()" style="padding:8px 12px; border:1px solid var(--border); border-radius:8px; width:100px; background:var(--input-bg); color:var(--t); font-weight:bold;">
+          <input type="number" id="numRandomCount" min="0" value="0" oninput="autoSaveCloud()" style="padding:8px 12px; border:1px solid var(--border); border-radius:8px; width:100px; background:var(--input-bg); color:var(--t); font-weight:bold;">
         </div>
         <div class="settings-row">
           <span>有効期限（日時）:</span>
-          <input type="datetime-local" id="quizDeadline" oninput="saveToLocalStorage()" style="padding:8px 12px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--t); font-weight:bold; font-size:0.9rem;">
+          <input type="datetime-local" id="quizDeadline" oninput="autoSaveCloud()" style="padding:8px 12px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--t); font-weight:bold; font-size:0.9rem;">
         </div>
-        <div class="settings-row"><label><input type="checkbox" id="chkShuffle" onchange="saveToLocalStorage()"> シャッフル出題</label></div>
-        <div class="settings-row"><label><input type="checkbox" id="chkSpeed" onchange="saveToLocalStorage()"> 早押しボーナス</label></div>
-        <div class="settings-row"><label><input type="checkbox" id="chkOnce" onchange="saveToLocalStorage()"> 重複防止（同じ端末からの多重回答を制限）</label></div>
+        <div class="settings-row"><label><input type="checkbox" id="chkShuffle" onchange="autoSaveCloud()"> シャッフル出題</label></div>
+        <div class="settings-row"><label><input type="checkbox" id="chkSpeed" onchange="autoSaveCloud()"> 早押しボーナス</label></div>
+        <div class="settings-row"><label><input type="checkbox" id="chkOnce" onchange="autoSaveCloud()"> 重複防止（同じ端末からの多重回答を制限）</label></div>
         <div class="settings-row">
           <span>制限時間:</span>
-          <select id="selTimer" onchange="saveToLocalStorage()" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--p); font-weight:bold;">
+          <select id="selTimer" onchange="autoSaveCloud()" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--p); font-weight:bold;">
             <option value="0">制限時間なし</option>
             <option value="10">10秒</option>
             <option value="15">15秒</option>
@@ -331,7 +337,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   <div id="pageHowToUse" class="page-section">
     <div class="form-header-card pop-anim">
       <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">FormApp の使い方</h2>
-      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1;">質問やホーム上のカードは、ドラッグで自由に位置を並べ替えることができます。また、右クリック（または位置変更ボタン）で何番目に移動するかを直接指定することも可能です。「テキスト追加」は問題に答えないセクションになります。</p>
+      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1;">質問はドラッグで自由に位置を並べ替えることができます。「テキスト追加」は問題に答えない説明用セクションになります。</p>
       <button class="m-btn" style="font-size:0.95rem; padding:10px 20px; border-radius:12px;" onclick="goHome()">ホームに戻る</button>
     </div>
   </div>
@@ -371,13 +377,14 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <div id="comparisonBox" style="font-size:0.95rem; font-weight:700; color:var(--s); margin-bottom:20px;"></div>
       
       <div id="rankingRegisterSection" style="max-width:360px; margin:0 auto 25px auto; background:var(--input-bg); padding:18px; border-radius:16px; border:1px solid var(--border);">
-        <p style="font-size:0.85rem; color:#94a3b8; font-weight:700; margin-bottom:10px; line-height:1.4;">※名前を入力し、「回答を送信・登録する」ボタンを押してデータを確定させてください。</p>
-        <input type="text" id="playerName" placeholder="名前を入力" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:12px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:var(--c); color:var(--t);">
-        <button class="m-btn s-btn" style="padding:12px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="saveRanking()">📥 回答を送信・登録する</button>
+        <p style="font-size:0.85rem; color:#94a3b8; font-weight:700; margin-bottom:10px; line-height:1.4;">※名前を入力し、「回答を送信・登録する」ボタンを押してクラウドに記録してください。</p>
+        <input type="text" id="respondent-name-input" placeholder="名前を入力" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:12px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:var(--c); color:var(--t);">
+        <div id="score-display" style="display:none;"></div>
+        <button class="m-btn s-btn" style="padding:12px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="submitUserResponse()">📥 回答を送信・登録する</button>
       </div>
 
       <div class="ranking-box" id="rankingContainer" style="display:none;">
-        <h4 id="rankingBoxTitle">ランキング・回答集計</h4>
+        <h4 id="rankingBoxTitle">クラウド回答一覧</h4>
         <ul class="ranking-list" id="rankingList"></ul>
       </div>
 
@@ -405,7 +412,14 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 </div>
 
 <script>
-let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, currentCombo=0, quizTitle="", quizDesc="", quizLogo="", quizGenre="", quizCategory="一般", quizTag="", quizDeadline="", appMode="form", shuffleMode=false, speedBonus=false, preventOnce=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [], timerInterval = null;
+// ==========================================
+// 🚀 Supabase クライアント初期設定
+// ==========================================
+const SUPABASE_URL = "https://ovpwgxwuidnejdlszzqm.supabase.co";
+const SUPABASE_KEY = "sb_publishable_9XQlxQcCXyL3odq0h80SxA_LPFv9BSw";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, currentCombo=0, quizTitle="", quizDesc="", quizLogo="", quizGenre="", quizCategory="一般", quizTag="", quizDeadline="", appMode="form", shuffleMode=false, speedBonus=false, preventOnce=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [], timerInterval = null, cloudResponseList = [];
 
 function truncateText(str, maxLen = 4) {
   if (!str) return "";
@@ -413,10 +427,9 @@ function truncateText(str, maxLen = 4) {
 }
 
 function updatePageTitle() {
-  const titleVal = document.getElementById('qTitle').value.trim();
+  const titleVal = document.getElementById('quiz-title-input').value.trim();
   const pageTitleElem = document.getElementById('pageTitle');
   const logoElem = document.getElementById('headerLogoText');
-  
   if (titleVal) {
     pageTitleElem.innerText = `FormApp - ${titleVal}`;
     logoElem.innerText = `FormApp - ${titleVal}`;
@@ -443,7 +456,7 @@ function handleLogoFileUpload(e){
   reader.onload = (event) => {
     document.getElementById('quizLogo').value = event.target.result;
     updateLogoPreview();
-    saveToLocalStorage();
+    autoSaveCloud();
     alert('ロゴ画像を設定しました！');
   };
   reader.readAsDataURL(file);
@@ -470,7 +483,56 @@ function changeColorTheme(themeName){
   localStorage.setItem('formapp_theme', themeName);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+// ==========================================
+// 1. 🔐 認証（ログイン・状態監視）の連動
+// ==========================================
+async function handleSignUp() {
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+    if (!email || !password) return alert("メールアドレスとパスワードを入力してください");
+
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) alert("登録エラー: " + error.message);
+    else alert("登録成功！メールの確認リンクをクリックして認証を完了させてください。");
+}
+
+async function handleSignIn() {
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+    if (!email || !password) return alert("メールアドレスとパスワードを入力してください");
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) alert("ログインエラー: " + error.message);
+    else { alert("ログインに成功しました！"); location.reload(); }
+}
+
+async function handleSignOut() {
+    await supabase.auth.signOut();
+    location.reload();
+}
+
+supabase.auth.onAuthStateChange((event, session) => {
+    const loggedOutArea = document.getElementById('auth-logged-out');
+    const loggedInArea = document.getElementById('auth-logged-in');
+    const emailDisplay = document.getElementById('user-display-email');
+    const myFormsSection = document.getElementById('my-forms-section');
+
+    if (session) {
+        if(loggedOutArea) loggedOutArea.style.display = 'none';
+        if(loggedInArea) loggedInArea.style.display = 'flex';
+        if(emailDisplay) emailDisplay.innerText = session.user.email;
+        if(myFormsSection) myFormsSection.style.display = 'flex';
+        
+        loadMyForms(session.user.id);
+    } else {
+        if(loggedOutArea) loggedOutArea.style.display = 'block';
+        if(loggedInArea) loggedInArea.style.display = 'none';
+        if(myFormsSection) myFormsSection.style.display = 'none';
+    }
+});
+
+// ページ読み込み時の初期化＆回答者モード判定
+window.addEventListener('DOMContentLoaded', async () => {
   const savedMode = localStorage.getItem('formapp_mode');
   const savedTheme = localStorage.getItem('formapp_theme') || 'blue';
   if(savedMode === 'light'){
@@ -479,12 +541,76 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   changeColorTheme(savedTheme);
   document.getElementById('themeSelect').value = savedTheme;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const mode = urlParams.get('mode');
+  const formId = urlParams.get('id');
+  
+  if (mode === 'answer' && formId) {
+    console.log("データベースからクイズを読み込み中... ID:", formId);
+    const { data, error } = await supabase
+      .from('forms')
+      .select('*')
+      .eq('id', formId)
+      .single();
+
+    if (error || !data) {
+      console.error("データ読み込みエラー:", error);
+      alert("クイズの読み込みに失敗しました。URLが正しいか確認してください。");
+      goHome();
+      return;
+    }
+
+    quizTitle = data.title || "無題";
+    quizDesc = data.desc || "";
+    quizLogo = data.logo || "";
+    quizGenre = data.genre || "";
+    quizCategory = data.category || "一般";
+    quizTag = data.tag || "";
+    quizDeadline = data.deadline || "";
+    appMode = data.mode || "quiz";
+    randomCount = data.random_count || 0;
+    shuffleMode = !!data.shuffle;
+    speedBonus = !!data.speed;
+    preventOnce = !!data.once;
+    timeLimit = data.tm || 0;
+
+    if (quizDeadline && new Date() > new Date(quizDeadline)) {
+      document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⏰ 受付終了しました</h2><p>このフォームは有効期限が過ぎたため、受付を終了しました。</p></div>`;
+      return;
+    }
+
+    if (preventOnce) {
+      const onceKey = 'formapp_submitted_' + formId;
+      if (localStorage.getItem(onceKey)) {
+        document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⚠️ 回答済みです</h2><p>このフォームは「重複防止」が有効に設定されているため、すでに回答済みです。</p></div>`;
+        return;
+      }
+    }
+
+    document.getElementById('pageTitle').innerText = `FormApp - ${quizTitle}`;
+    document.getElementById('headerLogoText').innerText = `FormApp - ${quizTitle}`;
+    
+    currentFileId = formId;
+    questionsData = data.quiz_data || [];
+    activePlayData = JSON.parse(JSON.stringify(questionsData));
+    if(randomCount > 0 && randomCount < activePlayData.length) activePlayData = activePlayData.slice(0, randomCount);
+    
+    isSharedMode = true;
+    isRetryMode = false;
+    userFormAnswers = [];
+    userPlayHistory = [];
+    
+    beginQuizPlay();
+    return;
+  }
+  
+  switchPage('home');
 });
 
 function switchPage(pageName){
   document.querySelectorAll('.home-section, .page-section').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
-
   const logoElem = document.getElementById('headerLogoText');
 
   if(pageName === 'home') {
@@ -493,7 +619,9 @@ function switchPage(pageName){
     logoElem.innerText = "FormApp - ホーム";
     const tabH = document.getElementById('tabHome');
     if(tabH) tabH.classList.add('active');
-    renderFileList();
+    supabase.auth.getSession().then(({data: {session}}) => {
+      if(session) loadMyForms(session.user.id);
+    });
   } else if(pageName === 'edit') {
     document.getElementById('pageEdit').classList.add('active');
     updatePageTitle();
@@ -518,14 +646,13 @@ function switchPage(pageName){
 function switchFormTab(tabName){
   document.querySelectorAll('.form-tab-item').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-
   if(tabName === 'questions'){
     document.getElementById('ftabQuestions').classList.add('active');
     document.getElementById('tabContentQuestions').classList.add('active');
   } else if(tabName === 'answers'){
     document.getElementById('ftabAnswers').classList.add('active');
     document.getElementById('tabContentAnswers').classList.add('active');
-    renderAnswerStats();
+    if(currentFileId) loadMyFormResponses(currentFileId);
   } else if(tabName === 'settings'){
     document.getElementById('ftabSettings').classList.add('active');
     document.getElementById('tabContentSettings').classList.add('active');
@@ -539,21 +666,18 @@ function goHome(){
   if(history.pushState) history.pushState(null, '', window.location.pathname);
 }
 
-function getAllFiles(){
-  try{
-    const saved = localStorage.getItem('formapp_files_v7');
-    return saved ? JSON.parse(saved) : [];
-  }catch(e){ return []; }
-}
+// フォーム一覧のロードと描画
+async function loadMyForms(userId){
+  const { data: files, error } = await supabase
+    .from('forms')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
 
-function saveAllFiles(files){
-  localStorage.setItem('formapp_files_v7', JSON.stringify(files));
-}
+  if(error){ console.error("一覧取得エラー:", error); return; }
 
-function renderFileList(){
-  const files = getAllFiles();
   const categories = ["すべて"];
-  files.forEach(f => {
+  (files || []).forEach(f => {
     const cat = f.category && f.category.trim() ? f.category.trim() : "未分類";
     if(!categories.includes(cat)) categories.push(cat);
   });
@@ -564,7 +688,7 @@ function renderFileList(){
     const chip = document.createElement('button');
     chip.className = 'cat-filter-chip ' + (activeCategoryFilter === cat ? 'active' : '');
     chip.innerText = truncateText(cat, 5);
-    chip.onclick = () => { activeCategoryFilter = cat; renderFileList(); };
+    chip.onclick = () => { activeCategoryFilter = cat; loadMyForms(userId); };
     catBar.appendChild(chip);
   });
   
@@ -577,95 +701,71 @@ function renderFileList(){
   newCard.onclick = () => createNewQuiz();
   grid.appendChild(newCard);
   
-  files.forEach((file, idx) => {
+  (files || []).forEach((file) => {
     const fileCat = file.category && file.category.trim() ? file.category.trim() : "未分類";
     if(activeCategoryFilter !== "すべて" && activeCategoryFilter !== fileCat) return;
     
     const card = document.createElement('div');
     card.className = 'file-card';
-    card.draggable = true;
-    card.dataset.index = idx;
-    
     card.innerHTML = `
       <div>
         <div class="file-card-title">${file.title || '無題'}</div>
         <div class="file-card-meta">
           <span>タグ: ${truncateText(file.tag || '一般', 8)}</span>
-          <span>${file.mode === 'form' ? 'フォーム' : 'クイズ'} (${file.questions ? file.questions.length : 0}問)</span>
+          <span>${file.mode === 'form' ? 'フォーム' : 'クイズ'} (${file.quiz_data ? file.quiz_data.length : 0}問)</span>
         </div>
       </div>
-      <div class="file-card-actions" onclick="event.stopPropagation()">
-        <button class="file-action-btn" onclick="openFile('${file.id}')">編集</button>
-        <button class="file-action-btn s-btn" onclick="playFile('${file.id}')">開始</button>
-        <button class="file-action-btn del" onclick="deleteFile('${file.id}')">削除</button>
-      </div>
+      <div class="file-action-btn s-btn" onclick="openFile('${file.id}')">編集・共有</div>
+      <button class="file-action-btn del" onclick="deleteFile('${file.id}')" style="margin-top:6px;">削除</button>
     `;
     card.onclick = () => openFile(file.id);
-    
-    card.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', idx);
-      card.classList.add('dragging');
-    });
-    card.addEventListener('dragend', () => card.classList.remove('dragging'));
-    card.addEventListener('dragover', (e) => e.preventDefault());
-    card.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
-      const toIdx = idx;
-      if(fromIdx !== toIdx){
-        let allFiles = getAllFiles();
-        const moved = allFiles.splice(fromIdx, 1)[0];
-        allFiles.splice(toIdx, 0, moved);
-        saveAllFiles(allFiles);
-        renderFileList();
-      }
-    });
-
-    card.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      let allFiles = getAllFiles();
-      let targetPos = prompt(`何番目に移動しますか？ (1 〜 ${allFiles.length})`, idx + 1);
-      if(targetPos !== null){
-        let newIdx = parseInt(targetPos) - 1;
-        if(!isNaN(newIdx) && newIdx >= 0 && newIdx < allFiles.length){
-          const moved = allFiles.splice(idx, 1)[0];
-          allFiles.splice(newIdx, 0, moved);
-          saveAllFiles(allFiles);
-          renderFileList();
-        }
-      }
-    });
-
     grid.appendChild(card);
   });
 }
 
-function createNewQuiz(){
-  currentFileId = 'form_' + Date.now();
-  quizTitle = ""; quizDesc = ""; quizLogo = ""; quizGenre = ""; quizCategory = "一般"; quizTag = ""; quizDeadline = ""; appMode = "form";
-  document.getElementById('qTitle').value = quizTitle;
+async function createNewQuiz(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session){ alert('クイズを作成するにはログインが必要です。'); return; }
+  
+  quizTitle = "無題のフォーム"; quizDesc = ""; quizLogo = ""; quizGenre = ""; quizCategory = "一般"; quizTag = ""; quizDeadline = ""; appMode = "form";
+  questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
+  
+  const { data, error } = await supabase
+    .from('forms')
+    .insert([{
+      user_id: session.user.id,
+      title: quizTitle,
+      desc: quizDesc,
+      logo: quizLogo,
+      genre: quizGenre,
+      category: quizCategory,
+      tag: quizTag,
+      mode: appMode,
+      quiz_data: questionsData
+    }])
+    .select()
+    .single();
+
+  if(error){ alert('作成エラー: ' + error.message); return; }
+  currentFileId = data.id;
+  document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizLogo').value = quizLogo;
   document.getElementById('quizGenre').value = quizGenre;
   document.getElementById('quizCategory').value = quizCategory;
   document.getElementById('quizTag').value = quizTag;
-  document.getElementById('quizDeadline').value = quizDeadline;
+  document.getElementById('quizDeadline').value = "";
   document.getElementById('selAppMode').value = appMode;
-  document.getElementById('numRandomCount').value = 0;
-  document.getElementById('chkShuffle').checked = false;
-  document.getElementById('chkSpeed').checked = false;
-  document.getElementById('chkOnce').checked = false;
-  document.getElementById('selTimer').value = "0";
   document.getElementById('shArea').style.display = 'none';
   updateLogoPreview();
-  questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
   renderQuestionsEditor();
-  saveToLocalStorage();
   switchPage('edit');
 }
 
-function createFromTemplate(type){
-  currentFileId = 'form_' + Date.now();
+async function createFromTemplate(type){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session){ alert('テンプレートから作成するにはログインが必要です。'); return; }
+  
   quizLogo = ""; quizDeadline = "";
   if(type === 'event'){
     quizTitle = "イベント出欠確認"; quizDesc = "次回のイベントの参加状況をお知らせください。"; quizGenre = "イベント"; quizCategory = "行事"; quizTag = "出欠, 予定";
@@ -694,89 +794,107 @@ function createFromTemplate(type){
   }
   
   appMode = "form";
-  document.getElementById('qTitle').value = quizTitle;
+  const { data, error } = await supabase
+    .from('forms')
+    .insert([{
+      user_id: session.user.id,
+      title: quizTitle,
+      desc: quizDesc,
+      logo: quizLogo,
+      genre: quizGenre,
+      category: quizCategory,
+      tag: quizTag,
+      mode: appMode,
+      quiz_data: questionsData
+    }])
+    .select()
+    .single();
+
+  if(error){ alert('作成エラー: ' + error.message); return; }
+  currentFileId = data.id;
+  document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizLogo').value = quizLogo;
   document.getElementById('quizGenre').value = quizGenre;
   document.getElementById('quizCategory').value = quizCategory;
   document.getElementById('quizTag').value = quizTag;
-  document.getElementById('quizDeadline').value = quizDeadline;
   document.getElementById('selAppMode').value = appMode;
-  document.getElementById('numRandomCount').value = 0;
-  document.getElementById('chkShuffle').checked = false;
-  document.getElementById('chkSpeed').checked = false;
-  document.getElementById('chkOnce').checked = false;
-  document.getElementById('selTimer').value = "0";
   document.getElementById('shArea').style.display = 'none';
   updateLogoPreview();
   renderQuestionsEditor();
-  saveToLocalStorage();
   switchPage('edit');
 }
 
-function openFile(id){
-  const files = getAllFiles();
-  const file = files.find(f => f.id === id);
-  if(!file) return;
-  currentFileId = file.id;
-  quizTitle = file.title || "";
-  quizDesc = file.desc || "";
-  quizLogo = file.logo || "";
-  quizGenre = file.genre || "";
-  quizCategory = file.category || "一般";
-  quizTag = file.tag || "";
-  quizDeadline = file.deadline || "";
-  appMode = file.mode || "quiz";
-  document.getElementById('qTitle').value = quizTitle;
+async function openFile(id){
+  const { data, error } = await supabase.from('forms').select('*').eq('id', id).single();
+  if(error || !data) return;
+  currentFileId = data.id;
+  quizTitle = data.title || "";
+  quizDesc = data.desc || "";
+  quizLogo = data.logo || "";
+  quizGenre = data.genre || "";
+  quizCategory = data.category || "一般";
+  quizTag = data.tag || "";
+  quizDeadline = data.deadline || "";
+  appMode = data.mode || "quiz";
+  document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizLogo').value = quizLogo;
   document.getElementById('quizGenre').value = quizGenre;
   document.getElementById('quizCategory').value = quizCategory;
   document.getElementById('quizTag').value = quizTag;
-  document.getElementById('quizDeadline').value = quizDeadline;
+  document.getElementById('quizDeadline').value = quizDeadline ? quizDeadline.slice(0, 16) : "";
   document.getElementById('selAppMode').value = appMode;
-  document.getElementById('numRandomCount').value = file.randomCount || 0;
-  document.getElementById('chkShuffle').checked = !!file.shuffle;
-  document.getElementById('chkSpeed').checked = !!file.speed;
-  document.getElementById('chkOnce').checked = !!file.once;
-  document.getElementById('selTimer').value = file.tm || 0;
+  document.getElementById('numRandomCount').value = data.random_count || 0;
+  document.getElementById('chkShuffle').checked = !!data.shuffle;
+  document.getElementById('chkSpeed').checked = !!data.speed;
+  document.getElementById('chkOnce').checked = !!data.once;
+  document.getElementById('selTimer').value = data.tm || 0;
   document.getElementById('shArea').style.display = 'none';
   updateLogoPreview();
-  questionsData = file.questions || [];
-  questionsData.forEach(q => {
-    if(!q.optJumps && q.opts) q.optJumps = q.opts.map(() => "");
-  });
+  questionsData = data.quiz_data || [];
+  questionsData.forEach(q => { if(!q.optJumps && q.opts) q.optJumps = q.opts.map(() => ""); });
   if(questionsData.length === 0) questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
   renderQuestionsEditor();
   switchPage('edit');
 }
 
-function deleteFile(id){
+async function deleteFile(id){
   if(!confirm('こちらのファイルを削除してもよろしいでしょうか？')) return;
-  saveAllFiles(getAllFiles().filter(f => f.id !== id));
-  renderFileList();
+  await supabase.from('forms').delete().eq('id', id);
+  supabase.auth.getSession().then(({data: {session}}) => { if(session) loadMyForms(session.user.id); });
 }
 
-function saveToLocalStorage(){
-  if(!currentFileId) currentFileId = 'form_' + Date.now();
-  quizTitle = document.getElementById('qTitle').value.trim() || "無題";
+// 自動オートセーブ（クラウドへ即時保存）
+async function autoSaveCloud(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!currentFileId || !session) return;
+  quizTitle = document.getElementById('quiz-title-input').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
   quizLogo = document.getElementById('quizLogo').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim();
   quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
   quizTag = document.getElementById('quizTag').value.trim();
-  quizDeadline = document.getElementById('quizDeadline').value;
+  quizDeadline = document.getElementById('quizDeadline').value || null;
   appMode = document.getElementById('selAppMode').value;
   collectQuestionsFromDOM();
-  let files = getAllFiles();
-  const idx = files.findIndex(f => f.id === currentFileId);
-  const fileData = { 
-    id: currentFileId, title: quizTitle, desc: quizDesc, logo: quizLogo, genre: quizGenre, category: quizCategory, tag: quizTag, deadline: quizDeadline, mode: appMode, 
-    randomCount: parseInt(document.getElementById('numRandomCount').value) || 0,
-    shuffle: document.getElementById('chkShuffle').checked, speed: document.getElementById('chkSpeed').checked, once: document.getElementById('chkOnce').checked, tm: parseInt(document.getElementById('selTimer').value), questions: questionsData 
-  };
-  if(idx >= 0) files[idx] = fileData; else files.push(fileData);
-  saveAllFiles(files);
+
+  await supabase.from('forms').update({
+    title: quizTitle,
+    desc: quizDesc,
+    logo: quizLogo,
+    genre: quizGenre,
+    category: quizCategory,
+    tag: quizTag,
+    deadline: quizDeadline,
+    mode: appMode,
+    random_count: parseInt(document.getElementById('numRandomCount').value) || 0,
+    shuffle: document.getElementById('chkShuffle').checked,
+    speed: document.getElementById('chkSpeed').checked,
+    once: document.getElementById('chkOnce').checked,
+    tm: parseInt(document.getElementById('selTimer').value),
+    quiz_data: questionsData
+  }).eq('id', currentFileId);
 }
 
 function collectQuestionsFromDOM(){
@@ -851,8 +969,8 @@ function renderQuestionsEditor(){
         optionsHtml += `
           <div class="option-edit-row">
             <span class="opt-badge">${badge}</span>
-            <input type="text" class="opt-input option-value-input" value="${val}" placeholder="選択肢 ${badge}" oninput="saveToLocalStorage()">
-            <select class="cond-jump-select" onchange="saveToLocalStorage()">${jumpOptions}</select>
+            <input type="text" class="opt-input option-value-input" value="${val}" placeholder="選択肢 ${badge}" oninput="autoSaveCloud()">
+            <select class="cond-jump-select" onchange="autoSaveCloud()">${jumpOptions}</select>
             ${optCount > 2 ? `<button type="button" class="del-opt-btn" onclick="removeOption(${index}, ${i})">×</button>` : ''}
           </div>`;
       }
@@ -865,7 +983,7 @@ function renderQuestionsEditor(){
         ansOptions += `<option value="${badge}" ${qObj.ans === badge ? 'selected' : ''}>${badge}</option>`;
       }
     } else if(qObj.type === 'multi'){
-      ansOptions = `<input type="text" class="ans-select" value="${qObj.ans || ''}" placeholder="例: A,B" oninput="saveToLocalStorage()" style="padding:6px 10px; width:120px;">`;
+      ansOptions = `<input type="text" class="ans-select" value="${qObj.ans || ''}" placeholder="例: A,B" oninput="autoSaveCloud()" style="padding:6px 10px; width:120px;">`;
     } else if(qObj.type === 'text' || qObj.type === 'date' || qObj.type === 'number') {
       ansOptions = `<option value="${qObj.type}" selected>記入式</option>`;
     }
@@ -876,19 +994,19 @@ function renderQuestionsEditor(){
           <span style="font-weight:800; color:var(--p);">質問 ${index + 1} ${isInfoText ? '(テキスト説明)' : ''}</span>
           ${!isInfoText && appMode !== 'form' ? `
             <div style="display:flex; gap:8px; align-items:center;">
-              <select class="diff-select" onchange="saveToLocalStorage()" style="padding:4px 8px; border-radius:6px; background:var(--input-bg); color:var(--t); border:1px solid var(--border); font-size:0.85rem;">
+              <select class="diff-select" onchange="autoSaveCloud()" style="padding:4px 8px; border-radius:6px; background:var(--input-bg); color:var(--t); border:1px solid var(--border); font-size:0.85rem;">
                 <option value="★☆☆" ${qObj.diff==='★☆☆'?'selected':''}>★☆☆ (易)</option>
                 <option value="★★☆" ${qObj.diff==='★★☆'?'selected':''}>★★☆ (中)</option>
                 <option value="★★★" ${qObj.diff==='★★★'?'selected':''}>★★★ (難)</option>
               </select>
-              <input type="number" class="score-input" value="${qObj.score || 10}" min="1" max="100" placeholder="配点" oninput="saveToLocalStorage()" style="width:55px; padding:4px 6px; border-radius:6px; background:var(--input-bg); color:var(--t); border:1px solid var(--border); font-size:0.85rem;">点
+              <input type="number" class="score-input" value="${qObj.score || 10}" min="1" max="100" placeholder="配点" oninput="autoSaveCloud()" style="width:55px; padding:4px 6px; border-radius:6px; background:var(--input-bg); color:var(--t); border:1px solid var(--border); font-size:0.85rem;">点
             </div>
           ` : ''}
         </div>
         <div class="q-card-header-bottom">
           <div></div>
           <div class="card-actions">
-            <button type="button" class="card-action-btn" onclick="moveQuestionPrompt(${index})" title="移動先を指定">位置変更</button>
+            <button type="button" class="card-action-btn" onclick="moveQuestionPrompt(${index})">位置変更</button>
             ${index > 0 ? `<button type="button" class="card-action-btn" onclick="moveQuestion(${index}, -1)">↑</button>` : ''}
             ${index < questionsData.length - 1 ? `<button type="button" class="card-action-btn" onclick="moveQuestion(${index}, 1)">↓</button>` : ''}
             <button type="button" class="card-action-btn" onclick="duplicateQuestion(${index})">複製</button>
@@ -896,16 +1014,16 @@ function renderQuestionsEditor(){
           </div>
         </div>
       </div>
-      <input type="text" class="q-input" value="${qObj.q || ''}" placeholder="${isInfoText ? '説明文や見出しを入力' : '質問文を入力'}" oninput="saveToLocalStorage()">
+      <input type="text" class="q-input" value="${qObj.q || ''}" placeholder="${isInfoText ? '説明文や見出しを入力' : '質問文を入力'}" oninput="autoSaveCloud()">
       
       <div style="margin: 10px 0; display:flex; flex-direction:column; gap:10px;">
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URLまたはファイル選択/ペースト" oninput="saveToLocalStorage()" style="font-size:0.9rem; flex:1; min-width:200px;">
+          <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URLまたはファイル選択" oninput="autoSaveCloud()" style="font-size:0.9rem; flex:1; min-width:200px;">
           <input type="file" id="imgFile_${index}" style="display:none" accept="image/*" onchange="handleMediaFileUpload(event, ${index}, 'image')">
           <button type="button" class="file-action-btn s-btn" onclick="document.getElementById('imgFile_${index}').click()" style="padding:10px 12px;">📁 画像ファイル</button>
         </div>
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <input type="text" class="vid-input opt-input" value="${qObj.videoUrl || ''}" placeholder="YouTube動画URLまたは動画ファイル" oninput="saveToLocalStorage()" style="font-size:0.9rem; flex:1; min-width:200px;">
+          <input type="text" class="vid-input opt-input" value="${qObj.videoUrl || ''}" placeholder="YouTube動画URLまたはファイル" oninput="autoSaveCloud()" style="font-size:0.9rem; flex:1; min-width:200px;">
           <input type="file" id="vidFile_${index}" style="display:none" accept="video/*" onchange="handleMediaFileUpload(event, ${index}, 'video')">
           <button type="button" class="file-action-btn" onclick="document.getElementById('vidFile_${index}').click()" style="padding:10px 12px; background:#475569; color:#fff;">📁 動画ファイル</button>
         </div>
@@ -913,16 +1031,11 @@ function renderQuestionsEditor(){
 
       ${!isInfoText ? `
         <div class="options-edit-list">
-          ${(qObj.type === 'text' || qObj.type === 'date' || qObj.type === 'number') ? (appMode === 'form' ? '' : `<input type="text" class="opt-input text-answer-input" value="${qObj.ans || ''}" placeholder="正解となる文字列（任意）" oninput="saveToLocalStorage()">`) : optionsHtml}
+          ${(qObj.type === 'text' || qObj.type === 'date' || qObj.type === 'number') ? (appMode === 'form' ? '' : `<input type="text" class="opt-input text-answer-input" value="${qObj.ans || ''}" placeholder="正解となる文字列" oninput="autoSaveCloud()">`) : optionsHtml}
         </div>
         ${qObj.type !== 'text' && qObj.type !== 'date' && qObj.type !== 'number' && optCount < 10 ? `<button type="button" class="file-action-btn" style="width:auto; margin-bottom:12px;" onclick="addOptionToQuestion(${index})">＋ 選択肢を追加</button>` : ''}
-        <input type="text" class="hint-input opt-input" value="${qObj.hint || ''}" placeholder="💡 ヒント文（任意）" oninput="saveToLocalStorage()" style="font-size:0.9rem; margin-bottom:12px; border-color:var(--p);">
+        <input type="text" class="hint-input opt-input" value="${qObj.hint || ''}" placeholder="💡 ヒント文（任意）" oninput="autoSaveCloud()" style="font-size:0.9rem; margin-bottom:12px; border-color:var(--p);">
         
-        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px; background:var(--input-bg); padding:10px; border-radius:10px; border:1px solid var(--border);">
-          ${qObj.type === 'text' ? `<label style="font-size:0.85rem; color:#94a3b8; font-weight:600;">文字数上限: <input type="number" class="maxlen-input opt-input" value="${qObj.maxLen || 0}" min="0" placeholder="0で無制限" oninput="saveToLocalStorage()" style="width:80px; padding:4px; font-size:0.85rem; display:inline-block;"></label>` : ''}
-          <span style="font-size:0.85rem; color:#94a3b8;">💡 各選択肢の右側のプルダウンからジャンプ先を指定できます。</span>
-        </div>
-
         <div class="q-card-footer">
           <div class="ans-select-group">
             <span>形式:</span>
@@ -934,38 +1047,16 @@ function renderQuestionsEditor(){
               <option value="number" ${qObj.type==='number'?'selected':''}>数値</option>
             </select>
             <span style="${appMode === 'form' ? 'display:none;' : ''}">正解:</span>
-            <select class="ans-select" onchange="saveToLocalStorage()" style="${appMode === 'form' || qObj.type==='multi' || qObj.type==='text' || qObj.type==='date' || qObj.type==='number' ? 'display:none;' : ''}">${ansOptions}</select>
+            <select class="ans-select" onchange="autoSaveCloud()" style="${appMode === 'form' || qObj.type==='multi' || qObj.type==='text' || qObj.type==='date' || qObj.type==='number' ? 'display:none;' : ''}">${ansOptions}</select>
             ${qObj.type==='multi' && appMode !== 'form'? ansOptions : ''}
           </div>
-          <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; font-weight:600; cursor:pointer;"><input type="checkbox" class="req-checkbox" ${qObj.required ? 'checked' : ''} onchange="saveToLocalStorage()"> 必須</label>
+          <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; font-weight:600; cursor:pointer;"><input type="checkbox" class="req-checkbox" ${qObj.required ? 'checked' : ''} onchange="autoSaveCloud()"> 必須</label>
         </div>
-        <input type="text" class="exp-input" value="${qObj.exp || ''}" placeholder="解説文（任意）" oninput="saveToLocalStorage()" style="${appMode === 'form' ? 'display:none;' : ''}">
+        <input type="text" class="exp-input" value="${qObj.exp || ''}" placeholder="解説文（任意）" oninput="autoSaveCloud()" style="${appMode === 'form' ? 'display:none;' : ''}">
       ` : ''}
     `;
 
-    card.addEventListener('paste', (e) => {
-      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-      for(let item of items){
-        if(item.type.indexOf('image') === 0){
-          e.preventDefault();
-          const blob = item.getAsFile();
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            qObj.imageUrl = event.target.result;
-            renderQuestionsEditor();
-            saveToLocalStorage();
-            alert('クリップボードから画像を貼り付けました！');
-          };
-          reader.readAsDataURL(blob);
-          break;
-        }
-      }
-    });
-
-    card.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', index);
-      card.classList.add('dragging');
-    });
+    card.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/plain', index); card.classList.add('dragging'); });
     card.addEventListener('dragend', () => card.classList.remove('dragging'));
     card.addEventListener('dragover', (e) => e.preventDefault());
     card.addEventListener('drop', (e) => {
@@ -977,22 +1068,7 @@ function renderQuestionsEditor(){
         const moved = questionsData.splice(fromIdx, 1)[0];
         questionsData.splice(toIdx, 0, moved);
         renderQuestionsEditor();
-        saveToLocalStorage();
-      }
-    });
-
-    card.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      collectQuestionsFromDOM();
-      let targetPos = prompt(`何番目に移動しますか？ (1 〜 ${questionsData.length})`, index + 1);
-      if(targetPos !== null){
-        let newIdx = parseInt(targetPos) - 1;
-        if(!isNaN(newIdx) && newIdx >= 0 && newIdx < questionsData.length){
-          const moved = questionsData.splice(index, 1)[0];
-          questionsData.splice(newIdx, 0, moved);
-          renderQuestionsEditor();
-          saveToLocalStorage();
-        }
+        autoSaveCloud();
       }
     });
 
@@ -1009,18 +1085,18 @@ function handleMediaFileUpload(e, index, type){
     if(type === 'image') questionsData[index].imageUrl = event.target.result;
     else questionsData[index].videoUrl = event.target.result;
     renderQuestionsEditor();
-    saveToLocalStorage();
-    alert(type === 'image' ? '画像ファイルを設定しました！' : '動画ファイルを設定しました！');
+    autoSaveCloud();
+    alert('メディアファイルを設定しました！');
   };
   reader.readAsDataURL(file);
 }
 
-function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); saveToLocalStorage(); }
-function addTextSection(){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション説明】", type: "info", opts: [], optJumps: [], ans: "", exp: "", hint: "", diff: "★☆☆", score: 0, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); saveToLocalStorage(); }
-function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = prompt(type==='image'?'画像URLを入力してください:':'YouTube動画URLを入力してください:'); if(u){ if(type==='image') questionsData[questionsData.length-1].imageUrl=u; else questionsData[questionsData.length-1].videoUrl=u; renderQuestionsEditor(); saveToLocalStorage(); } }
-function deleteQuestion(index){ collectQuestionsFromDOM(); if(questionsData.length<=1){alert('最低1問必要です');return;} questionsData.splice(index,1); renderQuestionsEditor(); saveToLocalStorage(); }
-function duplicateQuestion(index){ collectQuestionsFromDOM(); questionsData.splice(index+1, 0, JSON.parse(JSON.stringify(questionsData[index]))); renderQuestionsEditor(); saveToLocalStorage(); }
-function moveQuestion(index, dir){ collectQuestionsFromDOM(); const target = index + dir; if(target<0||target>=questionsData.length)return; const tmp = questionsData[index]; questionsData[index] = questionsData[target]; questionsData[target] = tmp; renderQuestionsEditor(); saveToLocalStorage(); }
+function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); autoSaveCloud(); }
+function addTextSection(){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション説明】", type: "info", opts: [], optJumps: [], ans: "", exp: "", hint: "", diff: "★☆☆", score: 0, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); autoSaveCloud(); }
+function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = prompt(type==='image'?'画像URLを入力:':'YouTube動画URLを入力:'); if(u){ if(type==='image') questionsData[questionsData.length-1].imageUrl=u; else questionsData[questionsData.length-1].videoUrl=u; renderQuestionsEditor(); autoSaveCloud(); } }
+function deleteQuestion(index){ collectQuestionsFromDOM(); if(questionsData.length<=1){alert('最低1問必要です');return;} questionsData.splice(index,1); renderQuestionsEditor(); autoSaveCloud(); }
+function duplicateQuestion(index){ collectQuestionsFromDOM(); questionsData.splice(index+1, 0, JSON.parse(JSON.stringify(questionsData[index]))); renderQuestionsEditor(); autoSaveCloud(); }
+function moveQuestion(index, dir){ collectQuestionsFromDOM(); const target = index + dir; if(target<0||target>=questionsData.length)return; const tmp = questionsData[index]; questionsData[index] = questionsData[target]; questionsData[target] = tmp; renderQuestionsEditor(); autoSaveCloud(); }
 function moveQuestionPrompt(index){
   collectQuestionsFromDOM();
   let targetPos = prompt(`何番目に移動しますか？ (1 〜 ${questionsData.length})`, index + 1);
@@ -1030,18 +1106,94 @@ function moveQuestionPrompt(index){
       const moved = questionsData.splice(index, 1)[0];
       questionsData.splice(newIdx, 0, moved);
       renderQuestionsEditor();
-      saveToLocalStorage();
+      autoSaveCloud();
     }
   }
 }
-function addOptionToQuestion(index){ collectQuestionsFromDOM(); if(questionsData[index].opts.length<10){ questionsData[index].opts.push(""); questionsData[index].optJumps.push(""); } renderQuestionsEditor(); saveToLocalStorage(); }
-function removeOption(qIdx, optIdx){ collectQuestionsFromDOM(); if(questionsData[qIdx].opts.length<=2){alert('最低2つ必要です');return;} questionsData[qIdx].opts.splice(optIdx,1); questionsData[qIdx].optJumps.splice(optIdx,1); renderQuestionsEditor(); saveToLocalStorage(); }
-function changeQuestionType(index, newType){ collectQuestionsFromDOM(); questionsData[index].type = newType; questionsData[index].ans = (newType==='text'||newType==='date'||newType==='number')?'': 'A'; renderQuestionsEditor(); saveToLocalStorage(); }
+function addOptionToQuestion(index){ collectQuestionsFromDOM(); if(questionsData[index].opts.length<10){ questionsData[index].opts.push(""); questionsData[index].optJumps.push(""); } renderQuestionsEditor(); autoSaveCloud(); }
+function removeOption(qIdx, optIdx){ collectQuestionsFromDOM(); if(questionsData[qIdx].opts.length<=2){alert('最低2つ必要です');return;} questionsData[qIdx].opts.splice(optIdx,1); questionsData[qIdx].optJumps.splice(optIdx,1); renderQuestionsEditor(); autoSaveCloud(); }
+function changeQuestionType(index, newType){ collectQuestionsFromDOM(); questionsData[index].type = newType; questionsData[index].ans = (newType==='text'||newType==='date'||newType==='number')?'': 'A'; renderQuestionsEditor(); autoSaveCloud(); }
+
+// ==========================================
+// 2. 💾 クイズ作成・保存（🔗 共有URLを発行 ボタンに連動）
+// ==========================================
+async function saveAndGenerateShareUrl() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return alert("クイズを保存するにはログインが必要です！");
+
+    const currentQuizTitle = document.getElementById('quiz-title-input').value.trim() || "無題のクイズ";
+    collectQuestionsFromDOM();
+
+    await autoSaveCloud();
+
+    if (!currentFileId) {
+        alert("クイズの作成データが取得できませんでした。");
+        return;
+    }
+
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?mode=answer&id=${currentFileId}`;
+    
+    const shInput = document.getElementById('shUrl');
+    shInput.value = "短縮URLを生成中...";
+    document.getElementById('shArea').style.display = 'block';
+    
+    const shortUrl = await shortenURL(shareUrl);
+    shInput.value = shortUrl;
+    alert("クラウドに保存され、共有URLが発行されました！");
+}
+
+// ==========================================
+// 3. 📥 回答の送信（📥 回答を送信・登録する ボタンに連動）
+// ==========================================
+async function submitUserResponse() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const formId = urlParams.get('id');
+    if (!formId) return alert("有効なクイズIDが見つかりません。");
+
+    const respondentName = document.getElementById('respondent-name-input').value.trim() || "名無しの回答者";
+    const finalScore = appMode === 'form' ? "フォーム回答" : (`${totalScore}点 (${Math.round(sc/activePlayData.length*100)}%)`);
+    const detailedAnswers = appMode === 'form' ? userFormAnswers : userPlayHistory;
+
+    const { error } = await supabase
+        .from('responses')
+        .insert([{ 
+            form_id: formId, 
+            username: respondentName, 
+            score: finalScore, 
+            answer_data: detailedAnswers 
+        }]);
+
+    if (error) {
+        alert("回答の送信に失敗しました: " + error.message);
+    } else {
+        if(preventOnce) {
+            localStorage.setItem('formapp_submitted_' + formId, 'true');
+        }
+        alert("回答が正常に送信され、クラウドに記録されました！");
+        goHome();
+    }
+}
+
+// 📊 回答集計データのロード
+async function loadMyFormResponses(formId) {
+    const { data: responseList, error } = await supabase
+        .from('responses')
+        .select('*')
+        .eq('form_id', formId);
+
+    if (error) {
+        console.error("集計データ取得エラー:", error);
+        document.getElementById('answerStatsContainer').innerHTML = `<p style="color:#ef4444;">データの取得に失敗しました。</p>`;
+        return;
+    }
+
+    cloudResponseList = responseList || [];
+    renderAnswerStats();
+}
 
 function generateConicPieChart(items, totalVotes) {
-  if (totalVotes === 0) {
-    return `<div style="width:120px; height:120px; border-radius:50%; background:var(--border); margin:10px auto; display:flex; align-items:center; justify-content:center; font-size:0.8rem; color:#94a3b8;">投票なし</div>`;
-  }
+  if (totalVotes === 0) return `<div style="width:120px; height:120px; border-radius:50%; background:var(--border); margin:10px auto; display:flex; align-items:center; justify-content:center; font-size:0.8rem; color:#94a3b8;">投票なし</div>`;
   const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#3b82f6', '#8b5cf6', '#14b8a6', '#f97316', '#64748b'];
   let cumulativePercent = 0, gradientStops = [];
   items.forEach((item, idx) => {
@@ -1058,20 +1210,13 @@ function generateConicPieChart(items, totalVotes) {
     legendHtml += `<div style="display:flex; align-items:center; gap:5px; font-size:0.85rem;"><span style="width:12px; height:12px; background:${color}; border-radius:3px; display:inline-block;"></span><span><b>${item.badge}:</b> ${item.text} (${item.cnt}票 / ${percent}%)</span></div>`;
   });
   legendHtml += `</div>`;
-  return `
-    <div style="text-align:center; margin:15px 0;">
-      <div style="width:130px; height:130px; border-radius:50%; ${conicStyle} margin:0 auto 10px auto; box-shadow:0 4px 12px rgba(0,0,0,0.2);"></div>
-      ${legendHtml}
-    </div>
-  `;
+  return `<div style="text-align:center; margin:15px 0;"><div style="width:130px; height:130px; border-radius:50%; ${conicStyle} margin:0 auto 10px auto; box-shadow:0 4px 12px rgba(0,0,0,0.2);"></div>${legendHtml}</div>`;
 }
 
 function renderAnswerStats(){
   const container = document.getElementById('answerStatsContainer');
   const mode = document.getElementById('statDisplayMode').value;
-  const storageKey = 'formapp_rankings_' + (currentFileId || 'default');
-  let records = [];
-  try{ const saved = localStorage.getItem(storageKey); if(saved) records = JSON.parse(saved); }catch(e){}
+  const records = cloudResponseList;
 
   if(appMode === 'form'){
     if(records.length === 0){ container.innerHTML = `<p style="color:#94a3b8;">まだ回答データがありません。</p>`; return; }
@@ -1087,8 +1232,9 @@ function renderAnswerStats(){
         q.opts.forEach((opt, oIdx) => { counts[String.fromCharCode(65 + oIdx)] = 0; });
         
         records.forEach(rec => {
-          if(rec.answers && rec.answers[qIdx] !== undefined){
-            let ans = rec.answers[qIdx];
+          let ansData = rec.answer_data;
+          if(Array.isArray(ansData) && ansData[qIdx] !== undefined){
+            let ans = ansData[qIdx];
             if(counts[ans] !== undefined) counts[ans]++;
           }
         });
@@ -1106,7 +1252,6 @@ function renderAnswerStats(){
             let badge = String.fromCharCode(65 + oIdx);
             let cnt = counts[badge] || 0;
             let rate = records.length > 0 ? Math.round((cnt / records.length) * 100) : 0;
-            
             if(mode === 'bar'){
               html += `<div style="margin-bottom:10px;"><div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:4px;"><span><b>${badge}:</b> ${opt}</span> <span style="font-weight:800; color:var(--p);">${cnt}票 (${rate}%)</span></div><div style="width:100%; height:12px; background:var(--border); border-radius:6px; overflow:hidden;"><div style="width:${rate}%; height:100%; background:linear-gradient(90deg, var(--p), #818cf8);"></div></div></div>`;
             } else if(mode === 'text'){
@@ -1118,56 +1263,50 @@ function renderAnswerStats(){
         }
       } else {
         html += `<ul style="padding-left:18px; font-size:0.9rem; color:#94a3b8; display:flex; flex-direction:column; gap:6px;">`;
-        records.forEach(rec => { if(rec.answers && rec.answers[qIdx]) html += `<li style="background:var(--border); padding:6px 10px; border-radius:8px; color:var(--t);">💬 ${rec.answers[qIdx]} <span style="font-size:0.75rem; color:#94a3b8; float:right;">(${rec.name})</span></li>`; });
+        records.forEach(rec => { 
+          let ansData = rec.answer_data;
+          let val = Array.isArray(ansData) ? ansData[qIdx] : JSON.stringify(ansData);
+          if(val) html += `<li style="background:var(--border); padding:6px 10px; border-radius:8px; color:var(--t);">💬 ${val} <span style="font-size:0.75rem; color:#94a3b8; float:right;">(${rec.username})</span></li>`; 
+        });
         html += `</ul>`;
       }
       html += `</div>`;
     });
     container.innerHTML = html;
   } else {
-    container.innerHTML = records.length > 0 ? `<ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">` + records.map((r, i)=>`<li style="padding:10px; background:var(--input-bg); border-radius:10px; display:flex; justify-content:space-between; border:1px solid var(--border);"><span>${i+1}. ${r.name}</span> <b>${r.score}点 (${r.rate}%)</b></li>`).join('') + `</ul>` : `<p style="color:#94a3b8;">まだデータがありません。</p>`;
+    container.innerHTML = records.length > 0 ? `<ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">` + records.map((r, i)=>`<li style="padding:10px; background:var(--input-bg); border-radius:10px; display:flex; justify-content:space-between; border:1px solid var(--border);"><span>${i+1}. ${r.username}</span> <b>${r.score}</b></li>`).join('') + `</ul>` : `<p style="color:#94a3b8;">まだ回答データがありません。</p>`;
   }
 }
 
 function exportAnswersCSV(){
-  const storageKey = 'formapp_rankings_' + (currentFileId || 'default');
-  let records = [];
-  try{ const saved = localStorage.getItem(storageKey); if(saved) records = JSON.parse(saved); }catch(e){}
-  
+  const records = cloudResponseList;
   if(records.length === 0){ alert('エクスポートする回答データがありません。'); return; }
-
   let csvRows = [];
   if(appMode === 'form'){
     let headers = ['回答者名', '回答日時'];
     questionsData.forEach((q, idx) => { if(q.type !== 'info') headers.push(`Q${idx+1}: ${q.q.replace(/"/g, '""')}`); });
     csvRows.push(headers.join(','));
-
     records.forEach(rec => {
-      let row = [`"${rec.name || '匿名'}"`, `"${rec.date || ''}"`];
+      let row = [`"${rec.username || '匿名'}"`, `"${rec.created_at || ''}"`];
       questionsData.forEach((q, idx) => {
         if(q.type !== 'info'){
-          let ansVal = (rec.answers && rec.answers[idx] !== undefined) ? rec.answers[idx] : '';
+          let ansVal = (rec.answer_data && rec.answer_data[idx] !== undefined) ? rec.answer_data[idx] : '';
           row.push(`"${String(ansVal).replace(/"/g, '""')}"`);
         }
       });
       csvRows.push(row.join(','));
     });
   } else {
-    csvRows.push(['順位', '回答者名', 'スコア(点)', '正答率(%)', '回答日時'].join(','));
+    csvRows.push(['順位', '回答者名', 'スコア', '回答日時'].join(','));
     records.forEach((rec, idx) => {
-      csvRows.push([idx + 1, `"${rec.name || '匿名'}"`, rec.score || 0, (rec.rate || 0) + '%', `"${rec.date || ''}"`].join(','));
+      csvRows.push([idx + 1, `"${rec.username || '匿名'}"`, `"${rec.score || ''}"`, `"${rec.created_at || ''}"`].join(','));
     });
   }
-
   const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
   const blob = new Blob([bom, csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = (quizTitle || 'フォーム') + '_回答データ.csv';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  const a = document.createElement('a'); a.href = url; a.download = (quizTitle || 'フォーム') + '_クラウド回答.csv';
+  document.body.appendChild(a); a.click(); a.remove();
 }
 
 function exportStatsImage(){
@@ -1175,22 +1314,17 @@ function exportStatsImage(){
   if(!targetArea) return;
   const exportBtn = targetArea.querySelector('button');
   if(exportBtn) exportBtn.style.display = 'none';
-  
   html2canvas(targetArea, { backgroundColor: null, scale: 2 }).then(canvas => {
     if(exportBtn) exportBtn.style.display = 'inline-flex';
     const link = document.createElement('a');
     link.download = (quizTitle || '統計結果') + '_集計データ.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
-  }).catch(err => {
-    if(exportBtn) exportBtn.style.display = 'inline-flex';
-    alert('画像の保存に失敗しました');
-  });
+  }).catch(() => { if(exportBtn) exportBtn.style.display = 'inline-flex'; alert('保存失敗'); });
 }
 
 function exportJsonFile(){
-  collectQuestionsFromDOM();
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getAllFiles(), null, 2));
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questionsData, null, 2));
   const a = document.createElement('a'); a.href = dataStr; a.download = "formapp_backup.json";
   document.body.appendChild(a); a.click(); a.remove();
 }
@@ -1200,7 +1334,7 @@ function importJsonFile(e){
   if(e.target.files[0]){
     reader.readAsText(e.target.files[0], "UTF-8");
     reader.onload = (ev) => {
-      try{ saveAllFiles(JSON.parse(ev.target.result)); renderFileList(); alert('読み込みました'); }catch(err){ alert('失敗しました'); }
+      try{ questionsData = JSON.parse(ev.target.result); renderQuestionsEditor(); autoSaveCloud(); alert('読み込みました'); }catch{ alert('失敗しました'); }
     };
   }
 }
@@ -1208,9 +1342,8 @@ function importJsonFile(e){
 function playFile(id){ openFile(id); startTestPlay(); }
 
 function startTestPlay(){
-  collectQuestionsFromDOM();
   if(questionsData.length === 0){alert('質問がありません');return}
-  quizTitle = document.getElementById('qTitle').value.trim() || "無題";
+  quizTitle = document.getElementById('quiz-title-input').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
   quizLogo = document.getElementById('quizLogo').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim();
@@ -1229,17 +1362,8 @@ function startTestPlay(){
     return;
   }
 
-  if(preventOnce && !isSharedMode) {
-    const onceKey = 'formapp_submitted_' + currentFileId;
-    if(localStorage.getItem(onceKey)){
-      alert('⚠️ このフォームは「重複防止」が有効です。すでにこの端末から回答済みです。');
-      return;
-    }
-  }
-
   isSharedMode = false; isRetryMode = false;
   userFormAnswers = []; userPlayHistory = [];
-  
   activePlayData = JSON.parse(JSON.stringify(questionsData));
   if(randomCount > 0 && randomCount < activePlayData.length) activePlayData = activePlayData.slice(0, randomCount);
   
@@ -1257,23 +1381,7 @@ async function shortenURL(longUrl) {
     try {
         const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
         return res.ok ? await res.text() : longUrl;
-    } catch (e) { return longUrl; }
-}
-
-async function generateShareUrl(){
-  collectQuestionsFromDOM();
-  if(questionsData.length === 0){alert('質問がありません');return}
-  quizTitle = document.getElementById('qTitle').value.trim() || "無題";
-  const sData = { id: currentFileId, t: quizTitle, d: document.getElementById('qDesc').value.trim(), logo: document.getElementById('quizLogo').value.trim(), g: document.getElementById('quizGenre').value.trim(), cat: document.getElementById('quizCategory').value.trim() || "一般", tag: document.getElementById('quizTag').value.trim(), deadline: document.getElementById('quizDeadline').value, m: appMode, rc: document.getElementById('numRandomCount').value, sh: document.getElementById('chkShuffle').checked, sb: document.getElementById('chkSpeed').checked, once: document.getElementById('chkOnce').checked, tm: parseInt(document.getElementById('selTimer').value), q: questionsData };
-  const sD = btoa(unescape(encodeURIComponent(JSON.stringify(sData)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  const longUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?p=' + sD;
-  
-  const shInput = document.getElementById('shUrl');
-  shInput.value = "短縮URLを生成中...";
-  document.getElementById('shArea').style.display = 'block';
-  
-  const shortUrl = await shortenURL(longUrl);
-  shInput.value = shortUrl;
+    } catch { return longUrl; }
 }
 
 function showQrModal(){
@@ -1288,46 +1396,13 @@ function showQrModal(){
     ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
     ctx.fillStyle = '#000000';
     for(let r=0; r<mod; r++){ for(let c=0; c<mod; c++){ if(qr.isDark(r, c)) ctx.fillRect(8 + c * 4, 8 + r * 4, 4, 4); } }
-  }catch(e){}
+  }catch{}
   document.getElementById('qrModal').style.display = 'flex';
 }
 
 function closeQrModal(){ document.getElementById('qrModal').style.display = 'none'; }
 function closeQrModalDirect(){ document.getElementById('qrModal').style.display = 'none'; }
 function exitPlayMode(){ if(isSharedMode) goHome(); else switchPage('edit'); }
-
-window.onload=()=>{
-  const urlParams = new URLSearchParams(window.location.search);
-  const p = urlParams.get('p');
-  if(p){
-    try{
-      const d = JSON.parse(decodeURIComponent(escape(atob(p.replace(/-/g,'+').replace(/_/g,'/')))));
-      currentFileId = d.id || 'shared_' + Date.now();
-      quizTitle = d.t || ""; quizLogo = d.logo || ""; quizGenre = d.g || ""; quizDeadline = d.deadline || ""; appMode = d.m || "quiz"; preventOnce = !!d.once;
-      
-      if(quizDeadline && new Date() > new Date(quizDeadline)){
-        document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⏰ 受付終了しました</h2><p>このフォームは有効期限が過ぎたため、受付を終了しました。</p></div>`;
-        return;
-      }
-
-      if(preventOnce){
-        const onceKey = 'formapp_submitted_' + currentFileId;
-        if(localStorage.getItem(onceKey)){
-          document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⚠️ 回答済みです</h2><p>このフォームは「重複防止」が有効に設定されているため、すでに回答済みです。</p></div>`;
-          return;
-        }
-      }
-
-      document.getElementById('pageTitle').innerText = quizTitle ? `FormApp - ${quizTitle}` : "FormApp";
-      document.getElementById('headerLogoText').innerText = quizTitle ? `FormApp - ${quizTitle}` : "FormApp - 編集画面";
-      questionsData = d.q; activePlayData = JSON.parse(JSON.stringify(questionsData));
-      isSharedMode = true; isRetryMode = false; userFormAnswers = []; userPlayHistory = [];
-      beginQuizPlay();
-      return;
-    }catch(e){alert("データが破損しています")}
-  }
-  switchPage('home');
-};
 
 function beginQuizPlay(){
   document.getElementById('qTitleView').innerText = quizTitle;
@@ -1415,7 +1490,6 @@ function sW(){
         } else {
           g.querySelectorAll('.o-btn').forEach(btn => btn.classList.remove('selected'));
           b.classList.add('selected'); currentSelectedAns = k;
-          // 選択された瞬間にジャンプ先が設定されていれば一時保存
           q.selectedJumpIndex = q.optJumps ? q.optJumps[j] : "";
         }
       };
@@ -1445,7 +1519,6 @@ function sW(){
 
 function proceedNextPlay(){
   const currentQ = activePlayData[cI];
-  
   if(currentQ.type === 'info'){
     userFormAnswers.push('INFO_SECTION');
     cI++; sW();
@@ -1487,10 +1560,9 @@ function proceedNextPlay(){
     userPlayHistory.push({ q: currentQ.q, userAns: currentSelectedAns || '未回答', correctAns: currentQ.ans, isCorrect, exp: currentQ.exp });
   }
 
-  // 条件分岐（ジャンプ先）の判定
   if(currentQ.selectedJumpIndex !== undefined && currentQ.selectedJumpIndex !== ""){
     if(currentQ.selectedJumpIndex === 'finish'){
-      cI = activePlayData.length; // すぐ結果へ
+      cI = activePlayData.length;
     } else {
       let targetIdx = parseInt(currentQ.selectedJumpIndex);
       if(!isNaN(targetIdx) && targetIdx >= 0 && targetIdx < activePlayData.length){
@@ -1509,6 +1581,7 @@ function sR(){
   document.getElementById('resultHeaderTitle').innerText = appMode === 'form' ? "回答終了・送信画面" : "結果発表・送信画面";
   document.getElementById('scoreCircleContainer').style.display = appMode === 'form' ? 'none' : 'flex';
   document.getElementById('aRate').innerText = a+'%';
+  document.getElementById('score-display').innerText = a+'%';
   
   let rankText = "";
   if(a === 100) rankText = "🏆 評価: S";
@@ -1521,70 +1594,7 @@ function sR(){
   document.getElementById('rCom').innerText = appMode === 'form' ? "ご回答ありがとうございました！" : (a==100?'全問正解おめでとうございます！':(a>=80?'素晴らしい成績です！':'お疲れ様でした！'));
   document.getElementById('sDet').innerText = appMode === 'form' ? "すべての質問に回答しました。" : `${activePlayData.length}問中 ${sc}問正解 (総合スコア: ${totalScore}点)`;
   
-  compareWithPreviousScore(a, totalScore);
-
   document.getElementById('retryWrongBtn').style.display = (wrongQuestionsData.length > 0 && !isRetryMode) ? 'inline-flex' : 'none';
-  loadRanking();
-}
-
-function compareWithPreviousScore(currentRate, currentScore){
-  const storageKey = 'formapp_rankings_' + (currentFileId || 'default');
-  let records = [];
-  try{ const saved = localStorage.getItem(storageKey); if(saved) records = JSON.parse(saved); }catch(e){}
-  
-  const compBox = document.getElementById('comparisonBox');
-  if(appMode === 'form' || records.length === 0){
-    compBox.innerText = "";
-    return;
-  }
-  
-  const lastRecord = records[records.length - 1];
-  if(lastRecord && lastRecord.score !== undefined){
-    let diff = currentScore - lastRecord.score;
-    if(diff > 0) compBox.innerText = `📈 前回よりスコアが ${diff}点 アップしました！`;
-    else if(diff < 0) compBox.innerText = `📉 前回よりスコアが ${Math.abs(diff)}点 下がりました。次頑張ろう！`;
-    else compBox.innerText = `⚖️ 前回と全く同じスコアです！`;
-  } else {
-    compBox.innerText = "";
-  }
-}
-
-function saveRanking(){
-  const name = document.getElementById('playerName').value.trim() || '匿名さん';
-  const storageKey = 'formapp_rankings_' + (currentFileId || 'default');
-  let records = [];
-  try{ const saved = localStorage.getItem(storageKey); if(saved) records = JSON.parse(saved); }catch(e){}
-  
-  if(appMode === 'form') records.push({name, answers: userFormAnswers, date: new Date().toLocaleString()});
-  else records.push({name, score: totalScore, rate: Math.round(sc/activePlayData.length*100), date: new Date().toLocaleString()});
-  
-  localStorage.setItem(storageKey, JSON.stringify(records.slice(0, 20)));
-
-  if(preventOnce && currentFileId) {
-    localStorage.setItem('formapp_submitted_' + currentFileId, 'true');
-  }
-
-  alert('回答者のデータを送信・登録しました！');
-  displayRanking(records);
-}
-
-function loadRanking(){
-  const storageKey = 'formapp_rankings_' + (currentFileId || 'default');
-  try{ const saved = localStorage.getItem(storageKey); if(saved) displayRanking(JSON.parse(saved)); }catch(e){}
-}
-
-function displayRanking(records){
-  document.getElementById('rankingBoxTitle').innerText = appMode === 'form' ? '最近の回答者' : 'ランキング';
-  document.getElementById('rankingList').innerHTML = records.map((r, idx)=>`<li><span>${idx+1}. ${r.name}</span> <span><b>${appMode === 'form' ? r.date : r.score + '点'}</b></span></li>`).join('');
-  document.getElementById('rankingContainer').style.display = 'block';
-}
-
-function restartQuiz(){
-  isRetryMode = false; userFormAnswers = []; userPlayHistory = [];
-  activePlayData = JSON.parse(JSON.stringify(questionsData));
-  if(randomCount > 0 && randomCount < activePlayData.length) activePlayData = activePlayData.slice(0, randomCount);
-  switchPage('play');
-  cI=0; sc=0; totalScore=0; currentCombo=0; wrongQuestionsData = []; sW();
 }
 
 function cpL(){ const i = document.getElementById('shUrl'); i.select(); document.execCommand('copy'); alert('コピーしました'); }
