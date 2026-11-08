@@ -23,13 +23,13 @@ body.light-mode.theme-green { --p: #059669; --p-light: #ecfdf5; }
 body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-content:center;align-items:center;min-height:100vh;padding-bottom:120px;transition:background 0.3s, color 0.3s}
 .con{width:100%;max-width:850px;background:transparent;padding:10px;position:relative;display:flex;flex-direction:column;gap:20px}
 
-/* ヘッダー周り：ロゴが折れないように調整 */
-.site-header { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 16px 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); backdrop-filter: blur(10px); gap: 15px; flex-wrap: wrap; }
-.site-logo { font-size: 1.25rem; font-weight: 800; color: var(--p); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; flex-shrink: 0; }
-.nav-links { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.nav-link-btn { background: var(--border); border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; color: var(--t); transition: all 0.2s; }
+/* ヘッダー：上段にタイトル、下段にメニューボタンを配置する2段構成 */
+.site-header { display: flex; flex-direction: column; background: var(--c); padding: 18px 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); backdrop-filter: blur(10px); gap: 14px; width: 100%; }
+.site-logo { font-size: 1.3rem; font-weight: 800; color: var(--p); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; width: 100%; word-break: break-all; }
+.nav-links { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; width: 100%; border-top: 1px solid var(--border); padding-top: 12px; }
+.nav-link-btn { background: var(--border); border: none; padding: 7px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; color: var(--t); transition: all 0.2s; white-space: nowrap; }
 .nav-link-btn:hover { opacity: 0.8; }
-.theme-controls { display: flex; gap: 6px; align-items: center; margin-left: 5px; }
+.theme-controls { display: flex; gap: 6px; align-items: center; margin-left: auto; }
 .theme-controls select { background: var(--input-bg); color: var(--t); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; }
 
 @keyframes fI{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
@@ -72,9 +72,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); background: transparent; }
 .e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; }
 
-/* 追従バー */
-.floating-toolbar { position: sticky; bottom: 20px; z-index: 100; display: flex; justify-content: center; gap: 10px; background: var(--c); padding: 12px 20px; border-radius: 20px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: 10px 0; }
-.ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 700; transition: background 0.2s; }
+/* 追従バー：スマホでもすべてのボタンが隠れず綺麗に折り返して収まるように修正 */
+.floating-toolbar { position: sticky; bottom: 20px; z-index: 100; display: flex; justify-content: center; gap: 8px; background: var(--c); padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: 10px 0; width: 100%; }
+.ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 700; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .ft-btn:hover { background: var(--p); border-color: var(--p); }
 
 .settings-bar { background: var(--c); padding: 22px; border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
@@ -211,7 +211,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
       <div id="questionsContainer" style="display:flex; flex-direction:column; gap:16px;"></div>
 
-      <!-- 常に画面下に追従するフローティングツールバー -->
+      <!-- 常に画面下に追従するフローティングツールバー（ボタンが絶対に見切れないよう最適化） -->
       <div class="floating-toolbar">
         <button class="ft-btn" onclick="addQuestionCard()">＋ 質問追加</button>
         <button class="ft-btn" onclick="addTextSection()">TT テキスト追加</button>
@@ -351,7 +351,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 </div>
 
 <script>
-let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, currentCombo=0, quizTitle="", quizDesc="", quizGenre="", quizCategory="一般", quizTag="", appMode="quiz", shuffleMode=false, speedBonus=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [];
+let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, currentCombo=0, quizTitle="", quizDesc="", quizGenre="", quizCategory="一般", quizTag="", appMode="quiz", shuffleMode=false, speedBonus=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [], timerInterval = null;
 
 function truncateText(str, maxLen = 4) {
   if (!str) return "";
@@ -736,9 +736,17 @@ function renderQuestionsEditor(){
       </div>
       <input type="text" class="q-input" value="${qObj.q || ''}" placeholder="${isInfoText ? '説明文や見出しを入力' : '質問文を入力'}" oninput="saveToLocalStorage()">
       
-      <div style="margin: 10px 0; display:flex; flex-direction:column; gap:8px;">
-        <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URL（https://...）" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
-        <input type="text" class="vid-input opt-input" value="${qObj.videoUrl || ''}" placeholder="YouTube動画URL" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
+      <div style="margin: 10px 0; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URLまたはファイル選択/ペースト" oninput="saveToLocalStorage()" style="font-size:0.9rem; flex:1; min-width:200px;">
+          <input type="file" id="imgFile_${index}" style="display:none" accept="image/*" onchange="handleMediaFileUpload(event, ${index}, 'image')">
+          <button type="button" class="file-action-btn s-btn" onclick="document.getElementById('imgFile_${index}').click()" style="padding:10px 12px;">📁 画像ファイル</button>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <input type="text" class="vid-input opt-input" value="${qObj.videoUrl || ''}" placeholder="YouTube動画URLまたは動画ファイル" oninput="saveToLocalStorage()" style="font-size:0.9rem; flex:1; min-width:200px;">
+          <input type="file" id="vidFile_${index}" style="display:none" accept="video/*" onchange="handleMediaFileUpload(event, ${index}, 'video')">
+          <button type="button" class="file-action-btn" onclick="document.getElementById('vidFile_${index}').click()" style="padding:10px 12px; background:#475569; color:#fff;">📁 動画ファイル</button>
+        </div>
       </div>
 
       ${!isInfoText ? `
@@ -764,6 +772,26 @@ function renderQuestionsEditor(){
         <input type="text" class="exp-input" value="${qObj.exp || ''}" placeholder="解説文（任意）" oninput="saveToLocalStorage()" style="${appMode === 'form' ? 'display:none;' : ''}">
       ` : ''}
     `;
+
+    // クリップボードからの画像ペースト対応（カード上でCtrl+Vなど）
+    card.addEventListener('paste', (e) => {
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for(let item of items){
+        if(item.type.indexOf('image') === 0){
+          e.preventDefault();
+          const blob = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            qObj.imageUrl = event.target.result;
+            renderQuestionsEditor();
+            saveToLocalStorage();
+            alert('クリップボードから画像を貼り付けました！');
+          };
+          reader.readAsDataURL(blob);
+          break;
+        }
+      }
+    });
 
     card.addEventListener('dragstart', (e) => {
       e.dataTransfer.setData('text/plain', index);
@@ -803,9 +831,24 @@ function renderQuestionsEditor(){
   });
 }
 
+function handleMediaFileUpload(e, index, type){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    collectQuestionsFromDOM();
+    if(type === 'image') questionsData[index].imageUrl = event.target.result;
+    else questionsData[index].videoUrl = event.target.result;
+    renderQuestionsEditor();
+    saveToLocalStorage();
+    alert(type === 'image' ? '画像ファイルを設定しました！' : '動画ファイルを設定しました！');
+  };
+  reader.readAsDataURL(file);
+}
+
 function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false }); renderQuestionsEditor(); saveToLocalStorage(); }
 function addTextSection(){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション説明】", type: "info", opts: [], ans: "", exp: "", hint: "", diff: "★☆☆", score: 0, imageUrl: "", videoUrl: "", required: false }); renderQuestionsEditor(); saveToLocalStorage(); }
-function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = prompt(type==='image'?'画像URL:':'YouTubeURL:'); if(u){ if(type==='image') questionsData[questionsData.length-1].imageUrl=u; else questionsData[questionsData.length-1].videoUrl=u; renderQuestionsEditor(); saveToLocalStorage(); } }
+function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = prompt(type==='image'?'画像URLを入力してください:':'YouTube動画URLを入力してください:'); if(u){ if(type==='image') questionsData[questionsData.length-1].imageUrl=u; else questionsData[questionsData.length-1].videoUrl=u; renderQuestionsEditor(); saveToLocalStorage(); } }
 function deleteQuestion(index){ collectQuestionsFromDOM(); if(questionsData.length<=1){alert('最低1問必要です');return;} questionsData.splice(index,1); renderQuestionsEditor(); saveToLocalStorage(); }
 function duplicateQuestion(index){ collectQuestionsFromDOM(); questionsData.splice(index+1, 0, JSON.parse(JSON.stringify(questionsData[index]))); renderQuestionsEditor(); saveToLocalStorage(); }
 function moveQuestion(index, dir){ collectQuestionsFromDOM(); const target = index + dir; if(target<0||target>=questionsData.length)return; const tmp = questionsData[index]; questionsData[index] = questionsData[target]; questionsData[target] = tmp; renderQuestionsEditor(); saveToLocalStorage(); }
@@ -1073,8 +1116,12 @@ function sW(){
     const mediaBox = document.getElementById('playMediaContainer'); mediaBox.innerHTML = '';
     if(q.imageUrl) mediaBox.innerHTML += `<img src="${q.imageUrl}" style="max-width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;">`;
     if(q.videoUrl){
-      let embedUrl = q.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/');
-      mediaBox.innerHTML += `<iframe src="${embedUrl}" style="width:100%; height:220px; border-radius:12px; border:none; margin-bottom:15px;" allowfullscreen></iframe>`;
+      if(q.videoUrl.startsWith('data:video/')){
+        mediaBox.innerHTML += `<video src="${q.videoUrl}" controls style="width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;"></video>`;
+      } else {
+        let embedUrl = q.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/');
+        mediaBox.innerHTML += `<iframe src="${embedUrl}" style="width:100%; height:220px; border-radius:12px; border:none; margin-bottom:15px;" allowfullscreen></iframe>`;
+      }
     }
     document.getElementById('quizArea').innerHTML = `<p style="color:#94a3b8; font-weight:600;">（このページは説明用セクションです。「次へ進む」を押してください）</p>`;
     document.getElementById('nextPlayBtn').innerText = (cI === activePlayData.length - 1) ? '回答を完了して結果へ' : '次へ進む';
@@ -1094,8 +1141,12 @@ function sW(){
   const mediaBox = document.getElementById('playMediaContainer'); mediaBox.innerHTML = '';
   if(q.imageUrl) mediaBox.innerHTML += `<img src="${q.imageUrl}" style="max-width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;">`;
   if(q.videoUrl){
-    let embedUrl = q.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/');
-    mediaBox.innerHTML += `<iframe src="${embedUrl}" style="width:100%; height:220px; border-radius:12px; border:none; margin-bottom:15px;" allowfullscreen></iframe>`;
+    if(q.videoUrl.startsWith('data:video/')){
+      mediaBox.innerHTML += `<video src="${q.videoUrl}" controls style="width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;"></video>`;
+    } else {
+      let embedUrl = q.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/');
+      mediaBox.innerHTML += `<iframe src="${embedUrl}" style="width:100%; height:220px; border-radius:12px; border:none; margin-bottom:15px;" allowfullscreen></iframe>`;
+    }
   }
   
   document.getElementById('nextPlayBtn').innerText = (cI === activePlayData.length - 1) ? '回答を完了して結果へ' : '次へ進む';
@@ -1178,14 +1229,14 @@ function sR(){
   document.getElementById('aRate').innerText = a+'%';
   
   let rankText = "";
-  if(a === 100) rankText = "👑 ランク: S (神マスター)";
-  else if(a >= 85) rankText = "🌟 ランク: A (優秀)";
-  else if(a >= 70) rankText = "✨ ランク: B (良好)";
-  else if(a >= 50) rankText = "👍 ランク: C (合格)";
-  else rankText = "🔥 ランク: D (要復習)";
+  if(a === 100) rankText = "🏆 評価: S (優秀)";
+  else if(a >= 85) rankText = "🌟 評価: A (良好)";
+  else if(a >= 70) rankText = "✨ 評価: B (標準)";
+  else if(a >= 50) rankText = "👍 評価: C (合格)";
+  else rankText = "📌 評価: D (要復習)";
   document.getElementById('rankDisplay').innerText = appMode === 'form' ? "" : rankText;
 
-  document.getElementById('rCom').innerText = appMode === 'form' ? "ご回答ありがとうございました！" : (a==100?'パーフェクトおめでとうございます！':(a>=80?'素晴らしい成績です！':'お疲れ様でした！'));
+  document.getElementById('rCom').innerText = appMode === 'form' ? "ご回答ありがとうございました！" : (a==100?'全問正解おめでとうございます！':(a>=80?'素晴らしい成績です！':'お疲れ様でした！'));
   document.getElementById('sDet').innerText = appMode === 'form' ? "すべての質問に回答しました。" : `${activePlayData.length}問中 ${sc}問正解 (総合スコア: ${totalScore}点)`;
   
   compareWithPreviousScore(a, totalScore);
@@ -1237,7 +1288,7 @@ function loadRanking(){
 
 function displayRanking(records){
   document.getElementById('rankingBoxTitle').innerText = appMode === 'form' ? '最近の回答者' : 'ランキング';
-  document.getElementById('rankingList').innerHTML = records.map((r, idx)=>`<li><span>${idx+1}. ${r.name}</span> <span><b>${appMode === 'form' ? r.date : r.score + '点'}</b></span></li>`).join('');
+  document.getElementById('rankingList').innerHTML = records.map((r, idx)=>`<li><span>${idx+1}. ${r.name}</span> <span><b>${appMode === 'form' ? r.date : r.score + '점'}</b></span></li>`).join('');
   document.getElementById('rankingContainer').style.display = 'block';
 }
 
