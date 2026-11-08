@@ -161,6 +161,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 }
 </style>
 
+<!-- 🟢 正しいSupabaseのCDNライブラリ読み込み -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -195,13 +196,13 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">自分専用のクイズを作成・保存し、回答データを集計するにはログインが必要です。</p>
         <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
             <input type="email" id="auth-email" placeholder="メールアドレス" style="flex: 1; min-width: 180px;">
-            <!-- パスワード入力欄 ＋ パスワード表示／非表示ボタン -->
+            <!-- パスワード入力欄（目玉ボタン付き） -->
             <div class="password-wrapper">
                 <input type="password" id="auth-password" placeholder="パスワード">
                 <button type="button" class="toggle-pw-btn" onclick="togglePasswordVisibility()" title="パスワードを表示/非表示">👁️</button>
             </div>
         </div>
-        <!-- ⚠️ エラーメッセージ表示用エリア -->
+        <!-- ⚠️ エラーメッセージ表示用 -->
         <div id="auth-error-message" class="auth-error-msg"></div>
 
         <div style="display: flex; gap: 8px; margin-top: 5px;">
@@ -425,7 +426,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
 <script>
 // ==========================================
-// 🚀 Supabase クライアント初期設定（小文字で統一）
+// 🚀 Supabase クライアント初期設定（すべて小文字）
 // ==========================================
 const SUPABASE_URL = "https://ovpwgxwuidnejdlszzqm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_9XQlxQcCXyL3odq0h80SxA_LPFv9BSw";
@@ -496,7 +497,7 @@ function changeColorTheme(themeName){
 }
 
 // ==========================================
-// 👁️ パスワード表示／非表示切り替え機能
+// 👁️ パスワード表示／非表示切り替え
 // ==========================================
 function togglePasswordVisibility() {
     const pwInput = document.getElementById('auth-password');
@@ -511,7 +512,7 @@ function togglePasswordVisibility() {
 }
 
 // ==========================================
-// 1. 🔐 認証（ログイン・エラー案内・状態監視）の連動
+// 1. 🔐 認証（ログイン・エラー案内・状態監視）
 // ==========================================
 function showAuthError(message) {
     const errorBox = document.getElementById('auth-error-message');
@@ -553,7 +554,6 @@ async function handleSignIn() {
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-        // パスワードミスやユーザー不存在などのエラーメッセージをわかりやすく案内
         let errMsg = error.message;
         if (errMsg.includes("Invalid login credentials")) {
             errMsg = "メールアドレスまたはパスワードが間違っています。入力内容をご確認ください。";
@@ -590,7 +590,6 @@ supabase.auth.onAuthStateChange((event, session) => {
     }
 });
 
-// ページ読み込み時の初期化＆回答者モード判定
 window.addEventListener('DOMContentLoaded', async () => {
   const savedMode = localStorage.getItem('formapp_mode');
   const savedTheme = localStorage.getItem('formapp_theme') || 'blue';
@@ -606,7 +605,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   const formId = urlParams.get('id');
   
   if (mode === 'answer' && formId) {
-    console.log("データベースからクイズを読み込み中... ID:", formId);
     const { data, error } = await supabase
       .from('forms')
       .select('*')
@@ -614,7 +612,6 @@ window.addEventListener('DOMContentLoaded', async () => {
       .single();
 
     if (error || !data) {
-      console.error("データ読み込みエラー:", error);
       alert("クイズの読み込みに失敗しました。URLが正しいか確認してください。");
       goHome();
       return;
@@ -725,7 +722,6 @@ function goHome(){
   if(history.pushState) history.pushState(null, '', window.location.pathname);
 }
 
-// フォーム一覧のロードと描画
 async function loadMyForms(userId){
   const { data: files, error } = await supabase
     .from('forms')
@@ -924,7 +920,6 @@ async function deleteFile(id){
   supabase.auth.getSession().then(({data: {session}}) => { if(session) loadMyForms(session.user.id); });
 }
 
-// 自動オートセーブ（クラウドへ即時保存）
 async function autoSaveCloud(){
   const { data: { session } } = await supabase.auth.getSession();
   if(!currentFileId || !session) return;
@@ -1173,9 +1168,6 @@ function addOptionToQuestion(index){ collectQuestionsFromDOM(); if(questionsData
 function removeOption(qIdx, optIdx){ collectQuestionsFromDOM(); if(questionsData[qIdx].opts.length<=2){alert('最低2つ必要です');return;} questionsData[qIdx].opts.splice(optIdx,1); questionsData[qIdx].optJumps.splice(optIdx,1); renderQuestionsEditor(); autoSaveCloud(); }
 function changeQuestionType(index, newType){ collectQuestionsFromDOM(); questionsData[index].type = newType; questionsData[index].ans = (newType==='text'||newType==='date'||newType==='number')?'': 'A'; renderQuestionsEditor(); autoSaveCloud(); }
 
-// ==========================================
-// 2. 💾 クイズ作成・保存（🔗 共有URLを発行 ボタンに連動）
-// ==========================================
 async function saveAndGenerateShareUrl() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return alert("クイズを保存するにはログインが必要です！");
@@ -1202,9 +1194,6 @@ async function saveAndGenerateShareUrl() {
     alert("クラウドに保存され、共有URLが発行されました！");
 }
 
-// ==========================================
-// 3. 📥 回答の送信（📥 回答を送信・登録する ボタンに連動）
-// ==========================================
 async function submitUserResponse() {
     const urlParams = new URLSearchParams(window.location.search);
     const formId = urlParams.get('id');
@@ -1234,7 +1223,6 @@ async function submitUserResponse() {
     }
 }
 
-// 📊 回答集計データのロード
 async function loadMyFormResponses(formId) {
     const { data: responseList, error } = await supabase
         .from('responses')
