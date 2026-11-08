@@ -71,15 +71,25 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); background: transparent; }
 .e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; }
 
-/* 追従バー（動画挿入ボタンを削除し、スッキリ配置） */
+/* 追従バー：スマホのボトムメニューと被らないようにbottom位置を修正 */
 .floating-toolbar { position: sticky; bottom: 20px; z-index: 100; display: flex; justify-content: center; gap: 8px; background: var(--c); padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: 10px 0; width: 100%; }
 .ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 700; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .ft-btn:hover { background: var(--p); border-color: var(--p); }
 
+@media(max-width: 768px) {
+  .floating-toolbar {
+    position: fixed;
+    bottom: 78px; /* スマホのボトムメニュー(68px)と被らないように上に配置 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 850px;
+  }
+}
+
 .settings-bar { background: var(--c); padding: 22px; border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
 .settings-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-weight: 600; font-size: 0.95rem; }
 
-/* 質問ヘッダー：スマホ・PC共通で、難易度・配点の後ろに改行してボタンが来るように設計 */
 .q-card-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
 .q-card-header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 8px; }
 .q-card-header-bottom { display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 8px; }
@@ -146,7 +156,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 @media(max-width: 768px) {
   .site-header { display: none; }
   .mobile-tab-bar { display: flex; }
-  body { padding: 12px; padding-bottom: 130px; }
+  body { padding: 12px; padding-bottom: 140px; }
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -214,7 +224,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
       <div id="questionsContainer" style="display:flex; flex-direction:column; gap:16px;"></div>
 
-      <!-- 追従ツールバー（動画挿入を削除） -->
+      <!-- 追従ツールバー -->
       <div class="floating-toolbar">
         <button class="ft-btn" onclick="addQuestionCard()">＋ 質問追加</button>
         <button class="ft-btn" onclick="addTextSection()">TT テキスト追加</button>
