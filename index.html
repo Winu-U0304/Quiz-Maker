@@ -5,24 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title id="pageTitle">FormApp - ホーム</title>
 <style>
-/* デフォルト（ブルー・ダーク） */
 :root {
   --p: #6366f1; --p-light: #1e1b4b; --s: #10b981; --d: #ef4444;
   --b: #0f172a; --c: #1e293b; --t: #f8fafc; --border: #334155; --input-bg: #090d16;
 }
-
-/* ライトモード共通 */
 body.light-mode {
   --b: #f0f4f8; --c: #ffffff; --t: #1e293b; --border: #cbd5e1; --input-bg: #f8fafc;
 }
-
-/* カラーテーマ別アクセント */
 body.theme-blue { --p: #6366f1; --p-light: #1e1b4b; }
 body.light-mode.theme-blue { --p: #0284c7; --p-light: #e0f2fe; }
-
 body.theme-yellow { --p: #f59e0b; --p-light: #451a03; }
 body.light-mode.theme-yellow { --p: #d97706; --p-light: #fef3c7; }
-
 body.theme-green { --p: #10b981; --p-light: #064e3b; }
 body.light-mode.theme-green { --p: #059669; --p-light: #ecfdf5; }
 
@@ -30,189 +23,124 @@ body.light-mode.theme-green { --p: #059669; --p-light: #ecfdf5; }
 body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-content:center;align-items:center;min-height:100vh;padding-bottom:100px;transition:background 0.3s, color 0.3s}
 .con{width:100%;max-width:850px;background:transparent;padding:10px;position:relative;display:flex;flex-direction:column;gap:20px}
 
-/* ヘッダー */
-.site-header { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 16px 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); backdrop-filter: blur(10px); transition: background 0.3s, border 0.3s; }
-.site-logo { font-size: 1.3rem; font-weight: 800; color: var(--p); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
-.site-logo:hover { transform: scale(1.02); }
+.site-header { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 16px 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); backdrop-filter: blur(10px); }
+.site-logo { font-size: 1.3rem; font-weight: 800; color: var(--p); cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; }
 .nav-links { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .nav-link-btn { background: var(--border); border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; color: var(--t); transition: all 0.2s; }
-.nav-link-btn:hover { opacity: 0.8; transform: translateY(-1px); }
-
-/* テーマ切り替えコントロール */
+.nav-link-btn:hover { opacity: 0.8; }
 .theme-controls { display: flex; gap: 6px; align-items: center; margin-left: 5px; }
 .theme-controls select { background: var(--input-bg); color: var(--t); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; }
 
 @keyframes fI{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pop{0%{transform:scale(0.94);opacity:0}70%{transform:scale(1.02)}100%{transform:scale(1);opacity:1}}
-@keyframes pulse-subtle{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
-
 .anim{animation:fI .4s cubic-bezier(0.16, 1, 0.3, 1) forwards}
 .pop-anim{animation:pop .35s cubic-bezier(0.16, 1, 0.3, 1) forwards}
 
-/* ホーム（ファイル一覧） */
-.home-section { display: none; flex-direction: column; gap: 15px; }
-.home-section.active { display: flex; }
-.home-top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); transition: background 0.3s; flex-wrap: wrap; gap: 12px; }
+.home-section, .page-section { display: none; flex-direction: column; gap: 20px; }
+.home-section.active, .page-section.active { display: flex; }
+.home-top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
 .home-top-bar h2 { font-size: 1.2rem; color: var(--t); font-weight: 700; }
 
 .category-filter-bar { display: flex; gap: 8px; align-items: center; overflow-x: auto; width: 100%; padding-bottom: 5px; }
-.cat-filter-chip { background: var(--input-bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--t); white-space: nowrap; transition: all 0.2s; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+.cat-filter-chip { background: var(--input-bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--t); white-space: nowrap; }
 .cat-filter-chip.active { background: var(--p); border-color: var(--p); color: #fff; }
 
 .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
-.file-card { background: var(--c); border: 1px solid var(--border); border-radius: 20px; padding: 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; display: flex; flex-direction: column; justify-content: space-between; height: 185px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fI .4s ease forwards; }
-.file-card:hover { transform: translateY(-6px); border-color: var(--p); box-shadow: 0 16px 35px rgba(0,0,0,0.25); }
+.file-card { background: var(--c); border: 1px solid var(--border); border-radius: 20px; padding: 22px; cursor: pointer; transition: all 0.3s; position: relative; display: flex; flex-direction: column; justify-content: space-between; height: 185px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.file-card:hover { transform: translateY(-6px); border-color: var(--p); }
 .file-card.new-card { border: 2px dashed var(--s); background: var(--p-light); justify-content: center; align-items: center; text-align: center; color: var(--s); font-weight: bold; }
-.file-card.new-card:hover { animation: pulse-subtle 1.5s infinite; }
-
-/* 修正済みのタイトル省略部分 */
-.file-card-title {
-  font-size: 1.15rem;
-  font-weight: bold;
-  color: var(--t);
-  word-break: break-all;
-  margin-bottom: 6px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.file-card-meta { font-size: 0.85rem; color: #94a3b8; display:flex; flex-direction:column; gap:3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-card-title { font-size: 1.15rem; font-weight: bold; color: var(--t); word-break: break-all; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+.file-card-meta { font-size: 0.85rem; color: #94a3b8; display:flex; flex-direction:column; gap:3px; }
 .file-card-actions { display: flex; gap: 8px; margin-top: 10px; }
-.file-action-btn { background: var(--border); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 600; color: var(--t); transition: all 0.2s; }
-.file-action-btn:hover { opacity: 0.8; transform: translateY(-1px); }
+.file-action-btn { background: var(--border); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 600; color: var(--t); }
 .file-action-btn.del { background: #7f1d1d; color: #fecaca; }
 
-/* ページセクション共通 */
-.page-section { display: none; flex-direction: column; gap: 20px; }
-.page-section.active { display: flex; }
-
-/* Googleフォーム風 タブメニュー */
 .form-tabs { display: flex; justify-content: center; gap: 30px; background: var(--c); padding: 0 20px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.form-tab-item { padding: 14px 10px; font-weight: 700; color: #94a3b8; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; font-size: 0.95rem; }
+.form-tab-item { padding: 14px 10px; font-weight: 700; color: #94a3b8; cursor: pointer; border-bottom: 3px solid transparent; font-size: 0.95rem; }
 .form-tab-item.active { color: var(--p); border-bottom-color: var(--p); }
 
 .tab-content { display: none; flex-direction: column; gap: 20px; }
 .tab-content.active { display: flex; animation: fI .3s ease forwards; }
 
-/* フォーム風カードデザイン */
-.form-header-card { background: var(--c); border-radius: 20px; border-top: 8px solid var(--p); box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 26px; transition: all 0.3s; position: relative; }
-.form-card { background: var(--c); border-radius: 20px; border: 1px solid var(--border); border-left: 6px solid transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 26px; transition: all 0.3s; position: relative; animation: pop .3s ease forwards; }
-.form-card:focus-within { border-left-color: var(--p); box-shadow: 0 12px 35px rgba(0,0,0,0.2); transform: translateY(-2px); }
+.form-header-card { background: var(--c); border-radius: 20px; border-top: 8px solid var(--p); box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 26px; }
+.form-card { background: var(--c); border-radius: 20px; border: 1px solid var(--border); border-left: 6px solid transparent; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 26px; }
 
-.e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); padding-bottom: 4px; transition: border-color 0.2s; background: transparent; }
-.e-title:hover, .e-title:focus { border-bottom-color: var(--p); }
+.e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); background: transparent; }
+.e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; }
 
-.e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; transition: border-color 0.2s; }
-.e-desc:focus { border-bottom-color: var(--p); }
+.floating-toolbar { display: flex; justify-content: center; gap: 12px; background: var(--c); padding: 12px 20px; border-radius: 16px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; }
+.ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 700; }
 
-/* Googleフォーム風 フロートツールバー */
-.floating-toolbar { display: flex; justify-content: center; gap: 12px; background: var(--c); padding: 12px 20px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.15); align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
-.ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
-.ft-btn:hover { border-color: var(--p); background: var(--p-light); color: var(--p); transform: translateY(-2px); }
-
-.settings-bar { background: var(--c); padding: 22px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
+.settings-bar { background: var(--c); padding: 22px; border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
 .settings-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-weight: 600; font-size: 0.95rem; }
-.settings-row label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--t); }
-.settings-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--p); cursor: pointer; }
 
-.q-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
-.q-input { flex: 1; font-size: 1.15rem; font-weight: bold; border: none; border-bottom: 2px solid var(--border); padding: 8px 0; outline: none; transition: border-color 0.2s; color: var(--t); background: transparent; }
-.q-input:focus { border-bottom-color: var(--p); }
-
+.q-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.q-input { flex: 1; font-size: 1.15rem; font-weight: bold; border: none; border-bottom: 2px solid var(--border); padding: 8px 0; outline: none; color: var(--t); background: transparent; }
 .options-edit-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
-.option-edit-row { display: flex; align-items: center; gap: 12px; animation: fI .3s ease forwards; }
+.option-edit-row { display: flex; align-items: center; gap: 12px; }
 .opt-badge { font-weight: 800; color: #94a3b8; width: 28px; text-align: center; background: var(--border); padding: 4px; border-radius: 6px; }
-.opt-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; outline: none; transition: all 0.2s; background: var(--input-bg); color: var(--t); }
-.opt-input:focus { border-color: var(--p); }
-.del-opt-btn { background: var(--input-bg); border: 1px solid var(--border); color: #ef4444; cursor: pointer; font-size: 1.1rem; padding: 6px 10px; border-radius: 8px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-.del-opt-btn:hover { background: #7f1d1d; color: #fecaca; border-color: #ef4444; transform: scale(1.05); }
+.opt-input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; outline: none; background: var(--input-bg); color: var(--t); }
+.del-opt-btn { background: var(--input-bg); border: 1px solid var(--border); color: #ef4444; cursor: pointer; font-size: 1.1rem; padding: 6px 10px; border-radius: 8px; }
 
 .q-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 18px; margin-top: 12px; flex-wrap: wrap; gap: 12px; }
-.ans-select-group { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #94a3b8; flex-wrap: wrap; }
-.ans-select-group select, .ans-select-group input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; font-weight: bold; color: var(--p); outline: none; background: var(--input-bg); cursor: pointer; transition: all 0.2s; }
-.exp-input { width: 100%; margin-top: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; outline: none; background: var(--input-bg); color: var(--t); transition: all 0.2s; }
+.ans-select-group { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; color: #94a3b8; }
+.ans-select-group select, .ans-select-group input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; font-weight: bold; color: var(--p); outline: none; background: var(--input-bg); }
+.exp-input { width: 100%; margin-top: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; outline: none; background: var(--input-bg); color: var(--t); }
 
-.card-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.card-action-btn { background: var(--border); border: none; cursor: pointer; padding: 8px 12px; border-radius: 10px; color: var(--t); transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
-.card-action-btn:hover { opacity: 0.8; transform: translateY(-1px); }
+.card-actions { display: flex; gap: 8px; }
+.card-action-btn { background: var(--border); border: none; cursor: pointer; padding: 8px 12px; border-radius: 10px; color: var(--t); font-size: 0.85rem; font-weight: 600; }
 .card-action-btn.del:hover { background: #7f1d1d; color: #fecaca; }
 
-.m-btn { background: var(--p); color: #fff; border: none; padding: 14px 28px; font-size: 1.05rem; font-weight: 800; border-radius: 30px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-.m-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
-.m-btn:active { transform: translateY(-1px); }
+.m-btn { background: var(--p); color: #fff; border: none; padding: 14px 28px; font-size: 1.05rem; font-weight: 800; border-radius: 30px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.m-btn:hover { filter: brightness(1.1); }
 .s-btn { background: var(--s); color: #0f172a; }
 
-.sh-area { background: var(--c); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid var(--border); text-align: center; display: none; animation: pop .3s ease forwards; }
-
+.sh-area { background: var(--c); padding: 20px; border-radius: 20px; border: 1px solid var(--border); text-align: center; display: none; }
 .sh-wrap-in { display: flex; gap: 10px; justify-content: center; align-items: center; max-width: 650px; margin: 0 auto; flex-wrap: wrap; }
-.sh-input { flex: 1; min-width: 220px; width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; outline: none; font-size: 0.95rem; background: var(--input-bg); color: var(--t); }
+.sh-input { flex: 1; min-width: 220px; width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--input-bg); color: var(--t); }
 
-/* QRコードモーダル用スタイル */
-.qr-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; animation: pop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.qr-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 2000; display: none; justify-content: center; align-items: center; }
 .qr-modal-content { background: var(--c); border: 1px solid var(--border); padding: 30px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-width: 320px; width: 90%; display: flex; flex-direction: column; align-items: center; gap: 18px; }
-.qr-modal-content h3 { font-size: 1.2rem; font-weight: 800; color: var(--t); }
-#qrcodeCanvas { background: #ffffff; padding: 12px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: block; margin: 0 auto; }
+#qrcodeCanvas { background: #ffffff; padding: 12px; border-radius: 12px; display: block; margin: 0 auto; }
 
-/* プレイ画面 */
-.play-card-container { background: var(--c); border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 16px 40px rgba(0,0,0,0.3); padding: 40px 30px; text-align: center; position: relative; overflow: hidden; animation: pop .4s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: background 0.3s; }
+.play-card-container { background: var(--c); border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 16px 40px rgba(0,0,0,0.3); padding: 40px 30px; text-align: center; }
 .p-bar-c { width: 100%; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 25px; }
-.p-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--p), #818cf8); transition: width .4s cubic-bezier(0.16, 1, 0.3, 1); }
+.p-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--p), #818cf8); transition: width .4s; }
 
 .meta-info-view { display: flex; justify-content: space-between; font-weight: 700; color: #94a3b8; margin-bottom: 20px; font-size: 1rem; }
-.timer-view { font-size: 1.15rem; font-weight: 800; color: var(--d); margin-bottom: 15px; animation: pulse-subtle 1s infinite alternate; }
+.timer-view { font-size: 1.15rem; font-weight: 800; color: var(--d); margin-bottom: 15px; }
 .q-title-view { font-size: 1.3rem; font-weight: 800; color: var(--p); margin-bottom: 12px; }
-.q-text { font-size: 1.5rem; margin-bottom: 20px; font-weight: 800; color: var(--t); word-break: break-all; line-height: 1.4; }
+.q-text { font-size: 1.5rem; margin-bottom: 20px; font-weight: 800; color: var(--t); }
 
 .o-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 650px; margin: 0 auto 20px auto; }
 @media(max-width:600px){.o-grid{grid-template-columns:100%}}
-.o-btn { background: var(--input-bg); border: 2px solid var(--border); padding: 18px 22px; font-size: 1.1rem; border-radius: 16px; cursor: pointer; text-align: left; transition: all .3s cubic-bezier(0.16, 1, 0.3, 1); font-weight: 600; color: var(--t); animation: fI .4s ease forwards; display: flex; align-items: center; gap: 10px; }
-.o-btn:hover { border-color: var(--p); transform: translateY(-4px); }
+.o-btn { background: var(--input-bg); border: 2px solid var(--border); padding: 18px 22px; font-size: 1.1rem; border-radius: 16px; cursor: pointer; text-align: left; font-weight: 600; color: var(--t); display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
+.o-btn:hover { border-color: var(--p); }
 .o-btn.selected { border-color: var(--p); background: var(--p-light); }
 
-.text-ans-input { width: 100%; max-width: 480px; padding: 16px 20px; font-size: 1.2rem; border: 2px solid var(--border); border-radius: 14px; outline: none; margin: 0 auto 10px auto; display: block; transition: all 0.2s; background: var(--input-bg); color: var(--t); font-weight: 600; text-align: center; }
+.text-ans-input { width: 100%; max-width: 480px; padding: 16px 20px; font-size: 1.2rem; border: 2px solid var(--border); border-radius: 14px; outline: none; margin: 0 auto 10px auto; display: block; background: var(--input-bg); color: var(--t); font-weight: 600; text-align: center; }
 
-.feedback-box { margin-top: 25px; padding: 18px; border-radius: 16px; font-weight: bold; font-size: 1.15rem; display: none; animation: pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-.feedback-correct { background: rgba(16,185,129,0.15); color: var(--s); border: 1px solid var(--s); }
-.feedback-incorrect { background: rgba(239,68,68,0.15); color: var(--d); border: 1px solid var(--d); }
-
-/* 結果発表 */
-.r-card { background: var(--c); border-radius: 24px; padding: 45px 25px; text-align: center; box-shadow: 0 16px 40px rgba(0,0,0,0.3); border: 1px solid var(--border); animation: pop .4s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: background 0.3s; }
-.s-circ { width: 140px; height: 140px; border-radius: 50%; border: 8px solid var(--s); display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto 25px auto; animation: pulse-subtle 1.5s infinite alternate; background: rgba(16,185,129,0.1); }
+.r-card { background: var(--c); border-radius: 24px; padding: 45px 25px; text-align: center; box-shadow: 0 16px 40px rgba(0,0,0,0.3); border: 1px solid var(--border); }
+.s-circ { width: 140px; height: 140px; border-radius: 50%; border: 8px solid var(--s); display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto 25px auto; background: rgba(16,185,129,0.1); }
 .s-num { font-size: 2.4rem; font-weight: 800; color: var(--s); }
 .s-lab { font-size: .9rem; color: #94a3b8; font-weight: 700; }
 
 .ranking-box { max-width: 420px; margin: 25px auto; background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px; text-align: left; }
-.ranking-box h4 { text-align: center; margin-bottom: 14px; color: var(--t); font-weight: 800; }
 .ranking-list { list-style: none; font-size: 1rem; }
-.ranking-list li { display: flex; justify-content: space-between; padding: 8px 4px; border-bottom: 1px dashed var(--border); font-weight: 600; animation: fI .3s ease forwards; }
+.ranking-list li { display: flex; justify-content: space-between; padding: 8px 4px; border-bottom: 1px dashed var(--border); font-weight: 600; }
 
-/* スマホ専用 LINE風ボトムナビバー */
-.mobile-tab-bar { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 68px; background: var(--c); backdrop-filter: blur(20px); border-top: 1px solid var(--border); z-index: 1000; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.3); transition: background 0.3s; }
-.tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; background: transparent; border: none; cursor: pointer; color: #94a3b8; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; }
+.mobile-tab-bar { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 68px; background: var(--c); backdrop-filter: blur(20px); border-top: 1px solid var(--border); z-index: 1000; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
+.tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; background: transparent; border: none; cursor: pointer; color: #94a3b8; font-size: 0.75rem; font-weight: 700; }
 .tab-item.active { color: var(--p); }
 
 @media(max-width: 768px) {
   .site-header { display: none; }
   .mobile-tab-bar { display: flex; }
   body { padding: 12px; padding-bottom: 90px; }
-  
-  .sh-wrap-in {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .sh-wrap-in .sh-input {
-    width: 100%;
-  }
-  .sh-wrap-in .m-btn {
-    width: 100%;
-  }
 }
 </style>
-<!-- QRコード生成用の軽量ライブラリ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body class="theme-blue">
 <div class="con" id="app">
@@ -224,7 +152,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <button class="nav-link-btn" onclick="document.getElementById('importJsonFile').click()">📥 読み込み</button>
       <input type="file" id="importJsonFile" style="display:none" accept=".json" onchange="importJsonFile(event)">
       <button class="nav-link-btn" onclick="switchPage('howtouse')">使い方</button>
-      
       <div class="theme-controls">
         <button class="nav-link-btn" id="modeToggleBtn" onclick="toggleLightDarkMode()">☀️ ライト</button>
         <select id="themeSelect" onchange="changeColorTheme(this.value)">
@@ -236,47 +163,44 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     </nav>
   </header>
 
-  <!-- ① ホーム（一覧） -->
+  <!-- ① ホーム -->
   <div id="pageHome" class="home-section active">
     <div class="home-top-bar">
       <h2>ホーム（一覧）</h2>
       <button class="m-btn s-btn" style="padding:10px 20px; font-size:0.95rem; border-radius:12px;" onclick="createNewQuiz()">＋ 新規作成</button>
     </div>
-    <!-- カテゴリフィルターバー -->
     <div class="category-filter-bar" id="categoryFilterBar"></div>
     <div class="file-grid" id="fileGrid"></div>
   </div>
 
-  <!-- ② 編集ページ（Googleフォーム風タブ対応） -->
+  <!-- ② 編集ページ -->
   <div id="pageEdit" class="page-section">
-    <!-- Googleフォーム風 タブメニュー -->
     <div class="form-tabs">
       <div class="form-tab-item active" id="ftabQuestions" onclick="switchFormTab('questions')">質問</div>
       <div class="form-tab-item" id="ftabAnswers" onclick="switchFormTab('answers')">回答・集計</div>
       <div class="form-tab-item" id="ftabSettings" onclick="switchFormTab('settings')">詳細設定</div>
     </div>
 
-    <!-- 1. 質問タブ -->
     <div id="tabContentQuestions" class="tab-content active">
       <div class="form-header-card pop-anim">
         <input type="text" id="qTitle" class="e-title" placeholder="タイトルを入力" oninput="saveToLocalStorage()">
         <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明を入力" oninput="saveToLocalStorage()">
         <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);"></label>
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px;">カテゴリ: <input type="text" id="quizCategory" oninput="saveToLocalStorage()" placeholder="例: 学校" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="saveToLocalStorage()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="saveToLocalStorage()" placeholder="例: 学校" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
         </div>
       </div>
 
       <div class="sh-area" id="shArea">
         <div class="sh-wrap-in">
           <input type="text" id="shUrl" class="sh-input" readonly>
-          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;border-radius:10px;box-shadow:none;" onclick="cpL()">コピー</button>
-          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#06c755;border-radius:10px;box-shadow:none; color:#fff;" onclick="lineS()">LINE共有</button>
-          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#475569;border-radius:10px;box-shadow:none; color:#fff;" onclick="showQrModal()">📱 QRコード</button>
+          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;border-radius:10px;" onclick="cpL()">コピー</button>
+          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#06c755;border-radius:10px;color:#fff;" onclick="lineS()">LINE共有</button>
+          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#475569;border-radius:10px;color:#fff;" onclick="showQrModal()">📱 QRコード</button>
         </div>
+        <p style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">💡 URL短縮（TinyURL）でQRコードが読み取りやすくなります。</p>
       </div>
 
-      <!-- Googleフォーム風 フロートツールバー -->
       <div class="floating-toolbar">
         <button class="ft-btn" onclick="addQuestionCard()">＋ 質問を追加</button>
         <button class="ft-btn" onclick="promptAddTitleText()">TT テキスト追加</button>
@@ -286,42 +210,48 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
       <div id="questionsContainer" style="display:flex; flex-direction:column; gap:16px;"></div>
 
-      <div class="btn-con" style="display:flex; gap:15px; justify-content:center; margin-top:10px; flex-wrap:wrap;">
+      <div style="display:flex; gap:15px; justify-content:center; margin-top:10px; flex-wrap:wrap;">
         <button class="m-btn s-btn" onclick="startTestPlay()">▶ テストプレイ</button>
         <button class="m-btn" onclick="generateShareUrl()">🔗 共有URLを発行</button>
         <button class="m-btn" style="background:#475569;" onclick="goHome()">ホームに戻る</button>
       </div>
     </div>
 
-    <!-- 2. 回答 (集計) タブ -->
+    <!-- 回答・集計（4つの表示切替 ＆ 全体円グラフ ＆ 画像保存） -->
     <div id="tabContentAnswers" class="tab-content">
-      <div class="form-header-card">
-        <h3 style="margin-bottom:15px; color:var(--p); font-weight:800;">回答・集計データ（作成者用）</h3>
-        <p id="answerStatsDesc" style="color:#94a3b8; font-weight:600; margin-bottom:15px;">フォームモード時は、各選択肢が何％選ばれたかの割合や回答内容を確認できます。</p>
+      <div class="form-header-card" id="statsExportArea">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+          <h3 style="color:var(--p); font-weight:800;">回答・集計データ（作成者用）</h3>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button class="m-btn s-btn" style="padding:6px 14px; font-size:0.85rem; border-radius:8px;" onclick="exportStatsImage()">📷 統計結果を画像保存</button>
+            <span style="font-size:0.85rem; color:#94a3b8; font-weight:700;">表示切替:</span>
+            <select id="statDisplayMode" onchange="renderAnswerStats()" style="background:var(--input-bg); color:var(--t); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-weight:bold; outline:none; cursor:pointer;">
+              <option value="bar">1. 棒グラフ(プログレスバー)表示</option>
+              <option value="pie">2. 全体で1つの円グラフ表示</option>
+              <option value="text">3. テキスト・リスト表示</option>
+              <option value="compact">4. コンパクト要約表示</option>
+            </select>
+          </div>
+        </div>
         <div id="answerStatsContainer" style="font-weight:600; line-height:1.6;"></div>
       </div>
     </div>
 
-    <!-- 3. 設定タブ -->
     <div id="tabContentSettings" class="tab-content">
       <div class="settings-bar">
         <h3 style="color:var(--p); font-weight:800; margin-bottom:5px;">詳細なオプション設定</h3>
         <div class="settings-row">
           <span>モード選択:</span>
-          <select id="selAppMode" onchange="saveToLocalStorage(); renderQuestionsEditor();" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; outline:none; font-weight:600; background:var(--input-bg); color:var(--p);">
+          <select id="selAppMode" onchange="saveToLocalStorage(); renderQuestionsEditor();" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--p); font-weight:bold;">
             <option value="quiz">クイズモード（正解判定・得点あり）</option>
             <option value="form">フォームモード（アンケート・自動集計：正解なし）</option>
           </select>
         </div>
-        <div class="settings-row">
-          <label><input type="checkbox" id="chkShuffle" onchange="saveToLocalStorage()"> シャッフル出題</label>
-        </div>
-        <div class="settings-row">
-          <label><input type="checkbox" id="chkSpeed" onchange="saveToLocalStorage()"> 早押しボーナス（※クイズモード時）</label>
-        </div>
+        <div class="settings-row"><label><input type="checkbox" id="chkShuffle" onchange="saveToLocalStorage()"> シャッフル出題</label></div>
+        <div class="settings-row"><label><input type="checkbox" id="chkSpeed" onchange="saveToLocalStorage()"> 早押しボーナス</label></div>
         <div class="settings-row">
           <span>制限時間:</span>
-          <select id="selTimer" onchange="saveToLocalStorage()" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; outline:none; font-weight:600; background:var(--input-bg); color:var(--p);">
+          <select id="selTimer" onchange="saveToLocalStorage()" style="padding:8px 14px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--p); font-weight:bold;">
             <option value="0">制限時間なし</option>
             <option value="10">10秒</option>
             <option value="15">15秒</option>
@@ -332,11 +262,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     </div>
   </div>
 
-  <!-- ③ 使い方ページ -->
   <div id="pageHowToUse" class="page-section">
     <div class="form-header-card pop-anim">
       <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">FormApp の使い方</h2>
-      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1; font-weight:500;">フォームモードでは正解やスコアがなくなり、回答結果の割合が自動で集計されます。必須設定や複数選択、並び替え機能にも対応しています！</p>
+      <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1;">回答時は必ず「次へ進む」ボタンで進み、最後の結果画面で送信ボタンを押してデータを確定させます。集計画面では右上のメニューから4種類の表示形式（全体円グラフ含む）を切り替えたり、「画像保存」ボタンで結果を保存できます！</p>
       <button class="m-btn" style="font-size:0.95rem; padding:10px 20px; border-radius:12px;" onclick="goHome()">ホームに戻る</button>
     </div>
   </div>
@@ -351,18 +280,18 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <div id="playMediaContainer"></div>
       <div class="q-text" id="qTxt"></div>
       <div id="quizArea"></div>
-      <div id="feedbackBox" class="feedback-box"></div>
-      <div style="margin-top:20px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-        <button class="m-btn s-btn" id="nextPlayBtn" style="display:none; font-size:0.95rem; padding:10px 24px;" onclick="proceedNextPlay()">次へ進む</button>
+      
+      <div style="margin-top:25px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+        <button class="m-btn s-btn" id="nextPlayBtn" style="font-size:1rem; padding:12px 32px; border-radius:16px;" onclick="proceedNextPlay()">次へ進む</button>
         <button class="m-btn" style="background:#475569; font-size:0.85rem; padding:8px 16px;" onclick="exitPlayMode()">編集に戻る / 中断</button>
       </div>
     </div>
   </div>
 
-  <!-- ⑤ 結果発表ページ -->
+  <!-- ⑤ 結果発表・送信ページ -->
   <div id="pageResult" class="page-section">
     <div class="r-card">
-      <h2 style="margin-bottom:15px; font-size:1.5rem; font-weight:800;" id="resultHeaderTitle">結果発表</h2>
+      <h2 style="margin-bottom:15px; font-size:1.5rem; font-weight:800;" id="resultHeaderTitle">解答終了・結果確認</h2>
       <div class="s-circ" id="scoreCircleContainer">
         <div class="s-num" id="aRate">0%</div>
         <div class="s-lab">正答率</div>
@@ -370,15 +299,15 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <p id="rCom" style="font-size:1.2rem;margin-bottom:10px;font-weight:800;color:var(--p);"></p>
       <p id="sDet" style="color:#94a3b8; margin-bottom:20px; font-weight:600;"></p>
       
-      <!-- 復習セクション -->
       <div id="reviewSection" style="margin:20px 0; text-align:left; display:none;">
         <h4 style="margin-bottom:10px; font-weight:800; color:var(--t);">📝 解答の振り返り</h4>
         <div id="reviewListContainer" style="display:flex; flex-direction:column; gap:10px; max-height:300px; overflow-y:auto; padding-right:5px;"></div>
       </div>
 
-      <div id="rankingRegisterSection" style="max-width:320px; margin:0 auto 20px auto;">
-        <input type="text" id="playerName" placeholder="名前を入力" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:10px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:var(--input-bg); color:var(--t);">
-        <button class="m-btn s-btn" style="padding:10px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="saveRanking()">回答を送信する</button>
+      <div id="rankingRegisterSection" style="max-width:360px; margin:0 auto 25px auto; background:var(--input-bg); padding:18px; border-radius:16px; border:1px solid var(--border);">
+        <p style="font-size:0.85rem; color:#94a3b8; font-weight:700; margin-bottom:10px; line-height:1.4;">※名前を入力し、「回答を送信・登録する」ボタンを押してデータを確定させてください。</p>
+        <input type="text" id="playerName" placeholder="名前を入力" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:12px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:var(--c); color:var(--t);">
+        <button class="m-btn s-btn" style="padding:12px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="saveRanking()">📥 回答を送信・登録する</button>
       </div>
 
       <div class="ranking-box" id="rankingContainer" style="display:none;">
@@ -388,24 +317,18 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
       <div style="display:flex; gap:12px; justify-content:center; margin-top:25px; flex-wrap:wrap;">
         <button class="m-btn s-btn" id="retryWrongBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="retryWrongQuestions()">🔄 間違えた問題だけリトライ</button>
-        <button class="m-btn" id="restartBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="restartQuiz()">もう一度挑戦する</button>
+        <button class="m-btn" id="restartBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="restartQuiz()">もう一度解答する</button>
         <button class="m-btn" style="background:#475569; font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="goHome()">ホームに戻る</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- スマホ専用 LINE風ボトムナビバー -->
 <nav class="mobile-tab-bar" id="mobileTabBar">
-  <button class="tab-item active" id="tabHome" onclick="goHome()">
-    <span>ホーム</span>
-  </button>
-  <button class="tab-item" id="tabHowTo" onclick="switchPage('howtouse')">
-    <span>使い方</span>
-  </button>
+  <button class="tab-item active" id="tabHome" onclick="goHome()"><span>ホーム</span></button>
+  <button class="tab-item" id="tabHowTo" onclick="switchPage('howtouse')"><span>使い方</span></button>
 </nav>
 
-<!-- QRコード表示用モーダル -->
 <div class="qr-modal-overlay" id="qrModal" onclick="closeQrModal(event)">
   <div class="qr-modal-content" onclick="event.stopPropagation()">
     <h3>共有用 QRコード</h3>
@@ -416,18 +339,13 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 </div>
 
 <script>
-let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, quizTitle="", quizDesc="", quizGenre="", quizCategory="一般", appMode="quiz", shuffleMode=false, speedBonus=false, timeLimit=0, timerInterval=null, timeLeft=0, audioCtx=null, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", multiSelectedOpts=[];
+let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, quizTitle="", quizDesc="", quizGenre="", quizCategory="一般", appMode="quiz", shuffleMode=false, speedBonus=false, timeLimit=0, timerInterval=null, timeLeft=0, audioCtx=null, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [];
 
-// 文字列を指定文字数で「…」に省略する関数
 function truncateText(str, maxLen = 4) {
   if (!str) return "";
-  if (str.length > maxLen) {
-    return str.substring(0, maxLen) + "…";
-  }
-  return str;
+  return str.length > maxLen ? str.substring(0, maxLen) + "…" : str;
 }
 
-// ライト・ダークモード / テーマカラー切り替え
 function toggleLightDarkMode(){
   const body = document.body;
   const btn = document.getElementById('modeToggleBtn');
@@ -452,12 +370,10 @@ function changeColorTheme(themeName){
 window.addEventListener('DOMContentLoaded', () => {
   const savedMode = localStorage.getItem('formapp_mode');
   const savedTheme = localStorage.getItem('formapp_theme') || 'blue';
-  
   if(savedMode === 'light'){
     document.body.classList.add('light-mode');
     document.getElementById('modeToggleBtn').innerText = "🌙 ダーク";
   }
-  
   changeColorTheme(savedTheme);
   document.getElementById('themeSelect').value = savedTheme;
 });
@@ -509,9 +425,7 @@ function goHome(){
   isSharedMode = false;
   isRetryMode = false;
   switchPage('home');
-  if(history.pushState) {
-    history.pushState(null, '', window.location.pathname);
-  }
+  if(history.pushState) history.pushState(null, '', window.location.pathname);
 }
 
 function getAllFiles(){
@@ -527,7 +441,6 @@ function saveAllFiles(files){
 
 function renderFileList(){
   const files = getAllFiles();
-  
   const categories = ["すべて"];
   files.forEach(f => {
     const cat = f.category && f.category.trim() ? f.category.trim() : "未分類";
@@ -540,11 +453,7 @@ function renderFileList(){
     const chip = document.createElement('button');
     chip.className = 'cat-filter-chip ' + (activeCategoryFilter === cat ? 'active' : '');
     chip.innerText = truncateText(cat, 5);
-    chip.title = cat;
-    chip.onclick = () => {
-      activeCategoryFilter = cat;
-      renderFileList();
-    };
+    chip.onclick = () => { activeCategoryFilter = cat; renderFileList(); };
     catBar.appendChild(chip);
   });
   
@@ -561,17 +470,14 @@ function renderFileList(){
     const fileCat = file.category && file.category.trim() ? file.category.trim() : "未分類";
     if(activeCategoryFilter !== "すべて" && activeCategoryFilter !== fileCat) return;
     
-    const displayCat = truncateText(fileCat, 5);
-    const displayGenre = truncateText(file.genre || '一般', 5);
-    
     const card = document.createElement('div');
     card.className = 'file-card';
     card.innerHTML = `
       <div>
-        <div class="file-card-title" title="${file.title || '無題'}">${file.title || '無題'}</div>
+        <div class="file-card-title">${file.title || '無題'}</div>
         <div class="file-card-meta">
-          <span title="${fileCat}">カテゴリ: ${displayCat}</span>
-          <span title="${file.genre || '一般'}">ジャンル: ${displayGenre} / ${file.mode === 'form' ? 'フォーム' : 'クイズ'} (${file.questions ? file.questions.length : 0}問)</span>
+          <span>カテゴリ: ${truncateText(fileCat, 5)}</span>
+          <span>ジャンル: ${truncateText(file.genre || '一般', 5)} / ${file.mode === 'form' ? 'フォーム' : 'クイズ'} (${file.questions ? file.questions.length : 0}問)</span>
         </div>
       </div>
       <div class="file-card-actions" onclick="event.stopPropagation()">
@@ -587,11 +493,7 @@ function renderFileList(){
 
 function createNewQuiz(){
   currentFileId = 'form_' + Date.now();
-  quizTitle = "";
-  quizDesc = "";
-  quizGenre = "";
-  quizCategory = "一般";
-  appMode = "quiz";
+  quizTitle = ""; quizDesc = ""; quizGenre = ""; quizCategory = "一般"; appMode = "quiz";
   document.getElementById('qTitle').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizGenre').value = quizGenre;
@@ -601,7 +503,6 @@ function createNewQuiz(){
   document.getElementById('chkSpeed').checked = false;
   document.getElementById('selTimer').value = "0";
   document.getElementById('shArea').style.display = 'none';
-  
   questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false }];
   renderQuestionsEditor();
   saveToLocalStorage();
@@ -612,14 +513,12 @@ function openFile(id){
   const files = getAllFiles();
   const file = files.find(f => f.id === id);
   if(!file) return;
-  
   currentFileId = file.id;
   quizTitle = file.title || "";
   quizDesc = file.desc || "";
   quizGenre = file.genre || "";
   quizCategory = file.category || "一般";
   appMode = file.mode || "quiz";
-  
   document.getElementById('qTitle').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizGenre').value = quizGenre;
@@ -629,51 +528,30 @@ function openFile(id){
   document.getElementById('chkSpeed').checked = !!file.speed;
   document.getElementById('selTimer').value = file.tm || 0;
   document.getElementById('shArea').style.display = 'none';
-  
   questionsData = file.questions || [];
-  if(questionsData.length === 0) {
-    questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false }];
-  } else {
-    questionsData.forEach(q => {
-      if(!q.opts) q.opts = ["", ""];
-      if(q.required === undefined) q.required = false;
-    });
-  }
+  if(questionsData.length === 0) questionsData = [{ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false }];
   renderQuestionsEditor();
   switchPage('edit');
 }
 
 function deleteFile(id){
   if(!confirm('こちらのファイルを削除してもよろしいでしょうか？')) return;
-  let files = getAllFiles();
-  files = files.filter(f => f.id !== id);
-  saveAllFiles(files);
+  saveAllFiles(getAllFiles().filter(f => f.id !== id));
   renderFileList();
 }
 
 function saveToLocalStorage(){
   if(!currentFileId) currentFileId = 'form_' + Date.now();
-  
   quizTitle = document.getElementById('qTitle').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim();
   quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
   appMode = document.getElementById('selAppMode').value;
-  const shuffle = document.getElementById('chkShuffle').checked;
-  const speed = document.getElementById('chkSpeed').checked;
-  const tm = parseInt(document.getElementById('selTimer').value);
-  
   collectQuestionsFromDOM();
-  
   let files = getAllFiles();
   const idx = files.findIndex(f => f.id === currentFileId);
-  const fileData = { id: currentFileId, title: quizTitle, desc: quizDesc, genre: quizGenre, category: quizCategory, mode: appMode, shuffle, speed, tm, questions: questionsData };
-  
-  if(idx >= 0){
-    files[idx] = fileData;
-  } else {
-    files.push(fileData);
-  }
+  const fileData = { id: currentFileId, title: quizTitle, desc: quizDesc, genre: quizGenre, category: quizCategory, mode: appMode, shuffle: document.getElementById('chkShuffle').checked, speed: document.getElementById('chkSpeed').checked, tm: parseInt(document.getElementById('selTimer').value), questions: questionsData };
+  if(idx >= 0) files[idx] = fileData; else files.push(fileData);
   saveAllFiles(files);
 }
 
@@ -688,24 +566,15 @@ function collectQuestionsFromDOM(){
     const imgInput = card.querySelector('.img-input');
     const vidInput = card.querySelector('.vid-input');
     const reqCheck = card.querySelector('.req-checkbox');
-
     if(!qInput) return;
-
     const type = typeSelect ? typeSelect.value : 'select';
     const opts = Array.from(card.querySelectorAll('.option-value-input')).map(inp => inp.value);
     const textAnswerInput = card.querySelector('.text-answer-input');
-    const answer = type === 'text'
-      ? (textAnswerInput ? textAnswerInput.value : '')
-      : (ansSelect ? ansSelect.value : 'A');
-
+    const answer = type === 'text' ? (textAnswerInput ? textAnswerInput.value : '') : (ansSelect ? ansSelect.value : 'A');
     const index = parseInt(card.dataset.index);
     const oldObj = questionsData[index] || {};
-
     newQData.push({
-      q: qInput.value,
-      type: type,
-      opts: opts,
-      ans: answer,
+      q: qInput.value, type, opts, ans: answer,
       exp: expInput ? expInput.value : "",
       imageUrl: imgInput ? imgInput.value.trim() : (oldObj.imageUrl || ""),
       videoUrl: vidInput ? vidInput.value.trim() : (oldObj.videoUrl || ""),
@@ -724,23 +593,19 @@ function renderQuestionsEditor(){
     const card = document.createElement('div');
     card.className = 'form-card';
     card.dataset.index = index;
-    
     if(!qObj.opts) qObj.opts = ["", ""];
-    let optCount = qObj.opts.length;
-    if(optCount < 2) optCount = 2;
+    let optCount = qObj.opts.length < 2 ? 2 : qObj.opts.length;
     
     let optionsHtml = '';
     for(let i=0; i<optCount; i++){
       let badge = String.fromCharCode(65 + i);
       let val = qObj.opts[i] !== undefined ? qObj.opts[i] : '';
-      let isOther = (val === 'その他');
       optionsHtml += `
         <div class="option-edit-row">
           <span class="opt-badge">${badge}</span>
-          <input type="text" class="opt-input option-value-input" value="${val}" ${isOther ? 'readonly style="background:var(--border); font-weight:bold;"' : ''} placeholder="選択肢 ${badge} の内容を入力" oninput="saveToLocalStorage()">
+          <input type="text" class="opt-input option-value-input" value="${val}" placeholder="選択肢 ${badge}" oninput="saveToLocalStorage()">
           ${optCount > 2 ? `<button type="button" class="del-opt-btn" onclick="removeOption(${index}, ${i})">×</button>` : ''}
-        </div>
-      `;
+        </div>`;
     }
     
     let ansOptions = '';
@@ -750,61 +615,43 @@ function renderQuestionsEditor(){
         ansOptions += `<option value="${badge}" ${qObj.ans === badge ? 'selected' : ''}>${badge}</option>`;
       }
     } else if(qObj.type === 'multi'){
-      ansOptions = `<span style="font-size:0.85rem; color:#94a3b8;">カンマ区切りで複数正解 (例: A,C)</span><input type="text" class="ans-select" value="${qObj.ans || ''}" placeholder="例: A,B" oninput="saveToLocalStorage()" style="padding:6px 10px; width:140px;">`;
+      ansOptions = `<input type="text" class="ans-select" value="${qObj.ans || ''}" placeholder="例: A,B" oninput="saveToLocalStorage()" style="padding:6px 10px; width:120px;">`;
     } else {
-      ansOptions = `<option value="text" selected>自動判定（記入式）</option>`;
+      ansOptions = `<option value="text" selected>記入式</option>`;
     }
-    
-    let hasOther = qObj.opts.includes('その他');
     
     card.innerHTML = `
       <div class="q-card-header">
         <span style="font-weight:800; color:var(--p);">質問 ${index + 1}</span>
         <div class="card-actions">
-          ${index > 0 ? `<button type="button" class="card-action-btn" onclick="moveQuestion(${index}, -1)" title="上へ">↑</button>` : ''}
-          ${index < questionsData.length - 1 ? `<button type="button" class="card-action-btn" onclick="moveQuestion(${index}, 1)" title="下へ">↓</button>` : ''}
-          <button type="button" class="card-action-btn" onclick="duplicateQuestion(${index})" title="複製する">複製</button>
-          <button type="button" class="card-action-btn del" onclick="deleteQuestion(${index})" title="削除する">削除</button>
+          ${index > 0 ? `<button type="button" class="card-action-btn" onclick="moveQuestion(${index}, -1)">↑</button>` : ''}
+          ${index < questionsData.length - 1 ? `<button type="button" class="card-action-btn" onclick="moveQuestion(${index}, 1)">↓</button>` : ''}
+          <button type="button" class="card-action-btn" onclick="duplicateQuestion(${index})">複製</button>
+          <button type="button" class="card-action-btn del" onclick="deleteQuestion(${index})">削除</button>
         </div>
       </div>
       <input type="text" class="q-input" value="${qObj.q || ''}" placeholder="質問文を入力" oninput="saveToLocalStorage()">
-      
-      <div style="margin: 12px 0; display:flex; flex-direction:column; gap:8px;">
-        <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URL（任意: https://...）" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
-        <input type="text" class="vid-input opt-input" value="${qObj.videoUrl || ''}" placeholder="YouTube動画URL（任意）" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
+      <div style="margin: 10px 0; display:flex; flex-direction:column; gap:8px;">
+        <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URL（https://...）" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
+        <input type="text" class="vid-input opt-input" value="${qObj.videoUrl || ''}" placeholder="YouTube動画URL" oninput="saveToLocalStorage()" style="font-size:0.9rem;">
       </div>
-
-      <div style="margin: 15px 0 8px 0; font-size:0.9rem; font-weight:700; color:#94a3b8;">回答の形式と選択肢</div>
       <div class="options-edit-list">
-        ${qObj.type === 'text' ? `<input type="text" class="opt-input text-answer-input" value="${qObj.ans || ''}" placeholder="正解となる文字列を入力" oninput="saveToLocalStorage()" style="max-width:100%;">` : optionsHtml}
+        ${qObj.type === 'text' ? `<input type="text" class="opt-input text-answer-input" value="${qObj.ans || ''}" placeholder="正解となる文字列" oninput="saveToLocalStorage()">` : optionsHtml}
       </div>
-      
-      ${qObj.type !== 'text' && optCount < 10 ? `
-        <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
-          <button type="button" class="file-action-btn" style="width:auto; font-weight:700;" onclick="addOptionToQuestion(${index})">＋ 選択肢を追加</button>
-          ${!hasOther ? `<button type="button" class="file-action-btn s-btn" style="width:auto; font-weight:700;" onclick="addOtherOptionToQuestion(${index})">＋ その他を追加</button>` : ''}
-        </div>
-      ` : ''}
-      
+      ${qObj.type !== 'text' && optCount < 10 ? `<button type="button" class="file-action-btn" style="width:auto; margin-bottom:12px;" onclick="addOptionToQuestion(${index})">＋ 選択肢を追加</button>` : ''}
       <div class="q-card-footer">
         <div class="ans-select-group">
           <span>形式:</span>
           <select class="type-select" onchange="changeQuestionType(${index}, this.value)">
-            <option value="select" ${qObj.type==='select'?'selected':''}>選択式 (単一)</option>
-            <option value="multi" ${qObj.type==='multi'?'selected':''}>選択式 (複数)</option>
+            <option value="select" ${qObj.type==='select'?'selected':''}>選択式(単一)</option>
+            <option value="multi" ${qObj.type==='multi'?'selected':''}>選択式(複数)</option>
             <option value="text" ${qObj.type==='text'?'selected':''}>記入式</option>
           </select>
           <span style="${appMode === 'form' ? 'display:none;' : ''}">正解:</span>
-          <div style="${appMode === 'form' ? 'display:none;' : 'display:inline-flex; align-items:center; gap:6px;'}">
-            <select class="ans-select" onchange="saveToLocalStorage()" style="${qObj.type==='multi'?'display:none;':''}">
-              ${ansOptions}
-            </select>
-            ${qObj.type==='multi'? ansOptions : ''}
-          </div>
+          <select class="ans-select" onchange="saveToLocalStorage()" style="${appMode === 'form' || qObj.type==='multi' ? 'display:none;' : ''}">${ansOptions}</select>
+          ${qObj.type==='multi'? ansOptions : ''}
         </div>
-        <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; font-weight:600; cursor:pointer;">
-          <input type="checkbox" class="req-checkbox" ${qObj.required ? 'checked' : ''} onchange="saveToLocalStorage()"> 必須回答
-        </label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; font-weight:600; cursor:pointer;"><input type="checkbox" class="req-checkbox" ${qObj.required ? 'checked' : ''} onchange="saveToLocalStorage()"> 必須</label>
       </div>
       <input type="text" class="exp-input" value="${qObj.exp || ''}" placeholder="解説文（任意）" oninput="saveToLocalStorage()" style="${appMode === 'form' ? 'display:none;' : ''}">
     `;
@@ -812,254 +659,151 @@ function renderQuestionsEditor(){
   });
 }
 
-function addQuestionCard(){
-  collectQuestionsFromDOM();
-  questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false });
-  renderQuestionsEditor();
-  saveToLocalStorage();
-}
+function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false }); renderQuestionsEditor(); saveToLocalStorage(); }
+function promptAddTitleText(){ const t = prompt('テキスト:'); if(t){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション】 " + t, type: "select", opts: ["次へ"], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false }); renderQuestionsEditor(); saveToLocalStorage(); } }
+function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = prompt(type==='image'?'画像URL:':'YouTubeURL:'); if(u){ if(type==='image') questionsData[questionsData.length-1].imageUrl=u; else questionsData[questionsData.length-1].videoUrl=u; renderQuestionsEditor(); saveToLocalStorage(); } }
+function deleteQuestion(index){ collectQuestionsFromDOM(); if(questionsData.length<=1){alert('最低1問必要です');return;} questionsData.splice(index,1); renderQuestionsEditor(); saveToLocalStorage(); }
+function duplicateQuestion(index){ collectQuestionsFromDOM(); questionsData.splice(index+1, 0, JSON.parse(JSON.stringify(questionsData[index]))); renderQuestionsEditor(); saveToLocalStorage(); }
+function moveQuestion(index, dir){ collectQuestionsFromDOM(); const target = index + dir; if(target<0||target>=questionsData.length)return; const tmp = questionsData[index]; questionsData[index] = questionsData[target]; questionsData[target] = tmp; renderQuestionsEditor(); saveToLocalStorage(); }
+function addOptionToQuestion(index){ collectQuestionsFromDOM(); if(questionsData[index].opts.length<10) questionsData[index].opts.push(""); renderQuestionsEditor(); saveToLocalStorage(); }
+function removeOption(qIdx, optIdx){ collectQuestionsFromDOM(); if(questionsData[qIdx].opts.length<=2){alert('最低2つ必要です');return;} questionsData[qIdx].opts.splice(optIdx,1); renderQuestionsEditor(); saveToLocalStorage(); }
+function changeQuestionType(index, newType){ collectQuestionsFromDOM(); questionsData[index].type = newType; questionsData[index].ans = newType==='text'?'': 'A'; renderQuestionsEditor(); saveToLocalStorage(); }
 
-function addOtherOptionToQuestion(index){
-  collectQuestionsFromDOM();
-  if(!questionsData[index].opts) questionsData[index].opts = ["", ""];
-  if(questionsData[index].opts.length >= 10) return;
-  questionsData[index].opts.push("その他");
-  renderQuestionsEditor();
-  saveToLocalStorage();
-}
-
-function promptAddTitleText(){
-  const txt = prompt('テキストを入力してください:');
-  if(!txt) return;
-  collectQuestionsFromDOM();
-  questionsData.push({ q: "【セクション】 " + txt, type: "select", opts: ["次へ進む"], ans: "A", exp: "", imageUrl: "", videoUrl: "", required: false });
-  renderQuestionsEditor();
-  saveToLocalStorage();
-}
-
-function promptAddMedia(type){
-  collectQuestionsFromDOM();
-  if(questionsData.length === 0) addQuestionCard();
-  const lastQ = questionsData[questionsData.length - 1];
-  if(type === 'image'){
-    const url = prompt('画像URLを入力してください:');
-    if(url) lastQ.imageUrl = url;
-  } else {
-    const url = prompt('YouTube動画URLを入力してください:');
-    if(url) lastQ.videoUrl = url;
+/* 全体で1つの円グラフを生成する関数 */
+function generateConicPieChart(items, totalVotes) {
+  if (totalVotes === 0) {
+    return `<div style="width:120px; height:120px; border-radius:50%; background:var(--border); margin:10px auto; display:flex; align-items:center; justify-content:center; font-size:0.8rem; color:#94a3b8;">投票なし</div>`;
   }
-  renderQuestionsEditor();
-  saveToLocalStorage();
+  const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#3b82f6', '#8b5cf6', '#14b8a6', '#f97316', '#64748b'];
+  let cumulativePercent = 0, gradientStops = [];
+  items.forEach((item, idx) => {
+    let percent = (item.count / totalVotes) * 100;
+    let start = cumulativePercent, end = cumulativePercent + percent;
+    gradientStops.push(`${colors[idx % colors.length]} ${start}% ${end}%`);
+    cumulativePercent = end;
+  });
+  let conicStyle = `background: conic-gradient(${gradientStops.join(', ')});`;
+  let legendHtml = `<div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:12px;">`;
+  items.forEach((item, idx) => {
+    let percent = totalVotes > 0 ? Math.round((item.count / totalVotes) * 100) : 0;
+    let color = colors[idx % colors.length];
+    legendHtml += `<div style="display:flex; align-items:center; gap:5px; font-size:0.85rem;"><span style="width:12px; height:12px; background:${color}; border-radius:3px; display:inline-block;"></span><span><b>${item.badge}:</b> ${item.text} (${item.cnt}票 / ${percent}%)</span></div>`;
+  });
+  legendHtml += `</div>`;
+  return `
+    <div style="text-align:center; margin:15px 0;">
+      <div style="width:130px; height:130px; border-radius:50%; ${conicStyle} margin:0 auto 10px auto; box-shadow:0 4px 12px rgba(0,0,0,0.2);"></div>
+      ${legendHtml}
+    </div>
+  `;
 }
 
-function deleteQuestion(index){
-  collectQuestionsFromDOM();
-  if(questionsData.length <= 1){ alert('質問は最低1つ必要です'); return; }
-  questionsData.splice(index, 1);
-  renderQuestionsEditor();
-  saveToLocalStorage();
-}
-
-function duplicateQuestion(index){
-  collectQuestionsFromDOM();
-  const target = JSON.parse(JSON.stringify(questionsData[index]));
-  questionsData.splice(index + 1, 0, target);
-  renderQuestionsEditor();
-  saveToLocalStorage();
-}
-
-function moveQuestion(index, direction){
-  collectQuestionsFromDOM();
-  const targetIndex = index + direction;
-  if(targetIndex < 0 || targetIndex >= questionsData.length) return;
-  const temp = questionsData[index];
-  questionsData[index] = questionsData[targetIndex];
-  questionsData[targetIndex] = temp;
-  renderQuestionsEditor();
-  saveToLocalStorage();
-}
-
-function addOptionToQuestion(index){
-  collectQuestionsFromDOM();
-  if(!questionsData[index].opts) questionsData[index].opts = ["", ""];
-  if(questionsData[index].opts.length >= 10) return;
-  questionsData[index].opts.push("");
-  renderQuestionsEditor();
-  saveToLocalStorage();
-}
-
-function removeOption(qIdx, optIdx){
-  collectQuestionsFromDOM();
-  const q = questionsData[qIdx];
-  if(!q || !Array.isArray(q.opts)) return;
-  if(q.opts.length <= 2){
-    alert('選択肢は最低2つ必要です');
-    return;
-  }
-
-  const oldAnswer = String(q.ans || 'A').toUpperCase();
-  const oldAnswerIndex = oldAnswer.charCodeAt(0) - 65;
-
-  q.opts.splice(optIdx, 1);
-
-  if(oldAnswerIndex === optIdx){
-    q.ans = 'A';
-  } else if(oldAnswerIndex > optIdx && oldAnswerIndex >= 0){
-    q.ans = String.fromCharCode(65 + oldAnswerIndex - 1);
-  }
-
-  renderQuestionsEditor();
-  saveToLocalStorage();
-}
-
-function changeQuestionType(index, newType){
-  collectQuestionsFromDOM();
-  questionsData[index].type = newType;
-  if(newType === 'text'){
-    questionsData[index].ans = questionsData[index].ans || "";
-  } else if(newType === 'multi'){
-    questionsData[index].ans = "A";
-  } else {
-    questionsData[index].ans = "A";
-  }
-  renderQuestionsEditor();
-  saveToLocalStorage();
-}
-
+/* 4つの集計表示形式のレンダリングエンジン */
 function renderAnswerStats(){
   const container = document.getElementById('answerStatsContainer');
+  const mode = document.getElementById('statDisplayMode').value;
   const storageKey = 'formapp_rankings_' + (currentFileId || 'default');
-  
   let records = [];
-  try{
-    const saved = localStorage.getItem(storageKey);
-    if(saved) records = JSON.parse(saved);
-  }catch(e){}
+  try{ const saved = localStorage.getItem(storageKey); if(saved) records = JSON.parse(saved); }catch(e){}
 
   if(appMode === 'form'){
-    if(records.length === 0){
-      container.innerHTML = `<p style="color:#94a3b8;">まだ回答データがありません。</p>`;
-      return;
-    }
+    if(records.length === 0){ container.innerHTML = `<p style="color:#94a3b8;">まだ回答データがありません。</p>`; return; }
     let html = `<p style="margin-bottom:15px; font-weight:700; color:var(--p);">総回答数: ${records.length} 件</p>`;
     
     questionsData.forEach((q, qIdx) => {
-      html += `<div style="background:var(--input-bg); padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid var(--border);">`;
-      html += `<p style="font-weight:800; margin-bottom:8px; color:var(--t);">Q${qIdx+1}. ${q.q}</p>`;
+      html += `<div style="background:var(--input-bg); padding:18px; border-radius:16px; margin-bottom:15px; border:1px solid var(--border);">`;
+      html += `<p style="font-weight:800; margin-bottom:12px; color:var(--t); font-size:1.05rem;">Q${qIdx+1}. ${q.q}</p>`;
       
       if(q.type === 'select' && q.opts){
         let counts = {};
-        q.opts.forEach((opt, oIdx) => {
-          let badge = String.fromCharCode(65 + oIdx);
-          counts[badge] = 0;
-        });
+        q.opts.forEach((opt, oIdx) => { counts[String.fromCharCode(65 + oIdx)] = 0; });
         let otherTexts = [];
         
         records.forEach(rec => {
           if(rec.answers && rec.answers[qIdx] !== undefined){
             let ans = rec.answers[qIdx];
-            if(ans.startsWith("OTHER:")) {
-              let badgeKey = "OTHER";
-              if(!counts[badgeKey]) counts[badgeKey] = 0;
-              counts[badgeKey]++;
-              otherTexts.push(ans.replace("OTHER:", ""));
-            } else if(counts[ans] !== undefined) {
-              counts[ans]++;
-            }
+            if(ans.startsWith("OTHER:")) { counts["OTHER"] = (counts["OTHER"]||0)+1; otherTexts.push(ans.replace("OTHER:", "")); }
+            else if(counts[ans] !== undefined) counts[ans]++;
           }
         });
         
-        q.opts.forEach((opt, oIdx) => {
-          let badge = String.fromCharCode(65 + oIdx);
-          let cnt = counts[badge] || 0;
-          let rate = records.length > 0 ? Math.round((cnt / records.length) * 100) : 0;
-          html += `<div style="margin-bottom:6px;">`;
-          html += `<div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:2px;"><span>${badge}: ${opt}</span> <b>${cnt}票 (${rate}%)</b></div>`;
-          html += `<div style="width:100%; height:8px; background:var(--border); border-radius:4px; overflow:hidden;"><div style="width:${rate}%; height:100%; background:var(--p);"></div></div>`;
-          html += `</div>`;
-        });
-
-        if(counts["OTHER"] && counts["OTHER"] > 0) {
-          let cnt = counts["OTHER"];
-          let rate = Math.round((cnt / records.length) * 100);
-          html += `<div style="margin-top:8px; margin-bottom:6px;">`;
-          html += `<div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:2px;"><span style="color:var(--s); font-weight:bold;">その他 (自由記述)</span> <b>${cnt}票 (${rate}%)</b></div>`;
-          html += `<ul style="padding-left:18px; font-size:0.85rem; color:#94a3b8; margin-top:4px;">`;
-          otherTexts.forEach(t => { html += `<li>${t}</li>`; });
-          html += `</ul>`;
-          html += `</div>`;
+        if(mode === 'pie'){
+          let pieItems = [];
+          q.opts.forEach((opt, oIdx) => {
+            let badge = String.fromCharCode(65 + oIdx);
+            let cnt = counts[badge] || 0;
+            pieItems.push({ badge, text: opt, count: cnt, cnt });
+          });
+          html += generateConicPieChart(pieItems, records.length);
+        } else {
+          q.opts.forEach((opt, oIdx) => {
+            let badge = String.fromCharCode(65 + oIdx);
+            let cnt = counts[badge] || 0;
+            let rate = records.length > 0 ? Math.round((cnt / records.length) * 100) : 0;
+            
+            if(mode === 'bar'){
+              html += `<div style="margin-bottom:10px;"><div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:4px;"><span><b>${badge}:</b> ${opt}</span> <span style="font-weight:800; color:var(--p);">${cnt}票 (${rate}%)</span></div><div style="width:100%; height:12px; background:var(--border); border-radius:6px; overflow:hidden;"><div style="width:${rate}%; height:100%; background:linear-gradient(90deg, var(--p), #818cf8);"></div></div></div>`;
+            } else if(mode === 'text'){
+              html += `<div style="font-size:0.9rem; margin-bottom:4px; border-bottom:1px dashed var(--border); padding-bottom:4px;">[${badge}] ${opt} ⇒ <b>${cnt}票</b> (${rate}%)</div>`;
+            } else if(mode === 'compact'){
+              html += `<span style="display:inline-block; background:var(--c); padding:4px 10px; border-radius:8px; margin:3px; font-size:0.85rem;">[${badge}] ${cnt}票(${rate}%)</span>`;
+            }
+          });
         }
-
       } else {
-        html += `<ul style="padding-left:18px; font-size:0.9rem; color:#94a3b8;">`;
-        records.forEach(rec => {
-          if(rec.answers && rec.answers[qIdx]){
-            html += `<li>${rec.answers[qIdx]} (${rec.name})</li>`;
-          }
-        });
+        html += `<ul style="padding-left:18px; font-size:0.9rem; color:#94a3b8; display:flex; flex-direction:column; gap:6px;">`;
+        records.forEach(rec => { if(rec.answers && rec.answers[qIdx]) html += `<li style="background:var(--border); padding:6px 10px; border-radius:8px; color:var(--t);">💬 ${rec.answers[qIdx]} <span style="font-size:0.75rem; color:#94a3b8; float:right;">(${rec.name})</span></li>`; });
         html += `</ul>`;
       }
       html += `</div>`;
     });
     container.innerHTML = html;
   } else {
-    if(records.length > 0){
-      let html = `<ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">`;
-      records.forEach((r, i)=>{
-        html += `<li style="padding:10px; background:var(--input-bg); border-radius:10px; display:flex; justify-content:space-between; border:1px solid var(--border);"><span>${i+1}. ${r.name}</span> <b>${r.score}点 (${r.rate}%)</b></li>`;
-      });
-      html += `</ul>`;
-      container.innerHTML = html;
-    } else {
-      container.innerHTML = `<p style="color:#94a3b8;">まだランキングの記録がありません。</p>`;
-    }
+    container.innerHTML = records.length > 0 ? `<ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">` + records.map((r, i)=>`<li style="padding:10px; background:var(--input-bg); border-radius:10px; display:flex; justify-content:space-between; border:1px solid var(--border);"><span>${i+1}. ${r.name}</span> <b>${r.score}点 (${r.rate}%)</b></li>`).join('') + `</ul>` : `<p style="color:#94a3b8;">まだデータがありません。</p>`;
   }
+}
+
+/* 統計結果の画像保存（html2canvas使用） */
+function exportStatsImage(){
+  const targetArea = document.getElementById('statsExportArea');
+  if(!targetArea) return;
+  const exportBtn = targetArea.querySelector('button');
+  if(exportBtn) exportBtn.style.display = 'none';
+  
+  html2canvas(targetArea, { backgroundColor: null, scale: 2 }).then(canvas => {
+    if(exportBtn) exportBtn.style.display = 'inline-flex';
+    const link = document.createElement('a');
+    link.download = (quizTitle || '統計結果') + '_集計データ.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }).catch(err => {
+    if(exportBtn) exportBtn.style.display = 'inline-flex';
+    alert('画像の保存に失敗しました');
+  });
 }
 
 function exportJsonFile(){
   collectQuestionsFromDOM();
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getAllFiles(), null, 2));
-  const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", "formapp_backup.json");
-  document.body.appendChild(downloadAnchor);
-  downloadAnchor.click();
-  downloadAnchor.remove();
+  const a = document.createElement('a'); a.href = dataStr; a.download = "formapp_backup.json";
+  document.body.appendChild(a); a.click(); a.remove();
 }
 
-function importJsonFile(event){
-  const fileReader = new FileReader();
-  if(event.target.files[0]){
-    fileReader.readAsText(event.target.files[0], "UTF-8");
-    fileReader.onload = (e) => {
-      try{
-        const importedFiles = JSON.parse(e.target.result);
-        if(Array.isArray(importedFiles)){
-          saveAllFiles(importedFiles);
-          renderFileList();
-          alert('読み込みました');
-        }
-      }catch(err){
-        alert('読み込みに失敗しました');
-      }
+function importJsonFile(e){
+  const reader = new FileReader();
+  if(e.target.files[0]){
+    reader.readAsText(e.target.files[0], "UTF-8");
+    reader.onload = (ev) => {
+      try{ saveAllFiles(JSON.parse(ev.target.result)); renderFileList(); alert('読み込みました'); }catch(err){ alert('失敗しました'); }
     };
   }
 }
 
-function playFile(id){
-  openFile(id);
-  startTestPlay();
-}
+function playFile(id){ openFile(id); startTestPlay(); }
 
 function startTestPlay(){
   collectQuestionsFromDOM();
   if(questionsData.length === 0){alert('質問がありません');return}
-  for(let i=0; i<questionsData.length; i++){
-    if(!questionsData[i].q.trim()){
-      alert(`質問 ${i+1} が空欄です`);
-      return;
-    }
-  }
   quizTitle = document.getElementById('qTitle').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim();
@@ -1068,11 +812,8 @@ function startTestPlay(){
   shuffleMode = document.getElementById('chkShuffle').checked;
   speedBonus = document.getElementById('chkSpeed').checked;
   timeLimit = parseInt(document.getElementById('selTimer').value);
-  
-  isSharedMode = false;
-  isRetryMode = false;
-  userFormAnswers = [];
-  userPlayHistory = [];
+  isSharedMode = false; isRetryMode = false;
+  userFormAnswers = []; userPlayHistory = [];
   activePlayData = JSON.parse(JSON.stringify(questionsData));
   beginQuizPlay();
 }
@@ -1080,647 +821,202 @@ function startTestPlay(){
 function retryWrongQuestions(){
   if(wrongQuestionsData.length === 0) return;
   activePlayData = JSON.parse(JSON.stringify(wrongQuestionsData));
-  isRetryMode = true;
-  userPlayHistory = [];
+  isRetryMode = true; userPlayHistory = [];
   beginQuizPlay();
 }
 
-function generateShareUrl(){
+async function shortenURL(longUrl) {
+    try {
+        const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+        return res.ok ? await res.text() : longUrl;
+    } catch (e) {
+        return longUrl;
+    }
+}
+
+async function generateShareUrl(){
   collectQuestionsFromDOM();
   if(questionsData.length === 0){alert('質問がありません');return}
-  
   quizTitle = document.getElementById('qTitle').value.trim() || "無題";
-  quizDesc = document.getElementById('qDesc').value.trim();
-  quizGenre = document.getElementById('quizGenre').value.trim();
-  quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
-  appMode = document.getElementById('selAppMode').value;
-  shuffleMode = document.getElementById('chkShuffle').checked;
-  speedBonus = document.getElementById('chkSpeed').checked;
-  timeLimit = parseInt(document.getElementById('selTimer').value);
-  
-  const sData = { id: currentFileId, t: quizTitle, d: quizDesc, g: quizGenre, cat: quizCategory, m: appMode, sh: shuffleMode, sb: speedBonus, tm: timeLimit, q: questionsData };
+  const sData = { id: currentFileId, t: quizTitle, d: document.getElementById('qDesc').value.trim(), g: document.getElementById('quizGenre').value.trim(), cat: document.getElementById('quizCategory').value.trim() || "一般", m: appMode, sh: document.getElementById('chkShuffle').checked, sb: document.getElementById('chkSpeed').checked, tm: parseInt(document.getElementById('selTimer').value), q: questionsData };
   const sD = btoa(unescape(encodeURIComponent(JSON.stringify(sData)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  const url = window.location.protocol + '//' + window.location.host + window.location.pathname + '?p=' + sD;
-  document.getElementById('shUrl').value = url;
+  const longUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?p=' + sD;
+  
+  const shInput = document.getElementById('shUrl');
+  shInput.value = "短縮URLを生成中...";
   document.getElementById('shArea').style.display = 'block';
+  
+  const shortUrl = await shortenURL(longUrl);
+  shInput.value = shortUrl;
 }
 
 function showQrModal(){
   const url = document.getElementById('shUrl').value;
-  if(!url){
-    alert('先に共有URLを発行してください');
-    return;
-  }
+  if(!url){alert('先に共有URLを発行してください');return;}
   document.getElementById('qrModalUrlText').innerText = url;
-  
   try {
-    const qr = qrcode(0, 'M');
-    qr.addData(url);
-    qr.make();
-    
-    const canvas = document.getElementById('qrcodeCanvas');
-    const ctx = canvas.getContext('2d');
-    const moduleCount = qr.getModuleCount();
-    const cellSize = 6;
-    const margin = 12;
-    const size = moduleCount * cellSize + margin * 2;
-    
-    canvas.width = size;
-    canvas.height = size;
-    
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, size, size);
-    
+    const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
+    const canvas = document.getElementById('qrcodeCanvas'), ctx = canvas.getContext('2d');
+    const mod = qr.getModuleCount(), size = mod * 5 + 24;
+    canvas.width = size; canvas.height = size;
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
     ctx.fillStyle = '#000000';
-    for (let r = 0; r < moduleCount; r++) {
-      for (let c = 0; c < moduleCount; c++) {
-        if (qr.isDark(r, c)) {
-          ctx.fillRect(margin + c * cellSize, margin + r * cellSize, cellSize, cellSize);
-        }
-      }
-    }
-  } catch(e) {
-    console.error('QRコード生成エラー:', e);
-  }
-
+    for(let r=0; r<mod; r++){ for(let c=0; c<mod; c++){ if(qr.isDark(r, c)) ctx.fillRect(12 + c * 5, 12 + r * 5, 5, 5); } }
+  }catch(e){}
   document.getElementById('qrModal').style.display = 'flex';
 }
 
-function closeQrModal(event){
-  document.getElementById('qrModal').style.display = 'none';
-}
-
-function closeQrModalDirect(){
-  document.getElementById('qrModal').style.display = 'none';
-}
-
-function exitPlayMode(){
-  if(isSharedMode){
-    goHome();
-  } else {
-    switchPage('edit');
-  }
-}
-
-function initAudio(){
-  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-}
-
-function playSound(type){
-  if(appMode === 'form') return;
-  try{
-    initAudio();
-    if(!audioCtx) return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    
-    if(type === 'correct'){
-      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
-      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.15);
-      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.35);
-    } else if(type === 'incorrect'){
-      osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-      osc.frequency.setValueAtTime(140, audioCtx.currentTime + 0.15);
-      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.4);
-    }
-  }catch(e){}
-}
+function closeQrModal(){ document.getElementById('qrModal').style.display = 'none'; }
+function closeQrModalDirect(){ document.getElementById('qrModal').style.display = 'none'; }
+function exitPlayMode(){ if(isSharedMode) goHome(); else switchPage('edit'); }
 
 window.onload=()=>{
   const urlParams = new URLSearchParams(window.location.search);
   const p = urlParams.get('p');
-  
   if(p){
     try{
       const d = JSON.parse(decodeURIComponent(escape(atob(p.replace(/-/g,'+').replace(/_/g,'/')))));
       currentFileId = d.id || 'shared_' + Date.now();
-      quizTitle = d.t || "";
-      quizDesc = d.d || "";
-      quizGenre = d.g || "";
-      quizCategory = d.cat || "一般";
-      appMode = d.m || "quiz";
-      shuffleMode = !!d.sh;
-      speedBonus = !!d.sb;
-      timeLimit = d.tm || 0;
-      
+      quizTitle = d.t || ""; quizGenre = d.g || ""; appMode = d.m || "quiz";
       document.getElementById('pageTitle').innerText = quizTitle || "FormApp";
-      
-      questionsData = d.q;
-      activePlayData = JSON.parse(JSON.stringify(questionsData));
-      isSharedMode = true;
-      isRetryMode = false;
-      userFormAnswers = [];
-      userPlayHistory = [];
+      questionsData = d.q; activePlayData = JSON.parse(JSON.stringify(questionsData));
+      isSharedMode = true; isRetryMode = false; userFormAnswers = []; userPlayHistory = [];
       beginQuizPlay();
       return;
     }catch(e){alert("データが破損しています")}
   }
-  
-  // 途中保存の自動復元チェック
-  const savedState = localStorage.getItem('formapp_active_session');
-  if(savedState){
-    try{
-      const s = JSON.parse(savedState);
-      if(confirm(`「${s.quizTitle}」の回答途中データが見つかりました。続きから再開しますか？`)){
-        currentFileId = s.fileId;
-        quizTitle = s.quizTitle;
-        quizGenre = s.quizGenre;
-        appMode = s.appMode;
-        timeLimit = s.timeLimit;
-        speedBonus = s.speedBonus;
-        activePlayData = s.activePlayData;
-        cI = s.cI;
-        sc = s.sc;
-        totalScore = s.totalScore;
-        userFormAnswers = s.userFormAnswers;
-        userPlayHistory = s.userPlayHistory;
-        isSharedMode = s.isSharedMode;
-        switchPage('play');
-        sW();
-        return;
-      } else {
-        localStorage.removeItem('formapp_active_session');
-      }
-    }catch(e){localStorage.removeItem('formapp_active_session');}
-  }
-
   switchPage('home');
-
-  window.onpopstate = (event) => {
-    if(!new URLSearchParams(window.location.search).get('p')) {
-      if(!isSharedMode) switchPage('home');
-    }
-  };
 };
 
-function saveSessionState(){
-  if(cI >= activePlayData.length) {
-    localStorage.removeItem('formapp_active_session');
-    return;
-  }
-  const session = {
-    fileId: currentFileId,
-    quizTitle, quizGenre, appMode, timeLimit, speedBonus,
-    activePlayData, cI, sc, totalScore, userFormAnswers, userPlayHistory, isSharedMode
-  };
-  localStorage.setItem('formapp_active_session', JSON.stringify(session));
-}
-
 function beginQuizPlay(){
-  if(shuffleMode && !isRetryMode){
-    activePlayData.sort(()=>Math.random()-0.5);
-  }
+  if(shuffleMode && !isRetryMode) activePlayData.sort(()=>Math.random()-0.5);
   document.getElementById('qTitleView').innerText = quizTitle;
   document.getElementById('genreView').innerText = quizGenre ? `ジャンル: ${quizGenre}` : "";
-  document.getElementById('scoreLiveView').innerText = appMode === 'form' ? '' : `現在のスコア: ${totalScore}点`;
-  
+  document.getElementById('scoreLiveView').innerText = appMode === 'form' ? '' : `スコア: ${totalScore}点`;
   switchPage('play');
-  cI=0; sc=0; totalScore=0;
-  if(!isRetryMode) wrongQuestionsData = [];
-  userPlayHistory = [];
+  cI=0; sc=0; totalScore=0; if(!isRetryMode) wrongQuestionsData = []; userPlayHistory = [];
   sW();
 }
 
 function sW(){
-  if(cI>=activePlayData.length){
-    localStorage.removeItem('formapp_active_session');
-    switchPage('result');
-    sR();
-    return;
-  }
-  
-  saveSessionState();
-  
+  if(cI >= activePlayData.length){ switchPage('result'); sR(); return; }
   if(timerInterval) clearInterval(timerInterval);
-  const tView = document.getElementById('timerView');
-  tView.innerText = "";
+  document.getElementById('timerView').innerText = "";
+  const q = activePlayData[cI];
+  document.getElementById('pBar').style.width = (cI/activePlayData.length)*100+'%';
+  if(appMode !== 'form') document.getElementById('scoreLiveView').innerText = `スコア: ${totalScore}点`;
   
-  const q = activePlayData[cI], p = (cI/activePlayData.length)*100;
-  document.getElementById('pBar').style.width = p+'%';
-  if(appMode !== 'form'){
-    document.getElementById('scoreLiveView').innerText = `現在のスコア: ${totalScore}点`;
-  }
+  document.getElementById('qTxt').innerHTML = 'Q'+(cI+1)+'. '+q.q + (q.required ? '<span style="color:var(--d); font-size:0.9rem; margin-left:6px;">*必須</span>' : '');
   
-  let reqLabel = q.required ? '<span style="color:var(--d); font-size:0.9rem; margin-left:6px;">*必須</span>' : '';
-  document.getElementById('qTxt').innerHTML = 'Q'+(cI+1)+'. '+q.q + reqLabel;
-  
-  const mediaBox = document.getElementById('playMediaContainer');
-  mediaBox.innerHTML = '';
-  if(q.imageUrl){
-    const img = document.createElement('img');
-    img.src = q.imageUrl;
-    img.style.maxWidth = '100%';
-    img.style.maxHeight = '220px';
-    img.style.borderRadius = '12px';
-    img.style.marginBottom = '15px';
-    mediaBox.appendChild(img);
-  }
+  const mediaBox = document.getElementById('playMediaContainer'); mediaBox.innerHTML = '';
+  if(q.imageUrl) mediaBox.innerHTML += `<img src="${q.imageUrl}" style="max-width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;">`;
   if(q.videoUrl){
-    let embedUrl = q.videoUrl;
-    if(embedUrl.includes('watch?v=')){
-      embedUrl = embedUrl.replace('watch?v=', 'embed/');
-    } else if(embedUrl.includes('youtu.be/')){
-      embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
-    }
-    const iframe = document.createElement('iframe');
-    iframe.src = embedUrl;
-    iframe.style.width = '100%';
-    iframe.style.height = '220px';
-    iframe.style.borderRadius = '12px';
-    iframe.style.border = 'none';
-    iframe.style.marginBottom = '15px';
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    mediaBox.appendChild(iframe);
+    let embedUrl = q.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/');
+    mediaBox.innerHTML += `<iframe src="${embedUrl}" style="width:100%; height:220px; border-radius:12px; border:none; margin-bottom:15px;" allowfullscreen></iframe>`;
   }
   
-  const feedbackBox = document.getElementById('feedbackBox');
-  feedbackBox.style.display = 'none';
-  feedbackBox.className = 'feedback-box';
-  document.getElementById('nextPlayBtn').style.display = 'none';
-  
-  const quizArea = document.getElementById('quizArea');
-  quizArea.innerHTML = '';
-  
-  if(timeLimit > 0 && appMode !== 'form'){
-    timeLeft = timeLimit;
-    tView.innerText = `残り時間: ${timeLeft}秒`;
-    timerInterval = setInterval(()=>{
-      timeLeft--;
-      tView.innerText = `残り時間: ${timeLeft}秒`;
-      if(timeLeft <= 0){
-        clearInterval(timerInterval);
-        handleAnswer(null, true);
-      }
-    }, 1000);
-  }
+  document.getElementById('nextPlayBtn').innerText = (cI === activePlayData.length - 1) ? '回答を完了して結果へ' : '次へ進む';
+  const quizArea = document.getElementById('quizArea'); quizArea.innerHTML = '';
+  currentSelectedAns = null; multiSelectedOpts = [];
   
   if(q.type === 'select' || q.type === 'multi'){
-    const optCount = q.opts ? q.opts.length : 2;
-    const g=document.createElement('div');
-    g.className = 'o-grid';
-    
-    if(q.type === 'multi') multiSelectedOpts = [];
-    
-    for(let j=0; j<optCount; j++){
+    const g = document.createElement('div'); g.className = 'o-grid';
+    q.opts.forEach((val, j) => {
       const k = String.fromCharCode(65 + j);
-      const val = q.opts[j] || '';
-      
-      if(val === 'その他') {
-        const wrapOther = document.createElement('div');
-        wrapOther.style.gridColumn = '1 / -1';
-        wrapOther.style.background = 'var(--input-bg)';
-        wrapOther.style.border = '2px solid var(--border)';
-        wrapOther.style.padding = '14px 18px';
-        wrapOther.style.borderRadius = '16px';
-        wrapOther.style.display = 'flex';
-        wrapOther.style.flexDirection = 'column';
-        wrapOther.style.gap = '10px';
-        
-        const labelOther = document.createElement('div');
-        labelOther.innerText = k + ': その他（自由記述）';
-        labelOther.style.fontWeight = '700';
-        labelOther.style.fontSize = '1rem';
-        labelOther.style.color = 'var(--t)';
-        
-        const inputOther = document.createElement('input');
-        inputOther.type = 'text';
-        inputOther.className = 'text-ans-input';
-        inputOther.placeholder = '内容を入力してください';
-        inputOther.style.margin = '0';
-        inputOther.style.maxWidth = '100%';
-        
-        const btnOther = document.createElement('button');
-        btnOther.className = 'm-btn s-btn';
-        btnOther.innerText = 'この内容で回答';
-        btnOther.style.width = '100%';
-        btnOther.style.padding = '10px';
-        
-        btnOther.onclick = () => {
-          if(!inputOther.value.trim()){ alert('内容を入力してください'); return; }
-          handleAnswer('OTHER:' + inputOther.value.trim());
-        };
-        
-        wrapOther.appendChild(labelOther);
-        wrapOther.appendChild(inputOther);
-        wrapOther.appendChild(btnOther);
-        g.appendChild(wrapOther);
-      } else {
-        const b=document.createElement('button');
-        b.className='o-btn';
-        b.innerText=k+': '+val;
-        
+      const b = document.createElement('button');
+      b.className = 'o-btn'; b.innerText = k + ': ' + val;
+      b.onclick = () => {
         if(q.type === 'multi'){
-          b.onclick=() => {
-            if(b.classList.contains('selected')){
-              b.classList.remove('selected');
-              multiSelectedOpts = multiSelectedOpts.filter(item => item !== k);
-            } else {
-              b.classList.add('selected');
-              multiSelectedOpts.push(k);
-              multiSelectedOpts.sort();
-            }
-          };
+          if(b.classList.contains('selected')){ b.classList.remove('selected'); multiSelectedOpts = multiSelectedOpts.filter(item => item !== k); }
+          else { b.classList.add('selected'); multiSelectedOpts.push(k); multiSelectedOpts.sort(); }
+          currentSelectedAns = multiSelectedOpts.join(',');
         } else {
-          b.onclick=()=>handleAnswer(k);
+          g.querySelectorAll('.o-btn').forEach(btn => btn.classList.remove('selected'));
+          b.classList.add('selected'); currentSelectedAns = k;
         }
-        g.appendChild(b);
-      }
-    }
-    quizArea.appendChild(g);
-    
-    if(q.type === 'multi'){
-      const submitMultiBtn = document.createElement('button');
-      submitMultiBtn.className = 'm-btn s-btn';
-      submitMultiBtn.innerText = '回答を確定する';
-      submitMultiBtn.style.width = '100%';
-      submitMultiBtn.style.maxWidth = '300px';
-      submitMultiBtn.style.margin = '10px auto 0 auto';
-      submitMultiBtn.style.display = 'block';
-      submitMultiBtn.onclick = () => {
-        if(multiSelectedOpts.length === 0){ alert('選択肢を1つ以上選んでください'); return; }
-        handleAnswer(multiSelectedOpts.join(','));
       };
-      quizArea.appendChild(submitMultiBtn);
-    }
-  } else {
-    const wrap = document.createElement('div');
-    wrap.style.maxWidth = '480px';
-    wrap.style.margin = '0 auto';
-    
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'text-ans-input';
-    input.placeholder = 'ここに入力';
-    
-    const btn = document.createElement('button');
-    btn.className = 'm-btn s-btn';
-    btn.innerText = '回答する';
-    btn.style.width = '100%';
-    
-    btn.onclick = () => {
-      const userAns = input.value;
-      if(q.required && !userAns.trim()){ alert('この質問は必須回答です'); return; }
-      handleAnswer(userAns);
-    };
-    
-    input.onkeydown = (e) => {
-      if(e.key === 'Enter') btn.click();
-    };
-    
-    wrap.appendChild(input);
-    wrap.appendChild(btn);
-    quizArea.appendChild(wrap);
-    input.focus();
-  }
-}
-
-function normalizeAnswer(str) {
-  if (!str) return "";
-  return String(str)
-    .trim()
-    .toLowerCase()
-    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    })
-    .replace(/[\s\u3000]+/g, "");
-}
-
-function handleAnswer(userAns, isTimeout=false){
-  if(timerInterval) clearInterval(timerInterval);
-  const currentQ = activePlayData[cI];
-  
-  if(currentQ.required && !isTimeout && (userAns == null || userAns === '')){
-    alert('この質問は必須回答です。回答を選択してください');
-    return;
-  }
-  
-  let isCorrect = false;
-  
-  if(appMode === 'form'){
-    isCorrect = true;
-    userFormAnswers.push(userAns);
-  } else {
-    if(!isTimeout && userAns != null){
-      if(currentQ.type === 'select'){
-        isCorrect = (userAns.trim().toUpperCase() === currentQ.ans.trim().toUpperCase());
-      } else if(currentQ.type === 'multi'){
-        const cleanUser = userAns.split(',').map(s=>s.trim().toUpperCase()).sort().join(',');
-        const cleanCorrect = currentQ.ans.split(',').map(s=>s.trim().toUpperCase()).sort().join(',');
-        isCorrect = (cleanUser === cleanCorrect);
-      } else {
-        const cleanUserAns = normalizeAnswer(userAns);
-        const cleanCorrectAns = normalizeAnswer(currentQ.ans);
-        isCorrect = (cleanUserAns === cleanCorrectAns);
-      }
-    }
-    
-    if(isCorrect){
-      sc++;
-      playSound('correct');
-      let pts = 100;
-      if(speedBonus && timeLimit > 0){
-        pts += timeLeft * 10;
-      }
-      totalScore += pts;
-    } else {
-      playSound('incorrect');
-      if(!isRetryMode){
-        wrongQuestionsData.push(currentQ);
-      }
-    }
-    
-    userPlayHistory.push({
-      q: currentQ.q,
-      userAns: userAns || '未回答',
-      correctAns: currentQ.ans,
-      isCorrect,
-      exp: currentQ.exp
+      g.appendChild(b);
     });
-  }
-  
-  const fb = document.getElementById('feedbackBox');
-  fb.style.display = 'block';
-  let msg = "";
-  if(appMode === 'form'){
-    msg = '回答を受け付けました';
+    quizArea.appendChild(g);
   } else {
-    msg = isTimeout ? '制限時間終了' : (isCorrect ? '正解！' : '不正解…');
-    if(!isCorrect && currentQ.type !== 'text'){
-      msg += `<br><span style="font-size:0.9rem; font-weight:normal;">正解: ${currentQ.ans}</span>`;
-    }
-    if(currentQ.exp){
-      msg += `<br><span style="font-size:0.95rem; font-weight:normal; margin-top:8px; display:block;">解説: ${currentQ.exp}</span>`;
-    }
-  }
-  
-  fb.className = 'feedback-box ' + (appMode === 'form' ? 'feedback-correct' : (isCorrect ? 'feedback-correct' : 'feedback-incorrect'));
-  fb.innerHTML = msg;
-  
-  document.querySelectorAll('#quizArea button, #quizArea input').forEach(el => el.disabled = true);
-  
-  if(appMode !== 'form' && currentQ.exp){
-    const nextBtn = document.getElementById('nextPlayBtn');
-    nextBtn.style.display = 'inline-flex';
-  } else {
-    setTimeout(()=>{
-      cI++;
-      sW();
-    }, 1200);
+    const wrap = document.createElement('div'); wrap.style.maxWidth = '480px'; wrap.style.margin = '0 auto';
+    const input = document.createElement('input'); input.type = 'text'; input.className = 'text-ans-input'; input.placeholder = 'ここに入力';
+    input.oninput = () => { currentSelectedAns = input.value; };
+    input.onkeydown = (e) => { if(e.key === 'Enter') proceedNextPlay(); };
+    wrap.appendChild(input); quizArea.appendChild(wrap); input.focus();
   }
 }
 
 function proceedNextPlay(){
-  cI++;
-  sW();
+  const currentQ = activePlayData[cI];
+  const textInput = document.querySelector('.text-ans-input');
+  if(currentQ.type === 'text' && textInput) currentSelectedAns = textInput.value;
+  
+  if(currentQ.required && (currentSelectedAns == null || String(currentSelectedAns).trim() === '')){
+    alert('この質問は必須回答です。'); return;
+  }
+  
+  if(appMode === 'form'){
+    userFormAnswers.push(currentSelectedAns || '');
+  } else {
+    let isCorrect = false;
+    if(currentSelectedAns != null && String(currentSelectedAns).trim() !== ''){
+      if(currentQ.type === 'select') isCorrect = (String(currentSelectedAns).trim().toUpperCase() === currentQ.ans.trim().toUpperCase());
+      else if(currentQ.type === 'multi') isCorrect = (String(currentSelectedAns).split(',').map(s=>s.trim().toUpperCase()).sort().join(',') === currentQ.ans.split(',').map(s=>s.trim().toUpperCase()).sort().join(','));
+      else isCorrect = (String(currentSelectedAns).trim().toLowerCase() === currentQ.ans.trim().toLowerCase());
+    }
+    if(isCorrect){ sc++; totalScore += 100; }
+    else if(!isRetryMode) wrongQuestionsData.push(currentQ);
+    userPlayHistory.push({ q: currentQ.q, userAns: currentSelectedAns || '未回答', correctAns: currentQ.ans, isCorrect, exp: currentQ.exp });
+  }
+  cI++; sW();
 }
 
 function sR(){
-  const resultHeader = document.getElementById('resultHeaderTitle');
-  const scoreCirc = document.getElementById('scoreCircleContainer');
-  const rCom = document.getElementById('rCom');
-  const sDet = document.getElementById('sDet');
-  const retryBtn = document.getElementById('retryWrongBtn');
-  const restartBtn = document.getElementById('restartBtn');
-  const reviewSec = document.getElementById('reviewSection');
-  
-  if(appMode === 'form'){
-    resultHeader.innerText = "送信完了";
-    scoreCirc.style.display = 'none';
-    rCom.innerText = "ご回答ありがとうございました！";
-    sDet.innerText = `すべての質問に回答が完了しました。`;
-    retryBtn.style.display = 'none';
-    reviewSec.style.display = 'none';
-    restartBtn.innerText = "もう一度回答する";
-  } else {
-    resultHeader.innerText = "結果発表";
-    scoreCirc.style.display = 'flex';
-    const a = Math.round(sc/activePlayData.length*100);
-    document.getElementById('aRate').innerText = a+'%';
-    sDet.innerText = `${activePlayData.length}問中 ${sc}問正解 (総合スコア: ${totalScore}点)`;
-    let m='';
-    if(a==100)m='パーフェクト達成！';
-    else if(a>=80)m='高得点獲得！';
-    else if(a>=50)m='あと少し！';
-    else m='リベンジ挑戦しよう';
-    rCom.innerText = m;
-    
-    // 復習リストのレンダリング
-    const reviewList = document.getElementById('reviewListContainer');
-    reviewList.innerHTML = '';
-    userPlayHistory.forEach((hist, idx) => {
-      const item = document.createElement('div');
-      item.style.padding = '12px';
-      item.style.borderRadius = '10px';
-      item.style.background = 'var(--input-bg)';
-      item.style.border = '1px solid var(--border)';
-      item.style.fontSize = '0.9rem';
-      item.innerHTML = `
-        <div style="font-weight:bold; margin-bottom:4px; color:${hist.isCorrect ? 'var(--s)' : 'var(--d)'};">Q${idx+1}. ${hist.q} (${hist.isCorrect ? '〇 正解' : '× 不正解'})</div>
-        <div>あなたの回答: ${hist.userAns} ${!hist.isCorrect ? `/ 正解: ${hist.correctAns}` : ''}</div>
-        ${hist.exp ? `<div style="color:#94a3b8; margin-top:4px; font-size:0.85rem;">解説: ${hist.exp}</div>` : ''}
-      `;
-      reviewList.appendChild(item);
-    });
-    reviewSec.style.display = 'block';
-    
-    if(wrongQuestionsData.length > 0 && !isRetryMode){
-      retryBtn.style.display = 'inline-flex';
-    } else {
-      retryBtn.style.display = 'none';
-    }
-    restartBtn.innerText = "もう一度挑戦する";
-  }
-  
+  const a = Math.round(sc/activePlayData.length*100);
+  document.getElementById('resultHeaderTitle').innerText = appMode === 'form' ? "回答終了・送信画面" : "結果発表・送信画面";
+  document.getElementById('scoreCircleContainer').style.display = appMode === 'form' ? 'none' : 'flex';
+  document.getElementById('aRate').innerText = a+'%';
+  document.getElementById('rCom').innerText = appMode === 'form' ? "ご回答ありがとうございました！" : (a==100?'パーフェクト！':(a>=80?'高得点！':'お疲れ様でした！'));
+  document.getElementById('sDet').innerText = appMode === 'form' ? "すべての質問に回答しました。" : `${activePlayData.length}問中 ${sc}問正解 (スコア: ${totalScore}点)`;
+  document.getElementById('retryWrongBtn').style.display = (wrongQuestionsData.length > 0 && !isRetryMode) ? 'inline-flex' : 'none';
   loadRanking();
 }
 
 function saveRanking(){
-  const nameInput = document.getElementById('playerName');
-  const name = nameInput.value.trim() || '匿名さん';
+  const name = document.getElementById('playerName').value.trim() || '匿名さん';
   const storageKey = 'formapp_rankings_' + (currentFileId || 'default');
-  
   let records = [];
-  try{
-    const saved = localStorage.getItem(storageKey);
-    if(saved) records = JSON.parse(saved);
-  }catch(e){}
+  try{ const saved = localStorage.getItem(storageKey); if(saved) records = JSON.parse(saved); }catch(e){}
   
-  if(appMode === 'form'){
-    records.push({name, answers: userFormAnswers, date: new Date().toLocaleString()});
-  } else {
-    records.push({name, score: totalScore, rate: Math.round(sc/activePlayData.length*100), date: new Date().toLocaleString()});
-    records.sort((a,b)=>b.score - a.score);
-  }
+  if(appMode === 'form') records.push({name, answers: userFormAnswers, date: new Date().toLocaleString()});
+  else records.push({name, score: totalScore, rate: Math.round(sc/activePlayData.length*100), date: new Date().toLocaleString()});
   
-  records = records.slice(0, 20);
-  localStorage.setItem(storageKey, JSON.stringify(records));
-  alert(appMode === 'form' ? '回答を送信しました！' : '登録しました！');
+  localStorage.setItem(storageKey, JSON.stringify(records.slice(0, 20)));
+  alert('回答の送信が完了しました！');
   displayRanking(records);
 }
 
 function loadRanking(){
   const storageKey = 'formapp_rankings_' + (currentFileId || 'default');
-  try{
-    const saved = localStorage.getItem(storageKey);
-    if(saved){
-      displayRanking(JSON.parse(saved));
-    }
-  }catch(e){}
+  try{ const saved = localStorage.getItem(storageKey); if(saved) displayRanking(JSON.parse(saved)); }catch(e){}
 }
 
 function displayRanking(records){
-  const container = document.getElementById('rankingContainer');
-  const list = document.getElementById('rankingList');
-  const titleElem = document.getElementById('rankingBoxTitle');
-  
-  titleElem.innerText = appMode === 'form' ? '最近の回答者' : 'ランキング';
-  
-  list.innerHTML = '';
-  records.forEach((r, idx)=>{
-    const li = document.createElement('li');
-    li.innerHTML = `<span>${idx+1}. ${r.name}</span> <span><b>${appMode === 'form' ? (r.date || '回答済み') : r.score + '点'}</b></span>`;
-    list.appendChild(li);
-  });
-  container.style.display = 'block';
+  document.getElementById('rankingBoxTitle').innerText = appMode === 'form' ? '最近の回答者' : 'ランキング';
+  document.getElementById('rankingList').innerHTML = records.map((r, idx)=>`<li><span>${idx+1}. ${r.name}</span> <span><b>${appMode === 'form' ? r.date : r.score + '点'}</b></span></li>`).join('');
+  document.getElementById('rankingContainer').style.display = 'block';
 }
 
 function restartQuiz(){
-  isRetryMode = false;
-  userFormAnswers = [];
-  userPlayHistory = [];
+  isRetryMode = false; userFormAnswers = []; userPlayHistory = [];
   activePlayData = JSON.parse(JSON.stringify(questionsData));
-  switchPage('play');
-  if(shuffleMode){
-    activePlayData.sort(()=>Math.random()-0.5);
-  }
-  cI=0;
-  sc=0;
-  totalScore=0;
-  wrongQuestionsData = [];
-  sW();
+  switchPage('play'); if(shuffleMode) activePlayData.sort(()=>Math.random()-0.5);
+  cI=0; sc=0; totalScore=0; wrongQuestionsData = []; sW();
 }
 
-function cpL(){
-  const i=document.getElementById('shUrl');
-  i.select();
-  document.execCommand('copy');
-  alert('コピーしました');
-}
-
-function lineS(){
-  const urlParams = new URLSearchParams(window.location.search);
-  const p = urlParams.get('p');
-  const u = p ? window.location.href : document.getElementById('shUrl').value;
-  window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(u));
-}
+function cpL(){ const i = document.getElementById('shUrl'); i.select(); document.execCommand('copy'); alert('コピーしました'); }
+function lineS(){ window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(document.getElementById('shUrl').value)); }
 </script>
 </body>
 </html>
