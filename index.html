@@ -41,8 +41,12 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .home-top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--c); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
 .home-top-bar h2 { font-size: 1.2rem; color: var(--t); font-weight: 700; }
 
-.auth-box { background: var(--c); padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 10px; }
+.auth-box { background: var(--c); padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 12px; }
 .auth-box input { padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--input-bg); color: var(--t); font-size: 0.9rem; outline: none; }
+.password-wrapper { position: relative; display: flex; align-items: center; flex: 1; min-width: 180px; }
+.password-wrapper input { width: 100%; padding-right: 40px; }
+.toggle-pw-btn { position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 1rem; color: #94a3b8; }
+.auth-error-msg { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--d); color: #f87171; padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; display: none; margin-top: 5px; }
 
 .template-section { background: var(--c); padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 12px; }
 .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
@@ -157,7 +161,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 }
 </style>
 
-<!-- 🟢 修正：正しいSupabaseのCDNライブラリを読み込み -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -192,9 +195,16 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">自分専用のクイズを作成・保存し、回答データを集計するにはログインが必要です。</p>
         <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
             <input type="email" id="auth-email" placeholder="メールアドレス" style="flex: 1; min-width: 180px;">
-            <input type="password" id="auth-password" placeholder="パスワード" style="flex: 1; min-width: 180px;">
+            <!-- パスワード入力欄 ＋ パスワード表示／非表示ボタン -->
+            <div class="password-wrapper">
+                <input type="password" id="auth-password" placeholder="パスワード">
+                <button type="button" class="toggle-pw-btn" onclick="togglePasswordVisibility()" title="パスワードを表示/非表示">👁️</button>
+            </div>
         </div>
-        <div style="display: flex; gap: 8px;">
+        <!-- ⚠️ エラーメッセージ表示用エリア -->
+        <div id="auth-error-message" class="auth-error-msg"></div>
+
+        <div style="display: flex; gap: 8px; margin-top: 5px;">
           <button onclick="handleSignIn()" class="m-btn" style="padding: 8px 16px; font-size: 0.85rem; border-radius: 10px;">ログイン</button>
           <button onclick="handleSignUp()" class="m-btn s-btn" style="padding: 8px 16px; font-size: 0.85rem; border-radius: 10px;">新規アカウント登録</button>
         </div>
@@ -415,7 +425,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
 <script>
 // ==========================================
-// 🚀 Supabase クライアント初期設定
+// 🚀 Supabase クライアント初期設定（小文字で統一）
 // ==========================================
 const SUPABASE_URL = "https://ovpwgxwuidnejdlszzqm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_9XQlxQcCXyL3odq0h80SxA_LPFv9BSw";
@@ -486,26 +496,73 @@ function changeColorTheme(themeName){
 }
 
 // ==========================================
-// 1. 🔐 認証（ログイン・状態監視）の連動
+// 👁️ パスワード表示／非表示切り替え機能
 // ==========================================
+function togglePasswordVisibility() {
+    const pwInput = document.getElementById('auth-password');
+    const toggleBtn = document.querySelector('.toggle-pw-btn');
+    if (pwInput.type === 'password') {
+        pwInput.type = 'text';
+        toggleBtn.innerText = '🙈';
+    } else {
+        pwInput.type = 'password';
+        toggleBtn.innerText = '👁️';
+    }
+}
+
+// ==========================================
+// 1. 🔐 認証（ログイン・エラー案内・状態監視）の連動
+// ==========================================
+function showAuthError(message) {
+    const errorBox = document.getElementById('auth-error-message');
+    errorBox.innerText = "⚠️ " + message;
+    errorBox.style.display = 'block';
+}
+
+function clearAuthError() {
+    const errorBox = document.getElementById('auth-error-message');
+    errorBox.innerText = "";
+    errorBox.style.display = 'none';
+}
+
 async function handleSignUp() {
+    clearAuthError();
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
-    if (!email || !password) return alert("メールアドレスとパスワードを入力してください");
+    if (!email || !password) {
+        showAuthError("メールアドレスとパスワードを入力してください。");
+        return;
+    }
 
     const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) alert("登録エラー: " + error.message);
-    else alert("登録成功！メールの確認リンクをクリックして認証を完了させてください。");
+    if (error) {
+        showAuthError("登録エラー: " + error.message);
+    } else {
+        alert("登録成功！メールの確認リンクをクリックして認証を完了させてください。");
+    }
 }
 
 async function handleSignIn() {
+    clearAuthError();
     const email = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
-    if (!email || !password) return alert("メールアドレスとパスワードを入力してください");
+    if (!email || !password) {
+        showAuthError("メールアドレスとパスワードを入力してください。");
+        return;
+    }
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) alert("ログインエラー: " + error.message);
-    else { alert("ログインに成功しました！"); location.reload(); }
+    if (error) {
+        // パスワードミスやユーザー不存在などのエラーメッセージをわかりやすく案内
+        let errMsg = error.message;
+        if (errMsg.includes("Invalid login credentials")) {
+            errMsg = "メールアドレスまたはパスワードが間違っています。入力内容をご確認ください。";
+        }
+        showAuthError("ログイン失敗: " + errMsg);
+    } else {
+        alert("ログインに成功しました！");
+        location.reload();
+    }
 }
 
 async function handleSignOut() {
