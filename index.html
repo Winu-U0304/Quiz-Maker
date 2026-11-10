@@ -1360,12 +1360,14 @@ function removeOption(qIdx, optIdx){
 function changeQuestionType(index, newType){ collectQuestionsFromDOM(); questionsData[index].type = newType; questionsData[index].ans = (newType==='text'||newType==='date'||newType==='number')?'': 'A'; renderQuestionsEditor(); autoSaveCloud(); }
 
 async function saveAndGenerateShareUrl() {
-    const { data: { session } } = await dbClient.auth.getSession();
+    // 共有URLの発行は、クイズ作成者本人のログインが必要
+    const { data: { session }, error: sessionError } = await dbClient.auth.getSession();
+    if (sessionError) return alert("ログイン状態を確認できませんでした: " + sessionError.message);
     if (!session) return alert("クイズを保存するにはログインが必要です！");
 
-    const currentQuizTitle = document.getElementById('quiz-title-input').value.trim() || "無題のクイズ";
     collectQuestionsFromDOM();
 
+    // まずクイズ本体を最新状態で保存
     if (!await autoSaveCloud()) {
         alert("保存に失敗したため、共有URLは発行していません。保存状態とログインを確認してください。");
         return;
@@ -1376,16 +1378,31 @@ async function saveAndGenerateShareUrl() {
         return;
     }
 
+    // このクイズだけを共有公開状態にする
+    const { data: published, error: publishError } = await dbClient
+        .from('forms')
+        .update({ is_public: true })
+        .eq('id', currentFileId)
+        .eq('user_id', session.user.id)
+        .select('id')
+        .maybeSingle();
+
+    if (publishError || !published) {
+        alert("共有設定に失敗しました: " +
+            (publishError?.message || "クイズが見つからないか、更新権限がありません。Supabaseで is_public 列とRLS設定を確認してください。"));
+        return;
+    }
+
     let baseUrl;
-    try { baseUrl=publicPageUrl(); } catch(error) { return alert(error.message); }
-    const shareUrl = `${baseUrl}?mode=answer&id=${currentFileId}`;
-    
+    try { baseUrl = publicPageUrl(); }
+    catch(error) { return alert(error.message); }
+
+    const shareUrl = `${baseUrl}?mode=answer&id=${encodeURIComponent(currentFileId)}`;
     const shInput = document.getElementById('shUrl');
-    shInput.value = "短縮URLを生成中...";
-    document.getElementById('shArea').style.display = 'block';
-    
     shInput.value = shareUrl;
-    alert("クラウドに保存され、共有URLが発行されました！");
+    document.getElementById('shArea').style.display = 'block';
+
+    alert("クラウドに保存され、共有URLが発行されました！ログインしていない人も、このURLから回答できます。");
 }
 
 async function submitUserResponse() {
