@@ -924,9 +924,11 @@ async function createNewQuiz(){
   quizTitle = "無題のフォーム"; quizDesc = ""; quizLogo = ""; quizGenre = ""; quizCategory = "一般"; quizTag = ""; quizDeadline = ""; appMode = "form";
   questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
   
+  const newId = crypto.randomUUID();
   const { data, error } = await dbClient
     .from('forms')
     .insert([{
+      id: newId,
       user_id: session.user.id,
       title: quizTitle,
       desc: quizDesc,
@@ -989,9 +991,11 @@ async function createFromTemplate(type){
   }
   
   appMode = "form";
+  const newId = crypto.randomUUID();
   const { data, error } = await dbClient
     .from('forms')
     .insert([{
+      id: newId,
       user_id: session.user.id,
       title: quizTitle,
       desc: quizDesc,
@@ -1568,8 +1572,6 @@ function exportAnswersCSV(){
 function exportStatsImage(){
   try {
     if(!cloudResponseList.length) return alert('保存する回答データがありません。');
-    // Draw from data, not a cloned cross-origin iframe. This also avoids
-    // executing respondent HTML or tainting the canvas with remote images.
     const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
     const style=getComputedStyle(document.body),bg=style.getPropertyValue('--c').trim(),fg=style.getPropertyValue('--t').trim(),accent=style.getPropertyValue('--p').trim();
     canvas.width=1200;ctx.font='22px sans-serif';
