@@ -87,13 +87,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); background: transparent; }
 .e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; }
 
-.floating-toolbar { position: static; display: flex; justify-content: center; gap: 8px; background: var(--c); padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: 10px 0; width: 100%; }
+/* スマホ版でも一番下に自然に配置されるフローティングツールバーの修正 */
+.floating-toolbar { display: flex; justify-content: center; gap: 8px; background: var(--c); padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: 10px 0; width: 100%; }
 .ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 700; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .ft-btn:hover { background: var(--p); border-color: var(--p); }
-
-@media(max-width: 768px) {
-  .floating-toolbar { position: relative; width: 100%; margin-top: 15px; }
-}
 
 .settings-bar { background: var(--c); padding: 22px; border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
 .settings-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-weight: 600; font-size: 0.95rem; }
@@ -271,10 +268,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <input type="text" id="quiz-title-input" class="e-title" placeholder="タイトルを入力" oninput="updatePageTitle(); autoSaveCloud();">
         <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明を入力" oninput="autoSaveCloud()">
         
-        <!-- ジャンル変更入力欄（あとからでも変更可能） -->
         <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
           <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="autoSaveCloud()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="autoSaveCloud()" placeholder="例: 勉強関係" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="autoSaveCloud()" placeholder="例: 一般" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
         </div>
       </div>
 
@@ -387,12 +383,12 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     </div>
   </div>
 
-  <!-- ⑤ 結果発表・送信ページ (回答サイト用スッキリデザイン) -->
+  <!-- ⑤ 結果発表・送信ページ -->
   <div id="pageResult" class="page-section">
     <div class="r-card">
       <h2 style="margin-bottom:15px; font-size:1.5rem; font-weight:800;" id="resultHeaderTitle">解答終了・結果確認</h2>
       <div id="rankDisplay" style="font-size:2rem; font-weight:900; margin-bottom:10px; color:var(--p);"></div>
-      <div class="s-circ" id="scoreCircleContainer">
+      <div class="s-circ" id="scoreCircleContainer" style="display:none;">
         <div class="s-num" id="aRate">0%</div>
         <div class="s-lab">正答率</div>
       </div>
@@ -407,7 +403,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <button class="m-btn s-btn" style="padding:12px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="submitUserResponse()">📥 回答を送信・登録する</button>
       </div>
 
-      <!-- 送信後に表示される詳細情報エリア (アイコン付きアイコンタクト等) -->
       <div id="postSubmitDetails" style="display:none; margin-top:20px; padding:15px; background:var(--input-bg); border-radius:16px; border:1px solid var(--border);">
         <p style="font-size: 0.95rem; font-weight: 700; color: var(--s); margin-bottom: 8px;">✨ ご回答ありがとうございました！</p>
         <p style="font-size: 0.85rem; color: #94a3b8;">あなたの回答は正常に保存されました。</p>
@@ -421,7 +416,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <div style="display:flex; gap:12px; justify-content:center; margin-top:25px; flex-wrap:wrap;" id="resultActionButtons">
         <button class="m-btn s-btn" id="retryWrongBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="retryWrongQuestions()">🔄 間違えた問題だけリトライ</button>
         <button class="m-btn" id="restartBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="restartQuiz()">もう一度解答する</button>
-        <!-- ホームに戻るボタン (アイコン付) -->
         <button class="m-btn" id="resultHomeBtn" style="background:#475569; font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="goHome()">🏠 ホームに戻る</button>
       </div>
     </div>
@@ -519,7 +513,7 @@ function askInPage(message, defaultValue) {
 }
 function publicPageUrl() {
   if (!/^https?:$/.test(location.protocol) || location.origin === 'null' || window.self !== window.top) {
-    throw new Error('Googleログイン・共有URLは公開済みのHTTP(S)ページを直接開いて利用してください。');
+    throw new Error('公開済みのHTTP(S)ページを直接開いて利用してください。');
   }
   return location.origin + location.pathname;
 }
@@ -1369,7 +1363,6 @@ async function submitUserResponse() {
           responseSubmitted = true;
           if(preventOnce) safeStorage.setItem('formapp_submitted_' + formId, 'true');
           
-          // 送信後は無駄な入力欄を隠し、アイコン＋詳細情報とホームに戻るボタンを表示
           document.getElementById('rankingRegisterSection').style.display = 'none';
           document.getElementById('postSubmitDetails').style.display = 'block';
           document.getElementById('resultHomeBtn').style.display = 'inline-flex';
@@ -1614,11 +1607,13 @@ function beginQuizPlay(){
   cI=0; sc=0; totalScore=0; currentCombo=0; answeredQuestionCount=0; questionAdvancing=false;
   visitedQuestions=new Set(); userFormAnswers=Array(questionsData.length).fill(null); userPlayHistory=[]; responseSubmitted=false;
   
-  // 回答プレイ時は余計なボタンを非表示にし、結果画面で送信完了後にのみホームに戻るボタンや詳細を出す
   document.getElementById('restartBtn').style.display='inline-flex';
   document.getElementById('resultHomeBtn').style.display='none';
   document.getElementById('rankingRegisterSection').style.display = 'block';
   document.getElementById('postSubmitDetails').style.display = 'none';
+  
+  // フォームモードの場合は正答率サークルを非表示にする
+  document.getElementById('scoreCircleContainer').style.display = (appMode === 'form') ? 'none' : 'flex';
 
   document.getElementById('qTitleView').innerText = quizTitle;
   document.getElementById('genreView').innerText = quizGenre ? `ジャンル: ${quizGenre}` : "";
