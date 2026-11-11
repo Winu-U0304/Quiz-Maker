@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="icon" href="Q and F  Maker.png">
-<title id="pageTitle">FormApp - クラウド版</title>
+<link rel="icon" href="Q and F Maker.png">
+<title id="pageTitle">Q and F Maker - クラウド版</title>
 <meta name="description" content="クラウドに保存し、フォーム・クイズ製作が可能です。解答データの収集も可能。">
 <meta name="google-site-verification" content="vNgRrpb3UvoY39B0QklxDmnc73egTqjaeguz7IusimM" />
 <style>
@@ -175,7 +175,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 <body class="theme-blue">
 <div class="con" id="app">
   <header class="site-header">
-    <a class="site-logo" id="headerLogoText" onclick="goHome()">FormApp - クラウド版</a>
+    <a class="site-logo" id="headerLogoText" onclick="goHome()">Q and F Maker - クラウド版</a>
     <nav class="nav-links">
       <button class="nav-link-btn" onclick="goHome()">ホーム</button>
       <button class="nav-link-btn" onclick="exportJsonFile()">📁 バックアップ</button>
@@ -364,7 +364,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
   <div id="pageHowToUse" class="page-section">
     <div class="form-header-card pop-anim">
-      <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">FormApp の使い方</h2>
+      <h2 style="margin-bottom:15px; color:var(--p); font-size:1.4rem;">Q and F Maker の使い方</h2>
       <p style="line-height:1.7; margin-bottom:12px; color:#cbd5e1;">質問はドラッグで自由に位置を並べ替えることができます。「テキスト追加」は問題に答えない説明用セクションになります。</p>
       <button class="m-btn" style="font-size:0.95rem; padding:10px 20px; border-radius:12px;" onclick="goHome()">ホームに戻る</button>
     </div>
@@ -559,11 +559,11 @@ function updatePageTitle() {
   const pageTitleElem = document.getElementById('pageTitle');
   const logoElem = document.getElementById('headerLogoText');
   if (titleVal) {
-    pageTitleElem.innerText = `FormApp - ${titleVal}`;
-    logoElem.innerText = `FormApp - ${titleVal}`;
+    pageTitleElem.innerText = `Q and F Maker - ${titleVal}`;
+    logoElem.innerText = `Q and F Maker - ${titleVal}`;
   } else {
-    pageTitleElem.innerText = "FormApp - 編集画面";
-    logoElem.innerText = "FormApp - 編集画面";
+    pageTitleElem.innerText = "Q and F Maker - 編集画面";
+    logoElem.innerText = "Q and F Maker - 編集画面";
   }
 }
 
@@ -772,8 +772,8 @@ window.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    document.getElementById('pageTitle').innerText = `FormApp - ${quizTitle}`;
-    document.getElementById('headerLogoText').innerText = `FormApp - ${quizTitle}`;
+    document.getElementById('pageTitle').innerText = `Q and F Maker - ${quizTitle}`;
+    document.getElementById('headerLogoText').innerText = `Q and F Maker - ${quizTitle}`;
     
     currentFileId = formId;
     questionsData = normalizeQuestions(data.quiz_data || []);
@@ -799,8 +799,8 @@ function switchPage(pageName){
 
   if(pageName === 'home') {
     document.getElementById('pageHome').classList.add('active');
-    document.getElementById('pageTitle').innerText = "FormApp - ホーム";
-    logoElem.innerText = "FormApp - ホーム";
+    document.getElementById('pageTitle').innerText = "Q and F Maker - ホーム";
+    logoElem.innerText = "Q and F Maker - ホーム";
     const tabH = document.getElementById('tabHome');
     if(tabH) tabH.classList.add('active');
     dbClient.auth.getSession().then(({data: {session}}) => {
@@ -812,18 +812,18 @@ function switchPage(pageName){
     switchFormTab('questions');
   } else if(pageName === 'howtouse') {
     document.getElementById('pageHowToUse').classList.add('active');
-    document.getElementById('pageTitle').innerText = "FormApp - 使い方のご案内";
-    logoElem.innerText = "FormApp - 使い方";
+    document.getElementById('pageTitle').innerText = "Q and F Maker - 使い方のご案内";
+    logoElem.innerText = "Q and F Maker - 使い方";
     const tabW = document.getElementById('tabHowTo');
     if(tabW) tabW.classList.add('active');
   } else if(pageName === 'play') {
     document.getElementById('pagePlay').classList.add('active');
-    document.getElementById('pageTitle').innerText = "FormApp - プレイ中";
-    logoElem.innerText = "FormApp - プレイ中";
+    document.getElementById('pageTitle').innerText = "Q and F Maker - プレイ中";
+    logoElem.innerText = "Q and F Maker - プレイ中";
   } else if(pageName === 'result') {
     document.getElementById('pageResult').classList.add('active');
-    document.getElementById('pageTitle').innerText = "FormApp - 結果発表";
-    logoElem.innerText = "FormApp - 結果発表";
+    document.getElementById('pageTitle').innerText = "Q and F Maker - 結果発表";
+    logoElem.innerText = "Q and F Maker - 結果発表";
   }
 }
 
@@ -1644,7 +1644,7 @@ function exportJsonFile(){
   ['quiz-title-input','qDesc','quizLogo','quizGenre','quizCategory','quizTag','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>metadata[id]=document.getElementById(id).value);
   ['chkShuffle','chkSpeed','chkOnce'].forEach(id=>metadata[id]=document.getElementById(id).checked);
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({version:2,metadata,questions:questionsData}, null, 2));
-  const a = document.createElement('a'); a.href = dataStr; a.download = "formapp_backup.json";
+  const a = document.createElement('a'); a.href = dataStr; a.download = "q_and_f_maker_backup.json";
   document.body.appendChild(a); a.click(); a.remove();
 }
 
