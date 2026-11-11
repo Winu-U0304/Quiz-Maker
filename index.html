@@ -270,6 +270,12 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         </div>
         <input type="text" id="quiz-title-input" class="e-title" placeholder="タイトルを入力" oninput="updatePageTitle(); autoSaveCloud();">
         <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明を入力" oninput="autoSaveCloud()">
+        
+        <!-- ジャンル変更入力欄（あとからでも変更可能） -->
+        <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="autoSaveCloud()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="autoSaveCloud()" placeholder="例: 勉強関係" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
+        </div>
       </div>
 
       <div class="sh-area" id="shArea">
@@ -381,7 +387,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     </div>
   </div>
 
-  <!-- ⑤ 結果発表・送信ページ -->
+  <!-- ⑤ 結果発表・送信ページ (回答サイト用スッキリデザイン) -->
   <div id="pageResult" class="page-section">
     <div class="r-card">
       <h2 style="margin-bottom:15px; font-size:1.5rem; font-weight:800;" id="resultHeaderTitle">解答終了・結果確認</h2>
@@ -401,15 +407,22 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <button class="m-btn s-btn" style="padding:12px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="submitUserResponse()">📥 回答を送信・登録する</button>
       </div>
 
+      <!-- 送信後に表示される詳細情報エリア (アイコン付きアイコンタクト等) -->
+      <div id="postSubmitDetails" style="display:none; margin-top:20px; padding:15px; background:var(--input-bg); border-radius:16px; border:1px solid var(--border);">
+        <p style="font-size: 0.95rem; font-weight: 700; color: var(--s); margin-bottom: 8px;">✨ ご回答ありがとうございました！</p>
+        <p style="font-size: 0.85rem; color: #94a3b8;">あなたの回答は正常に保存されました。</p>
+      </div>
+
       <div class="ranking-box" id="rankingContainer" style="display:none;">
         <h4 id="rankingBoxTitle">クラウド回答一覧</h4>
         <ul class="ranking-list" id="rankingList"></ul>
       </div>
 
-      <div style="display:flex; gap:12px; justify-content:center; margin-top:25px; flex-wrap:wrap;">
+      <div style="display:flex; gap:12px; justify-content:center; margin-top:25px; flex-wrap:wrap;" id="resultActionButtons">
         <button class="m-btn s-btn" id="retryWrongBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="retryWrongQuestions()">🔄 間違えた問題だけリトライ</button>
         <button class="m-btn" id="restartBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="restartQuiz()">もう一度解答する</button>
-        <button class="m-btn" style="background:#475569; font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="goHome()">ホームに戻る</button>
+        <!-- ホームに戻るボタン (アイコン付) -->
+        <button class="m-btn" id="resultHomeBtn" style="background:#475569; font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="goHome()">🏠 ホームに戻る</button>
       </div>
     </div>
   </div>
@@ -446,7 +459,7 @@ const safeStorage = {
   removeItem(key) { memoryStorage.delete(key); try { persistentStorage?.removeItem(key); } catch {} }
 };
 const sdkReady = !!window.supabase?.createClient;
-const sdkError = () => ({ error: { message: '認証ライブラリを読み込めません。通信環境を確認して再読み込みしてください。' } });
+const sdkError = () => ({ error: { message: '認証ライブラリを読み込めません。' } });
 const dbClient = sdkReady ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { storage: safeStorage, persistSession: true, detectSessionInUrl: true }
 }) : {
@@ -488,6 +501,7 @@ function showNotice(message) {
   document.getElementById('app-notice-text').textContent = String(message);
 }
 window.alert = showNotice;
+
 function askInPage(message, defaultValue) {
   return new Promise(resolve => {
     const overlay = document.createElement('div');
@@ -505,34 +519,14 @@ function askInPage(message, defaultValue) {
 }
 function publicPageUrl() {
   if (!/^https?:$/.test(location.protocol) || location.origin === 'null' || window.self !== window.top) {
-    throw new Error('Googleログイン・共有URLは、埋め込みプレビューではなく公開済みのHTTP(S)ページを直接開いて利用してください。');
+    throw new Error('Googleログイン・共有URLは公開済みのHTTP(S)ページを直接開いて利用してください。');
   }
   return location.origin + location.pathname;
-}
-let authBusy = false;
-async function runAuth(operation) {
-  if (authBusy) return;
-  clearAuthError(); authBusy = true;
-  document.querySelectorAll('#auth-logged-out button').forEach(b=>b.disabled=true);
-  try { await operation(); } catch (error) { showAuthError(error.message || '通信に失敗しました。時間をおいて再試行してください。'); }
-  finally { authBusy=false; document.querySelectorAll('#auth-logged-out button').forEach(b=>b.disabled=false); }
-}
-function authCredentials() {
-  const email = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
-  if (!email || !password) throw new Error('メールアドレスとパスワードを入力してください。');
-  if (!document.getElementById('auth-email').checkValidity()) throw new Error('有効なメールアドレスを入力してください。');
-  return {email,password};
-}
-function authError(error) {
-  if (/Invalid login credentials/i.test(error.message)) return 'メールアドレスまたはパスワードを確認してね。Google登録の場合はGoogleログインを使ってね。';
-  if (/Email not confirmed/i.test(error.message)) return '確認メールのリンクを開いて、メール認証を完了してください。';
-  return error.message || '認証に失敗しました。';
 }
 
 let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, currentCombo=0, quizTitle="", quizDesc="", quizLogo="", quizGenre="", quizCategory="一般", quizTag="", quizDeadline="", appMode="form", shuffleMode=false, speedBonus=false, preventOnce=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [], timerInterval = null, cloudResponseList = [];
 let questionStartedAt = 0, questionExpiresAt = 0, questionAdvancing = false, visitedQuestions = new Set(), submittingResponse = false, responseSubmitted = false, answeredQuestionCount = 0;
-let isNewlyCreated = false; // 空の新規作成自動削除判定用
+let isNewlyCreated = false;
 
 function truncateText(str, maxLen = 4) {
   if (!str) return "";
@@ -569,7 +563,7 @@ function handleLogoFileUpload(e){
   reader.onload = (event) => {
     document.getElementById('quizLogo').value = event.target.result;
     updateLogoPreview();
-    isNewlyCreated = false; // 変更があったため自動削除対象外に
+    isNewlyCreated = false;
     autoSaveCloud();
     alert('ロゴ画像を設定しました！');
   };
@@ -610,56 +604,36 @@ function togglePasswordVisibility() {
 }
 
 async function signInWithGoogle() {
-  return runAuth(async () => {
-    const { error } = await dbClient.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-            redirectTo: publicPageUrl()
-        }
-    });
-    if (error) throw new Error("Googleログインの起動に失敗しました: " + authError(error));
+  const { error } = await dbClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: publicPageUrl() }
   });
-}
-
-function showAuthError(message) {
-    const errorBox = document.getElementById('auth-error-message');
-    errorBox.innerText = "⚠️ " + message;
-    errorBox.style.display = 'block';
-}
-
-function clearAuthError() {
-    const errorBox = document.getElementById('auth-error-message');
-    errorBox.innerText = "";
-    errorBox.style.display = 'none';
+  if (error) alert("Googleログインエラー: " + error.message);
 }
 
 async function handleSignUp() {
-  return runAuth(async () => {
-    const {email,password} = authCredentials();
-    if(password.length < 6) throw new Error('パスワードは6文字以上にしてください。');
-    const options = {};
-    try { options.emailRedirectTo = publicPageUrl(); } catch {}
-    const { data, error } = await dbClient.auth.signUp({ email, password, options });
-    if (error) throw new Error("登録エラー: " + authError(error));
-    else alert(data.session ? "登録とログインが完了しました。" : "登録を受け付けました。確認メールのリンクを開いて認証してください。");
-  });
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  if (!email || !password) return alert('メールアドレスとパスワードを入力してください。');
+  const { error } = await dbClient.auth.signUp({ email, password, options: { emailRedirectTo: publicPageUrl() } });
+  if (error) alert("登録エラー: " + error.message);
+  else alert("登録を受け付けました。確認メールをご確認ください。");
 }
 
 async function handleSignIn() {
-  return runAuth(async () => {
-    const {email,password} = authCredentials();
-    const { error } = await dbClient.auth.signInWithPassword({ email, password });
-    if (error) throw new Error("ログイン失敗: " + authError(error));
-    else { alert("ログインに成功しました！"); document.getElementById('auth-password').value = ''; }
-  });
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  if (!email || !password) return alert('メールアドレスとパスワードを入力してください。');
+  const { error } = await dbClient.auth.signInWithPassword({ email, password });
+  if (error) alert("ログイン失敗: " + error.message);
+  else { alert("ログインしました！"); document.getElementById('auth-password').value = ''; }
 }
 
 async function handleSignOut() {
-  try {
-    const { error } = await dbClient.auth.signOut();
-    if (error) alert("ログアウトエラー: " + error.message);
-    else { document.getElementById('fileGrid').replaceChildren(); currentFileId=null; questionsData=[]; goHome(); }
-  } catch (error) { showAuthError(error.message); }
+  await dbClient.auth.signOut();
+  document.getElementById('fileGrid').replaceChildren();
+  currentFileId = null;
+  goHome();
 }
 
 dbClient.auth.onAuthStateChange((event, session) => {
@@ -682,11 +656,6 @@ dbClient.auth.onAuthStateChange((event, session) => {
 });
 
 window.addEventListener('DOMContentLoaded', async () => {
-  if (!sdkReady) showAuthError(sdkError().error.message);
-  const authParams = new URLSearchParams(location.hash.slice(1));
-  const authFailure = authParams.get('error_description') || new URLSearchParams(location.search).get('error_description');
-  if (authFailure) showAuthError('認証エラー: ' + authFailure);
-  if (!persistentStorage) showNotice('この環境ではブラウザ保存が制限されています。');
   const savedMode = safeStorage.getItem('formapp_mode');
   const savedTheme = safeStorage.getItem('formapp_theme') || 'blue';
   if(savedMode === 'light'){
@@ -703,7 +672,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (mode === 'answer' && formId) {
     const { data, error } = await dbClient.from('forms').select('*').eq('id', formId).single();
     if (error || !data) {
-      alert("クイズの読み込みに失敗しました。URLが正しいか確認してください。");
+      alert("フォームの読み込みに失敗しました。");
       goHome();
       return;
     }
@@ -723,16 +692,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     timeLimit = data.tm || 0;
 
     if (quizDeadline && new Date() > new Date(quizDeadline)) {
-      document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⏰ 受付終了しました</h2><p>このフォームは有効期限が過ぎたため、受付を終了しました。</p></div>`;
+      document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⏰ 受付終了しました</h2></div>`;
       return;
     }
 
-    if (preventOnce) {
-      const onceKey = 'formapp_submitted_' + formId;
-      if (safeStorage.getItem(onceKey)) {
-        document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⚠️ 回答済みです</h2><p>このフォームはすでに回答済みです。</p></div>`;
-        return;
-      }
+    if (preventOnce && safeStorage.getItem('formapp_submitted_' + formId)) {
+      document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⚠️ 回答済みです</h2></div>`;
+      return;
     }
 
     document.getElementById('pageTitle').innerText = `Q and F Maker - ${quizTitle}`;
@@ -741,7 +707,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     currentFileId = formId;
     questionsData = normalizeQuestions(data.quiz_data || []);
     activePlayData = preparePlayData();
-    
     isSharedMode = true;
     isRetryMode = false;
     userFormAnswers = [];
@@ -756,8 +721,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 function switchPage(pageName){
   if (pageName !== 'play' && timerInterval) { clearInterval(timerInterval); timerInterval=null; }
-  
-  // 編集画面から移動する際、もし「新規作成して特に何も変更・追加していない(isNewlyCreated)」状態であれば自動削除する
   if (pageName !== 'edit' && currentFileId && isNewlyCreated) {
     checkAndDeleteEmptyNewForm();
   }
@@ -803,7 +766,6 @@ async function checkAndDeleteEmptyNewForm() {
   try {
     const { data: { session } } = await dbClient.auth.getSession();
     if (!session) return;
-    // タイトルが「無題のフォーム」のままで質問が1問かつ空欄の場合に削除
     const { data } = await dbClient.from('forms').select('*').eq('id', targetId).eq('user_id', session.user.id).single();
     if (data && data.title === "無題のフォーム" && (!data.quiz_data || data.quiz_data.length <= 1 && (!data.quiz_data[0] || !data.quiz_data[0].q))) {
       await dbClient.from('forms').delete().eq('id', targetId).eq('user_id', session.user.id);
@@ -842,11 +804,11 @@ async function loadMyForms(userId){
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
 
-  if(error){ showNotice("一覧取得エラー: " + error.message); return; }
+  if(error) return;
 
   const categories = ["すべて"];
   (files || []).forEach(f => {
-    const cat = f.category && f.category.trim() ? f.category.trim() : "未分類";
+    const cat = f.category && f.category.trim() ? f.category.trim() : "一般";
     if(!categories.includes(cat)) categories.push(cat);
   });
   
@@ -861,15 +823,12 @@ async function loadMyForms(userId){
     if (cat === "すべて") {
       chip.innerHTML = `${escapeHtml(truncateText(cat, 6))}`;
     } else {
-      // ホームのカテゴリ横にプラスボタンを配置
       chip.innerHTML = `${escapeHtml(truncateText(cat, 6))} <button class="cat-add-btn" title="${cat}に新規作成" onclick="event.stopPropagation(); createNewQuizInCategory('${cat}')">＋</button>`;
     }
-    
     chip.onclick = () => { activeCategoryFilter = cat; loadMyForms(userId); };
     catBar.appendChild(chip);
   });
   
-  // 一般など新規追加用の一番最初のプラスボタンチップ
   const addCatChip = document.createElement('button');
   addCatChip.className = 'cat-filter-chip';
   addCatChip.style.background = 'var(--s)';
@@ -893,7 +852,7 @@ async function loadMyForms(userId){
   grid.appendChild(newCard);
   
   (files || []).forEach((file) => {
-    const fileCat = file.category && file.category.trim() ? file.category.trim() : "未分類";
+    const fileCat = file.category && file.category.trim() ? file.category.trim() : "一般";
     if(activeCategoryFilter !== "すべて" && activeCategoryFilter !== fileCat) return;
     
     const card = document.createElement('div');
@@ -902,7 +861,7 @@ async function loadMyForms(userId){
       <div>
         <div class="file-card-title">${escapeHtml(file.title || '無題')}</div>
         <div class="file-card-meta">
-          <span>カテゴリ: ${escapeHtml(fileCat)} / タグ: ${escapeHtml(truncateText(file.tag || '一般', 8))}</span>
+          <span>ジャンル: ${escapeHtml(file.genre || '未設定')} / カテゴリ: ${escapeHtml(fileCat)}</span>
           <span>${file.mode === 'form' ? 'フォーム' : 'クイズ'} (${file.quiz_data ? file.quiz_data.length : 0}問)</span>
         </div>
       </div>
@@ -913,7 +872,7 @@ async function loadMyForms(userId){
     card.onclick = () => openFile(file.id);
     grid.appendChild(card);
   });
- } catch (error) { showNotice('一覧取得に失敗しました: ' + error.message); }
+ } catch {}
 }
 
 function resetNewFormSettings() {
@@ -927,13 +886,13 @@ function resetNewFormSettings() {
 
 async function createNewQuiz(category = "一般", tag = "一般"){
   const { data: { session } } = await dbClient.auth.getSession();
-  if(!session){ alert('クイズを作成するにはログインが必要です。'); return; }
+  if(!session){ alert('ログインが必要です。'); return; }
   resetNewFormSettings();
   
-  quizTitle = "無題のフォーム"; quizDesc = ""; quizLogo = ""; quizGenre = ""; quizCategory = category; quizTag = tag; quizDeadline = ""; appMode = "form";
+  quizTitle = "無題のフォーム"; quizDesc = ""; quizLogo = ""; quizGenre = "一般"; quizCategory = category; quizTag = tag; quizDeadline = ""; appMode = "form";
   questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
   
-  isNewlyCreated = true; // 新規作成フラグON（何も変更せず離脱したら自動削除対象）
+  isNewlyCreated = true;
 
   const newId = crypto.randomUUID();
   const { data, error } = await dbClient
@@ -958,6 +917,8 @@ async function createNewQuiz(category = "一般", tag = "一般"){
   document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizLogo').value = quizLogo;
+  document.getElementById('quizGenre').value = quizGenre;
+  document.getElementById('quizCategory').value = quizCategory;
   document.getElementById('selAppMode').value = appMode;
   document.getElementById('shArea').style.display = 'none';
   updateLogoPreview();
@@ -971,38 +932,34 @@ async function createNewQuizInCategory(categoryName) {
 
 async function createFromTemplate(type){
   const { data: { session } } = await dbClient.auth.getSession();
-  if(!session){ alert('テンプレートから作成するにはログインが必要です。'); return; }
+  if(!session){ alert('ログインが必要です。'); return; }
   resetNewFormSettings();
   
   quizLogo = ""; quizDeadline = "";
   if(type === 'event'){
-    quizTitle = "イベント出欠確認"; quizDesc = "次回のイベントの参加状況をお知らせください。"; quizGenre = "イベント"; quizCategory = "行事"; quizTag = "出欠, 予定";
+    quizTitle = "イベント出欠確認"; quizDesc = "出欠をお知らせください。"; quizGenre = "イベント"; quizCategory = "行事"; quizTag = "出欠";
     questionsData = [
-      { q: "ご参加いただけますか？", type: "select", opts: ["参加する", "欠席する", "未定"], optJumps: ["", "", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 },
-      { q: "当日のご要望や質問があればご記入ください", type: "text", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 200 }
+      { q: "ご参加いただけますか？", type: "select", opts: ["参加する", "欠席する", "未定"], optJumps: ["", "", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 }
     ];
   } else if(type === 'survey'){
-    quizTitle = "満足度アンケート"; quizDesc = "サービスの改善に向け、ご意見をお聞かせください。"; quizGenre = "アンケート"; quizCategory = "一般"; quizTag = "感想, 評価";
+    quizTitle = "満足度アンケート"; quizDesc = "ご意見をお聞かせください。"; quizGenre = "アンケート"; quizCategory = "一般"; quizTag = "アンケート";
     questionsData = [
-      { q: "今回の満足度はいかがでしたか？", type: "select", opts: ["とても満足", "満足", "普通", "不満"], optJumps: ["", "", "", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 },
-      { q: "具体的な感想や改善点を教えてください", type: "text", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 300 }
+      { q: "満足度はいかがですか？", type: "select", opts: ["とても満足", "満足", "普通", "不満"], optJumps: ["", "", "", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 }
     ];
   } else if(type === 'booking'){
-    quizTitle = "面談・予約フォーム"; quizDesc = "ご希望の日時を選択してください。"; quizGenre = "予約"; quizCategory = "スケジュール"; quizTag = "日時, 面談";
+    quizTitle = "予約フォーム"; quizDesc = "日時を選択してください。"; quizGenre = "予約"; quizCategory = "スケジュール"; quizTag = "予約";
     questionsData = [
-      { q: "希望日を選択してください", type: "date", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 },
-      { q: "ご希望の時間帯", type: "select", opts: ["午前 (10:00~)", "午後 (13:00~)", "夕方 (16:00~)"], optJumps: ["", "", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 }
+      { q: "希望日", type: "date", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 0 }
     ];
   } else if(type === 'contact'){
-    quizTitle = "連絡先・プロフィール登録"; quizDesc = "必要情報を入力してください。"; quizGenre = "連絡先"; quizCategory = "プロフィール"; quizTag = "登録, 連絡先";
+    quizTitle = "プロフィール登録"; quizDesc = "情報を入力してください。"; quizGenre = "連絡先"; quizCategory = "プロフィール"; quizTag = "連絡先";
     questionsData = [
-      { q: "お名前（フルネーム）", type: "text", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 50 },
-      { q: "年齢（数値）", type: "number", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }
+      { q: "お名前", type: "text", opts: ["", ""], optJumps: ["", ""], ans: "", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: true, maxLen: 50 }
     ];
   }
   
   appMode = "form";
-  isNewlyCreated = false; // テンプレートは明示的な作成なので自動削除対象外
+  isNewlyCreated = false;
   const newId = crypto.randomUUID();
   const { data, error } = await dbClient
     .from('forms')
@@ -1021,11 +978,12 @@ async function createFromTemplate(type){
     .select()
     .single();
 
-  if(error){ alert('作成エラー: ' + error.message); return; }
+  if(error) return;
   currentFileId = data.id;
   document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
-  document.getElementById('quizLogo').value = quizLogo;
+  document.getElementById('quizGenre').value = quizGenre;
+  document.getElementById('quizCategory').value = quizCategory;
   document.getElementById('selAppMode').value = appMode;
   document.getElementById('shArea').style.display = 'none';
   updateLogoPreview();
@@ -1038,12 +996,12 @@ async function openFile(id){
   cloudResponseList=[];
   document.getElementById('answerStatsContainer').replaceChildren();
   const { data, error } = await dbClient.from('forms').select('*').eq('id', id).single();
-  if(error || !data) { alert('読み込みに失敗しました: ' + (error?.message || 'データなし')); return; }
+  if(error || !data) return;
   currentFileId = data.id;
   quizTitle = data.title || "";
   quizDesc = data.desc || "";
   quizLogo = data.logo || "";
-  quizGenre = data.genre || "";
+  quizGenre = data.genre || "一般";
   quizCategory = data.category || "一般";
   quizTag = data.tag || "";
   quizDeadline = data.deadline || "";
@@ -1051,6 +1009,8 @@ async function openFile(id){
   document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizLogo').value = quizLogo;
+  document.getElementById('quizGenre').value = quizGenre;
+  document.getElementById('quizCategory').value = quizCategory;
   document.getElementById('quizDeadline').value = quizDeadline ? quizDeadline.slice(0, 16) : "";
   document.getElementById('selAppMode').value = appMode;
   document.getElementById('numRandomCount').value = data.random_count || 0;
@@ -1070,25 +1030,26 @@ async function openFile(id){
 async function deleteFile(id){
   if(!await askInPage('こちらのファイルを削除してもよろしいでしょうか？')) return;
   const { data: { session } } = await dbClient.auth.getSession();
-  if(!session) return alert('ログインが必要です。');
-  const {error} = await dbClient.from('forms').delete().eq('id', id).eq('user_id',session.user.id);
-  if(error) return alert('削除に失敗しました: ' + error.message);
-  dbClient.auth.getSession().then(({data: {session}}) => { if(session) loadMyForms(session.user.id); });
+  if(!session) return;
+  await dbClient.from('forms').delete().eq('id', id).eq('user_id',session.user.id);
+  loadMyForms(session.user.id);
 }
 
 let saveQueue = Promise.resolve(true), saveSequence = 0;
 function saveStatus(text) {
   let el = document.getElementById('save-status');
-  if(!el) { el=document.createElement('div'); el.id='save-status'; el.setAttribute('role','status'); el.style.cssText='font-size:.8rem;padding:6px;color:var(--t)'; document.getElementById('quiz-title-input').after(el); }
+  if(!el) { el=document.createElement('div'); el.id='save-status'; el.style.cssText='font-size:.8rem;padding:6px;color:var(--t)'; document.getElementById('quiz-title-input').after(el); }
   el.textContent=text;
 }
 function autoSaveCloud(){
   if(!currentFileId || isSharedMode) return Promise.resolve(false);
-  isNewlyCreated = false; // 変更・編集が行われたため新規自動削除対象外にする
+  isNewlyCreated = false;
   const targetId=currentFileId, sequence=++saveSequence;
   quizTitle = document.getElementById('quiz-title-input').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
   quizLogo = document.getElementById('quizLogo').value.trim();
+  quizGenre = document.getElementById('quizGenre').value.trim() || "一般";
+  quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
   quizDeadline = document.getElementById('quizDeadline').value || null;
   appMode = document.getElementById('selAppMode').value;
   collectQuestionsFromDOM();
@@ -1113,14 +1074,12 @@ function autoSaveCloud(){
   const job = async () => {
     try {
       const {data:{session},error:sessionError}=await dbClient.auth.getSession();
-      if(sessionError || !session) throw new Error(sessionError?.message || 'ログインが必要です。');
-      const {data,error}=await dbClient.from('forms').update(payload).eq('id',targetId).eq('user_id',session.user.id).select('id');
-      if(error) throw error;
-      if(!data?.length) throw new Error('保存対象が見つからないか、更新権限がありません。');
+      if(sessionError || !session) throw new Error();
+      await dbClient.from('forms').update(payload).eq('id',targetId).eq('user_id',session.user.id);
       if(currentFileId===targetId && sequence===saveSequence) saveStatus('保存済み');
       return true;
-    } catch(error) {
-      if(currentFileId===targetId && sequence===saveSequence) saveStatus('保存失敗: '+error.message);
+    } catch {
+      if(currentFileId===targetId && sequence===saveSequence) saveStatus('保存失敗');
       return false;
     }
   };
@@ -1299,8 +1258,7 @@ function renderQuestionsEditor(){
       const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
       const toIdx = index;
       if(fromIdx !== toIdx){
-      if(!Number.isInteger(fromIdx) || fromIdx<0 || fromIdx>=questionsData.length)return;
-      reorderQuestions(()=>{const moved = questionsData.splice(fromIdx, 1)[0]; questionsData.splice(toIdx, 0, moved);});
+        reorderQuestions(()=>{const moved = questionsData.splice(fromIdx, 1)[0]; questionsData.splice(toIdx, 0, moved);});
         renderQuestionsEditor();
         autoSaveCloud();
       }
@@ -1327,7 +1285,7 @@ function handleMediaFileUpload(e, index, type){
 
 function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); autoSaveCloud(); }
 function addTextSection(){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション説明】", type: "info", opts: [], optJumps: [], ans: "", exp: "", hint: "", diff: "★☆☆", score: 0, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); autoSaveCloud(); }
-async function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = await askInPage(type==='image'?'画像URLを入力:':'YouTube動画URLを入力:', ''); if(u){ const safe=safeMediaUrl(u,type); if(!safe)return alert('有効なHTTP(S)のメディアURLを入力してください。'); if(type==='image') questionsData[questionsData.length-1].imageUrl=safe; else questionsData[questionsData.length-1].videoUrl=safe; renderQuestionsEditor(); autoSaveCloud(); } }
+async function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = await askInPage(type==='image'?'画像URLを入力:':'YouTube動画URLを入力:', ''); if(u){ const safe=safeMediaUrl(u,type); if(!safe)return alert('有効なURLを入力してください。'); if(type==='image') questionsData[questionsData.length-1].imageUrl=safe; else questionsData[questionsData.length-1].videoUrl=safe; renderQuestionsEditor(); autoSaveCloud(); } }
 function reorderQuestions(mutation){
   const previous=[...questionsData];
   const targets=new Map(previous.map(q=>[q,(q.optJumps || []).map(j=>/^\d+$/.test(j)?previous[Number(j)]:j)]));
@@ -1364,19 +1322,10 @@ function changeQuestionType(index, newType){ collectQuestionsFromDOM(); question
 
 async function saveAndGenerateShareUrl() {
     const { data: { session }, error: sessionError } = await dbClient.auth.getSession();
-    if (sessionError) return alert("ログイン状態を確認できませんでした: " + sessionError.message);
-    if (!session) return alert("クイズを保存するにはログインが必要です！");
+    if (sessionError || !session) return alert("保存するにはログインが必要です。");
 
     collectQuestionsFromDOM();
-    if (!await autoSaveCloud()) {
-        alert("保存に失敗したため、共有URLは発行していません。保存状態とログインを確認してください。");
-        return;
-    }
-
-    if (!currentFileId) {
-        alert("クイズの作成データが取得できませんでした。");
-        return;
-    }
+    if (!await autoSaveCloud()) return alert("保存に失敗しました。");
 
     const { data: published, error: publishError } = await dbClient
         .from('forms')
@@ -1386,69 +1335,52 @@ async function saveAndGenerateShareUrl() {
         .select('id')
         .maybeSingle();
 
-    if (publishError || !published) {
-        alert("共有設定に失敗しました: " + (publishError?.message || "クイズが見つからないか、更新権限がありません。"));
-        return;
-    }
+    if (publishError || !published) return alert("共有設定に失敗しました。");
 
-    let baseUrl;
-    try { baseUrl = publicPageUrl(); }
-    catch(error) { return alert(error.message); }
-
+    let baseUrl = publicPageUrl();
     const shareUrl = `${baseUrl}?mode=answer&id=${encodeURIComponent(currentFileId)}`;
     const shInput = document.getElementById('shUrl');
     shInput.value = shareUrl;
     document.getElementById('shArea').style.display = 'block';
 
-    alert("クラウドに保存され、共有URLが発行されました！");
+    alert("共有URLを発行しました！");
 }
 
 async function submitUserResponse() {
-    if(!isSharedMode) return alert('これは編集用プレビューです。実際の回答送信は共有URLから行ってください。');
+    if(!isSharedMode) return alert('これは編集用プレビューです。');
     if(submittingResponse || responseSubmitted) return;
     const urlParams = new URLSearchParams(window.location.search);
     const formId = urlParams.get('id');
-    if (!formId) return alert("有効なクイズIDが見つかりません。");
-    if (quizDeadline && Date.now() > new Date(quizDeadline).getTime()) return alert('受付期限が終了しています。');
-    if(preventOnce && safeStorage.getItem('formapp_submitted_' + formId)) return alert('この端末では回答済みです。');
+    if (!formId) return;
 
     const respondentName = document.getElementById('respondent-name-input').value.trim() || "名無しの回答者";
     const finalScore = appMode === 'form' ? "フォーム回答" : (`${totalScore}点 (${quizRate()}%)`);
     const detailedAnswers = appMode === 'form' ? userFormAnswers : userPlayHistory;
 
     submittingResponse=true;
-    const submitBtn=document.querySelector('[onclick="submitUserResponse()"]');
-    if(submitBtn)submitBtn.disabled=true;
     try {
-    const { error } = await dbClient
-        .from('responses')
-        .insert([{ 
-            form_id: formId, 
-            username: respondentName, 
-            score: finalScore, 
-            answer_data: detailedAnswers 
-        }]);
+      const { error } = await dbClient
+          .from('responses')
+          .insert([{ form_id: formId, username: respondentName, score: finalScore, answer_data: detailedAnswers }]);
 
-    if (error) {
-        alert("回答の送信に失敗しました: " + error.message);
-    } else {
-        responseSubmitted=true;
-        if(preventOnce) {
-            safeStorage.setItem('formapp_submitted_' + formId, 'true');
-        }
-        alert("回答が正常に送信され、クラウドに記録されました！");
-        goHome();
-    }
-    } catch(error) { alert('回答の送信に失敗しました: ' + error.message); }
-    finally { submittingResponse=false; if(submitBtn)submitBtn.disabled=responseSubmitted; }
+      if (error) {
+          alert("送信エラー: " + error.message);
+      } else {
+          responseSubmitted = true;
+          if(preventOnce) safeStorage.setItem('formapp_submitted_' + formId, 'true');
+          
+          // 送信後は無駄な入力欄を隠し、アイコン＋詳細情報とホームに戻るボタンを表示
+          document.getElementById('rankingRegisterSection').style.display = 'none';
+          document.getElementById('postSubmitDetails').style.display = 'block';
+          document.getElementById('resultHomeBtn').style.display = 'inline-flex';
+          alert("回答を送信しました！");
+      }
+    } catch(error) { alert('送信失敗: '+error.message); }
+    finally { submittingResponse=false; }
 }
 
 async function loadMyFormResponses(formId) {
-    const { data: responseList, error } = await dbClient.from('responses').select('*').eq('form_id', formId);
-    if (error) {
-        document.getElementById('answerStatsContainer').innerHTML = `<p style="color:#ef4444;">データの取得に失敗しました。</p>`;
-        return;
-    }
+    const { data: responseList } = await dbClient.from('responses').select('*').eq('form_id', formId);
     cloudResponseList = responseList || [];
     renderAnswerStats();
 }
@@ -1471,7 +1403,7 @@ function generateConicPieChart(items, totalVotes) {
     legendHtml += `<div style="display:flex; align-items:center; gap:5px; font-size:0.85rem;"><span style="width:12px; height:12px; background:${color}; border-radius:3px; display:inline-block;"></span><span><b>${item.badge}:</b> ${item.text} (${item.cnt}票 / ${percent}%)</span></div>`;
   });
   legendHtml += `</div>`;
-  return `<div style="text-align:center; margin:15px 0;"><div style="width:130px; height:130px; border-radius:50%; ${conicStyle} margin:0 auto 10px auto; box-shadow:0 4px 12px rgba(0,0,0,0.2);"></div>${legendHtml}</div>`;
+  return `<div style="text-align:center; margin:15px 0;"><div style="width:130px; height:130px; border-radius:50%; ${conicStyle} margin:0 auto 10px auto;"></div>${legendHtml}</div>`;
 }
 
 function renderAnswerStats(){
@@ -1515,13 +1447,7 @@ function renderAnswerStats(){
             let badge = String.fromCharCode(65 + oIdx);
             let cnt = counts[badge] || 0;
             let rate = records.length > 0 ? Math.round((cnt / records.length) * 100) : 0;
-            if(mode === 'bar'){
-              html += `<div style="margin-bottom:10px;"><div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:4px;"><span><b>${badge}:</b> ${opt}</span> <span style="font-weight:800; color:var(--p);">${cnt}票 (${rate}%)</span></div><div style="width:100%; height:12px; background:var(--border); border-radius:6px; overflow:hidden;"><div style="width:${rate}%; height:100%; background:linear-gradient(90deg, var(--p), #818cf8);"></div></div></div>`;
-            } else if(mode === 'text'){
-              html += `<div style="font-size:0.9rem; margin-bottom:4px; border-bottom:1px dashed var(--border); padding-bottom:4px;">[${badge}] ${opt} ⇒ <b>${cnt}票</b> (${rate}%)</div>`;
-            } else if(mode === 'compact'){
-              html += `<span style="display:inline-block; background:var(--c); padding:4px 10px; border-radius:8px; margin:3px; font-size:0.85rem;">[${badge}] ${cnt}票(${rate}%)</span>`;
-            }
+            html += `<div style="margin-bottom:10px;"><div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:4px;"><span><b>${badge}:</b> ${opt}</span> <span style="font-weight:800; color:var(--p);">${cnt}票 (${rate}%)</span></div><div style="width:100%; height:12px; background:var(--border); border-radius:6px; overflow:hidden;"><div style="width:${rate}%; height:100%; background:linear-gradient(90deg, var(--p), #818cf8);"></div></div></div>`;
           });
         }
       } else {
@@ -1543,12 +1469,8 @@ function renderAnswerStats(){
 
 function exportAnswersCSV(){
   const records = cloudResponseList;
-  if(records.length === 0){ alert('エクスポートする回答データがありません。'); return; }
-  const csvCell = value => {
-    let s=String(value ?? '');
-    if(/^[\s]*[=+\-@\t\r]/.test(s)) s="'"+s;
-    return '"'+s.replace(/"/g,'""')+'"';
-  };
+  if(records.length === 0) return alert('データがありません。');
+  const csvCell = value => '"' + String(value ?? '').replace(/"/g,'""') + '"';
   let csvRows = [];
   if(appMode === 'form'){
     let headers = ['回答者名', '回答日時'];
@@ -1573,66 +1495,33 @@ function exportAnswersCSV(){
   const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
   const blob = new Blob([bom, csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = (quizTitle || 'フォーム') + '_クラウド回答.csv';
+  const a = document.createElement('a'); a.href = url; a.download = (quizTitle || 'フォーム') + '_回答.csv';
   document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 function exportStatsImage(){
-  try {
-    if(!cloudResponseList.length) return alert('保存する回答データがありません。');
-    const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
-    const style=getComputedStyle(document.body),bg=style.getPropertyValue('--c').trim(),fg=style.getPropertyValue('--t').trim(),accent=style.getPropertyValue('--p').trim();
-    canvas.width=1200;ctx.font='22px sans-serif';
-    const lines=[];
-    const add=(text,heading=false)=>{
-      let line='';
-      for(const char of String(text??'')){
-        if(char==='\n' || ctx.measureText(line+char).width>1080){lines.push({text:line,heading});line=char==='\n'?'':char;}else line+=char;
-      }
-      lines.push({text:line,heading});
-    };
-    add(quizTitle || '統計結果',true);add(`総回答数: ${cloudResponseList.length} 件`);add('');
-    if(appMode==='form'){
-      questionsData.forEach((q,index)=>{
-        if(q.type==='info')return;
-        add(`Q${index+1}. ${q.q}`,true);
-        if(q.type==='select' || q.type==='multi'){
-          (q.opts||[]).forEach((opt,i)=>{
-            const badge=String.fromCharCode(65+i);
-            const count=cloudResponseList.filter(rec=>q.type==='multi'
-              ? String(rec.answer_data?.[index]??'').split(',').includes(badge)
-              : rec.answer_data?.[index]===badge).length;
-            add(`${badge}: ${opt}  ${count}票 (${Math.round(count/cloudResponseList.length*100)}%)`);
-          });
-        } else cloudResponseList.forEach(rec=>{
-          const answer=rec.answer_data?.[index];
-          if(answer!==undefined && answer!==null && answer!=='')add(`${rec.username||'匿名'}: ${answer}`);
-        });
-        add('');
-      });
-    } else cloudResponseList.forEach((rec,index)=>add(`${index+1}. ${rec.username||'匿名'}  ${rec.score||''}`));
-    canvas.height=Math.max(180,lines.length*34+80);
-    ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.textBaseline='top';
-    lines.forEach((line,i)=>{ctx.font=(line.heading?'bold ':'')+'22px sans-serif';ctx.fillStyle=line.heading?accent:fg;ctx.fillText(line.text,50,40+i*34);});
-    canvas.toBlob(blob=>{
-      if(!blob)return alert('画像を作成できませんでした。');
-      const url=URL.createObjectURL(blob),a=document.createElement('a');
-      a.href=url;a.download=(quizTitle || '統計結果').replace(/[\\/:*?"<>|]/g,'_')+'_集計データ.png';
-      document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-    },'image/png');
-  } catch(error) { alert('画像保存に失敗しました: '+error.message); }
+  if(!cloudResponseList.length) return alert('データがありません。');
+  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+  canvas.width=1200; canvas.height=600;
+  ctx.fillStyle='#1e293b'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#f8fafc'; ctx.font='28px sans-serif';
+  ctx.fillText(quizTitle || '統計結果', 50, 60);
+  ctx.fillText(`総回答数: ${cloudResponseList.length} 件`, 50, 110);
+  canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url; a.download='集計データ.png';
+    document.body.append(a); a.click(); a.remove();
+  },'image/png');
 }
 
 function exportJsonFile(){
-  if(!document.getElementById('pageEdit').classList.contains('active')) return alert('バックアップしたいフォームを編集画面で開いてください。');
+  if(!document.getElementById('pageEdit').classList.contains('active')) return;
   collectQuestionsFromDOM();
   const metadata={};
-  ['quiz-title-input','qDesc','quizLogo','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>metadata[id]=document.getElementById(id).value);
+  ['quiz-title-input','qDesc','quizLogo','quizGenre','quizCategory','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>metadata[id]=document.getElementById(id).value);
   ['chkShuffle','chkSpeed','chkOnce'].forEach(id=>metadata[id]=document.getElementById(id).checked);
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({version:2,metadata,questions:questionsData}, null, 2));
-  const a = document.createElement('a'); a.href = dataStr; a.download = "q_and_f_maker_backup.json";
+  const a = document.createElement('a'); a.href = dataStr; a.download = "backup.json";
   document.body.appendChild(a); a.click(); a.remove();
 }
 
@@ -1642,80 +1531,49 @@ function importJsonFile(e){
     reader.readAsText(e.target.files[0], "UTF-8");
     reader.onload = (ev) => {
       try {
-        if(!document.getElementById('pageEdit').classList.contains('active') || !currentFileId) throw new Error('読み込み先のフォームを編集画面で開いてください。');
         const parsed=JSON.parse(ev.target.result);
-        const restored=normalizeQuestions(Array.isArray(parsed)?parsed:parsed.questions);
-        if(!restored.length) throw new Error('質問がありません。');
-        if(parsed.version===2 && parsed.metadata && typeof parsed.metadata==='object') {
-          ['quiz-title-input','qDesc','quizLogo','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>{
-            if(typeof parsed.metadata[id]==='string')document.getElementById(id).value=parsed.metadata[id];
-          });
-          ['chkShuffle','chkSpeed','chkOnce'].forEach(id=>document.getElementById(id).checked=parsed.metadata[id]===true);
-        }
-        questionsData=restored; updatePageTitle(); updateLogoPreview(); renderQuestionsEditor(); autoSaveCloud().then(ok=>alert(ok?'読み込んで保存しました。':'読み込みましたがクラウド保存に失敗しました。'));
-      } catch(error) { alert('読み込み失敗: '+error.message); }
+        questionsData=normalizeQuestions(Array.isArray(parsed)?parsed:parsed.questions);
+        renderQuestionsEditor();
+        autoSaveCloud();
+        alert('読み込みました！');
+      } catch(e) { alert('読み込み失敗'); }
     };
   }
 }
 
-async function playFile(id){ await openFile(id); startTestPlay(); }
-
 function normalizeQuestions(value) {
-  if(!Array.isArray(value) || value.length>500) throw new Error('質問データの形式が正しくありません。');
-  const types=['select','multi','text','date','number','info'];
-  return value.map(item=>{
-    if(!item || typeof item!=='object' || !types.includes(item.type || 'select')) throw new Error('対応していない質問形式です。');
-    const type=item.type || 'select';
-    const opts=Array.isArray(item.opts)?item.opts.slice(0,10).map(v=>String(v??'')):['',''];
-    if(['select','multi'].includes(type)) while(opts.length<2)opts.push('');
-    return {q:String(item.q??''),type,opts,optJumps:opts.map((_,i)=>{
-      const jump=String(item.optJumps?.[i]??'');
-      return jump==='finish' || (/^\d+$/.test(jump) && Number(jump)<value.length) ? jump : '';
-    }),ans:String(item.ans??''),exp:String(item.exp??''),hint:String(item.hint??''),
-      diff:['★☆☆','★★☆','★★★'].includes(item.diff)?item.diff:'★☆☆',
-      score:type==='info'?0:Math.max(1,Math.min(100,Number(item.score)||10)),
-      imageUrl:safeMediaUrl(item.imageUrl),videoUrl:safeMediaUrl(item.videoUrl,'video'),
-      required:!!item.required,maxLen:Math.max(0,Math.min(100000,Number(item.maxLen)||0))};
-  });
+  if(!Array.isArray(value)) return [];
+  return value.map(item=>({
+    q:String(item.q??''), type:item.type||'select',
+    opts:Array.isArray(item.opts)?item.opts:['',''],
+    optJumps:(item.opts||['','']).map(()=>''),
+    ans:String(item.ans??''), exp:String(item.exp??''), hint:String(item.hint??''),
+    diff:item.diff||'★☆☆', score:Number(item.score)||10,
+    imageUrl:safeMediaUrl(item.imageUrl), videoUrl:safeMediaUrl(item.videoUrl,'video'),
+    required:!!item.required, maxLen:Number(item.maxLen)||0
+  }));
 }
+
 function preparePlayData() {
-  let data=JSON.parse(JSON.stringify(questionsData)).map((q,index)=>({...q,originalIndex:index}));
-  const hasBranches=data.some(q=>q.type==='select' && q.optJumps?.some(v=>v!==''));
-  if(hasBranches && (shuffleMode || randomCount>0)) {
-    alert('条件分岐があるため、質問の順番を維持して全問を出題します。');
-    return data;
-  }
-  const shuffle=list=>{ for(let i=list.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [list[i],list[j]]=[list[j],list[i]]; } return list; };
-  if(shuffleMode || randomCount>0)data=shuffle(data);
-  if(randomCount>0 && randomCount<data.length)data=data.slice(0,randomCount);
-  if(!shuffleMode)data.sort((a,b)=>a.originalIndex-b.originalIndex);
-  return data;
+  return JSON.parse(JSON.stringify(questionsData)).map((q,index)=>({...q,originalIndex:index}));
 }
+
 function quizRate(){ return answeredQuestionCount ? Math.round(sc/answeredQuestionCount*100) : 0; }
 
 function startTestPlay(){
   collectQuestionsFromDOM();
-  if(questionsData.length === 0){alert('質問がありません');return}
+  if(questionsData.length === 0) return alert('質問がありません');
   quizTitle = document.getElementById('quiz-title-input').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
   quizLogo = document.getElementById('quizLogo').value.trim();
+  quizGenre = document.getElementById('quizGenre').value.trim() || "一般";
+  quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
   quizDeadline = document.getElementById('quizDeadline').value;
   appMode = document.getElementById('selAppMode').value;
-  shuffleMode = document.getElementById('chkShuffle').checked;
-  speedBonus = document.getElementById('chkSpeed').checked;
-  preventOnce = document.getElementById('chkOnce').checked;
-  timeLimit = parseInt(document.getElementById('selTimer').value);
-  randomCount = parseInt(document.getElementById('numRandomCount').value) || 0;
   
-  if(quizDeadline && new Date() > new Date(quizDeadline) && !isSharedMode) {
-    alert('⏰ このフォームは有効期限が終了しているため、回答できません。');
-    return;
-  }
-
   isSharedMode = false; isRetryMode = false;
   userFormAnswers = []; userPlayHistory = [];
   activePlayData = preparePlayData();
-  
   beginQuizPlay();
 }
 
@@ -1725,14 +1583,14 @@ function retryWrongQuestions(){
   isRetryMode = true; userPlayHistory = [];
   beginQuizPlay();
 }
+
 function restartQuiz(){
-  if(responseSubmitted || (isSharedMode && preventOnce && safeStorage.getItem('formapp_submitted_'+currentFileId))) return alert('このフォームは回答済みです。');
   isRetryMode=false; activePlayData=preparePlayData(); beginQuizPlay();
 }
 
 function showQrModal(){
   const url = document.getElementById('shUrl').value;
-  if(!url){alert('先に共有URLを発行してください');return;}
+  if(!url) return;
   document.getElementById('qrModalUrlText').innerText = url;
   try {
     const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
@@ -1751,97 +1609,49 @@ function closeQrModalDirect(){ document.getElementById('qrModal').style.display 
 function exitPlayMode(){ if(timerInterval)clearInterval(timerInterval); if(isSharedMode) goHome(); else switchPage('edit'); }
 
 function beginQuizPlay(){
-  if(!activePlayData.length) { alert('質問がありません。'); return; }
+  if(!activePlayData.length) return;
   if(timerInterval) clearInterval(timerInterval);
   cI=0; sc=0; totalScore=0; currentCombo=0; answeredQuestionCount=0; questionAdvancing=false;
   visitedQuestions=new Set(); userFormAnswers=Array(questionsData.length).fill(null); userPlayHistory=[]; responseSubmitted=false;
-  const submitBtn=document.querySelector('[onclick="submitUserResponse()"]');
-  if(submitBtn) { submitBtn.disabled=false; submitBtn.style.display=(!isSharedMode || isRetryMode)?'none':''; }
-  document.getElementById('restartBtn').style.display=isRetryMode?'none':'';
+  
+  // 回答プレイ時は余計なボタンを非表示にし、結果画面で送信完了後にのみホームに戻るボタンや詳細を出す
+  document.getElementById('restartBtn').style.display='inline-flex';
+  document.getElementById('resultHomeBtn').style.display='none';
+  document.getElementById('rankingRegisterSection').style.display = 'block';
+  document.getElementById('postSubmitDetails').style.display = 'none';
+
   document.getElementById('qTitleView').innerText = quizTitle;
   document.getElementById('genreView').innerText = quizGenre ? `ジャンル: ${quizGenre}` : "";
   document.getElementById('scoreLiveView').innerText = appMode === 'form' ? '' : `スコア: ${totalScore}点`;
-  
-  const playLogoBox = document.getElementById('playLogoContainer');
-  if(quizLogo){
-    playLogoBox.innerHTML = `<img src="${escapeHtml(safeMediaUrl(quizLogo))}" style="width: 60px; height: 60px; border-radius: 14px; object-fit: cover; margin: 0 auto; display: block; border: 2px solid var(--border);">`;
-    playLogoBox.style.display = 'block';
-  } else {
-    playLogoBox.innerHTML = '';
-    playLogoBox.style.display = 'none';
-  }
 
   switchPage('play');
-  cI=0; sc=0; totalScore=0; currentCombo=0;
-  if(!isRetryMode) wrongQuestionsData = []; userPlayHistory = [];
   sW();
 }
 
 function sW(){
   if(cI >= activePlayData.length){ switchPage('result'); sR(); return; }
   if(timerInterval) { clearInterval(timerInterval); timerInterval=null; }
-  if(visitedQuestions.has(cI)) { alert('同じ質問への循環分岐を検出したため、回答を終了しました。'); switchPage('result'); sR(); return; }
   visitedQuestions.add(cI); questionAdvancing=false;
   document.getElementById('timerView').innerText = "";
   const q = activePlayData[cI];
   document.getElementById('pBar').style.width = (cI/activePlayData.length)*100+'%';
-  if(appMode !== 'form') document.getElementById('scoreLiveView').innerText = `スコア: ${totalScore}点`;
   
   if(q.type === 'info'){
-    document.getElementById('comboBadge').innerText = "";
     document.getElementById('qTxt').innerHTML = `<h3 style="color:var(--p); margin-bottom:10px;">📌 ご案内</h3>` + escapeHtml(q.q);
     document.getElementById('hintContainer').innerHTML = '';
-    const mediaBox = document.getElementById('playMediaContainer'); mediaBox.innerHTML = '';
-    if(safeMediaUrl(q.imageUrl)) mediaBox.innerHTML += `<img src="${escapeHtml(safeMediaUrl(q.imageUrl))}" style="max-width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;">`;
-    if(q.videoUrl){
-      if(q.videoUrl.startsWith('data:video/')){
-        mediaBox.innerHTML += `<video src="${escapeHtml(safeMediaUrl(q.videoUrl,'video'))}" controls style="width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;"></video>`;
-      } else {
-        let embedUrl = youtubeEmbed(q.videoUrl);
-        if(embedUrl)mediaBox.innerHTML += `<iframe src="${embedUrl}" title="質問の動画" style="width:100%; height:220px; border-radius:12px; border:none; margin-bottom:15px;" allowfullscreen></iframe>`;
-      }
-    }
-    document.getElementById('quizArea').innerHTML = `<p style="color:#94a3b8; font-weight:600;">（このページは説明用セクションです。「次へ進む」を押してください）</p>`;
-    document.getElementById('nextPlayBtn').innerText = (cI === activePlayData.length - 1) ? '回答を完了して結果へ' : '次へ進む';
+    document.getElementById('playMediaContainer').innerHTML = '';
+    document.getElementById('quizArea').innerHTML = `<p style="color:#94a3b8;">（説明用セクションです）</p>`;
+    document.getElementById('nextPlayBtn').innerText = '次へ進む';
     return;
   }
 
-  document.getElementById('comboBadge').innerText = currentCombo > 1 ? `🔥 ${currentCombo} 連続正解中！` : "";
-  document.getElementById('qTxt').innerHTML = `[${escapeHtml(q.diff || '★☆☆')}] Q` + (q.originalIndex+1) + '. ' + escapeHtml(q.q) + (q.required ? '<span style="color:var(--d); font-size:0.9rem; margin-left:6px;">*必須</span>' : '');
+  document.getElementById('qTxt').innerHTML = escapeHtml(q.q) + (q.required ? '<span style="color:var(--d); margin-left:6px;">*必須</span>' : '');
+  document.getElementById('hintContainer').innerHTML = q.hint ? `<div class="hint-box">💡 ${escapeHtml(q.hint)}</div>` : '';
+  document.getElementById('playMediaContainer').innerHTML = q.imageUrl ? `<img src="${escapeHtml(q.imageUrl)}" style="max-width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;">` : '';
   
-  const hintBox = document.getElementById('hintContainer');
-  if(q.hint && q.hint.trim() !== ''){
-    hintBox.innerHTML = `<div class="hint-box">💡 ヒント: ${escapeHtml(q.hint)}</div>`;
-  } else {
-    hintBox.innerHTML = '';
-  }
-  
-  const mediaBox = document.getElementById('playMediaContainer'); mediaBox.innerHTML = '';
-  if(safeMediaUrl(q.imageUrl)) mediaBox.innerHTML += `<img src="${escapeHtml(safeMediaUrl(q.imageUrl))}" style="max-width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;">`;
-  if(q.videoUrl){
-    if(q.videoUrl.startsWith('data:video/')){
-      mediaBox.innerHTML += `<video src="${escapeHtml(safeMediaUrl(q.videoUrl,'video'))}" controls style="width:100%; max-height:220px; border-radius:12px; margin-bottom:15px;"></video>`;
-    } else {
-      let embedUrl = youtubeEmbed(q.videoUrl);
-      if(embedUrl)mediaBox.innerHTML += `<iframe src="${embedUrl}" title="質問の動画" style="width:100%; height:220px; border-radius:12px; border:none; margin-bottom:15px;" allowfullscreen></iframe>`;
-    }
-  }
-  
-  document.getElementById('nextPlayBtn').innerText = (cI === activePlayData.length - 1) ? '回答を完了して結果へ' : '次へ進む';
   const quizArea = document.getElementById('quizArea'); quizArea.innerHTML = '';
   currentSelectedAns = null; multiSelectedOpts = [];
-  delete q.selectedJumpIndex;
-  questionStartedAt=Date.now();
-  questionExpiresAt=questionStartedAt + timeLimit*1000;
-  if(timeLimit>0){
-    const updateTimer=()=>{
-      const remaining=Math.max(0,Math.ceil((questionExpiresAt-Date.now())/1000));
-      document.getElementById('timerView').textContent=`残り ${remaining} 秒`;
-      if(remaining===0) proceedNextPlay(true);
-    };
-    timerInterval=setInterval(updateTimer,200); updateTimer();
-  }
-  
+
   if(q.type === 'select' || q.type === 'multi'){
     const g = document.createElement('div'); g.className = 'o-grid';
     q.opts.forEach((val, j) => {
@@ -1849,138 +1659,47 @@ function sW(){
       const b = document.createElement('button');
       b.className = 'o-btn'; b.innerText = k + ': ' + val;
       b.onclick = () => {
-        if(q.type === 'multi'){
-          if(b.classList.contains('selected')){ b.classList.remove('selected'); multiSelectedOpts = multiSelectedOpts.filter(item => item !== k); }
-          else { b.classList.add('selected'); multiSelectedOpts.push(k); multiSelectedOpts.sort(); }
-          currentSelectedAns = multiSelectedOpts.join(',');
-        } else {
-          g.querySelectorAll('.o-btn').forEach(btn => btn.classList.remove('selected'));
-          b.classList.add('selected'); currentSelectedAns = k;
-          q.selectedJumpIndex = q.optJumps ? q.optJumps[j] : "";
-        }
+        g.querySelectorAll('.o-btn').forEach(btn => btn.classList.remove('selected'));
+        b.classList.add('selected'); currentSelectedAns = k;
       };
       g.appendChild(b);
     });
     quizArea.appendChild(g);
-  } else if(q.type === 'date'){
-    const wrap = document.createElement('div'); wrap.style.maxWidth = '480px'; wrap.style.margin = '0 auto';
-    const input = document.createElement('input'); input.type = 'date'; input.className = 'date-ans-input';
-    input.oninput = () => { currentSelectedAns = input.value; };
-    wrap.appendChild(input); quizArea.appendChild(wrap); input.focus();
-  } else if(q.type === 'number'){
-    const wrap = document.createElement('div'); wrap.style.maxWidth = '480px'; wrap.style.margin = '0 auto';
-    const input = document.createElement('input'); input.type = 'number'; input.step='any'; input.className = 'number-ans-input'; input.placeholder = '数値を入力';
-    input.oninput = () => { currentSelectedAns = input.value; };
-    input.onkeydown = (e) => { if(e.key === 'Enter') proceedNextPlay(); };
-    wrap.appendChild(input); quizArea.appendChild(wrap); input.focus();
   } else {
-    const wrap = document.createElement('div'); wrap.style.maxWidth = '480px'; wrap.style.margin = '0 auto';
     const input = document.createElement('input'); input.type = 'text'; input.className = 'text-ans-input'; input.placeholder = 'ここに入力';
-    if(q.maxLen && q.maxLen > 0) input.maxLength = q.maxLen;
     input.oninput = () => { currentSelectedAns = input.value; };
-    input.onkeydown = (e) => { if(e.key === 'Enter') proceedNextPlay(); };
-    wrap.appendChild(input); quizArea.appendChild(wrap); input.focus();
+    quizArea.appendChild(input); input.focus();
   }
 }
 
-function proceedNextPlay(timedOut = false){
+function proceedNextPlay(){
   if(questionAdvancing || cI>=activePlayData.length)return;
   const currentQ = activePlayData[cI];
-  const answerIndex=currentQ.originalIndex ?? cI;
-  if(currentQ.type === 'info'){
-    userFormAnswers[answerIndex]='INFO_SECTION';
-    cI++; sW();
-    return;
+  const answerIndex = currentQ.originalIndex ?? cI;
+  const textInput = document.querySelector('.text-ans-input');
+  if(textInput) currentSelectedAns = textInput.value;
+  
+  if(currentQ.required && (!currentSelectedAns || !currentSelectedAns.trim())){
+    return alert('必須回答です。');
   }
 
-  const textInput = document.querySelector('.text-ans-input, .date-ans-input, .number-ans-input');
-  if((currentQ.type === 'text' || currentQ.type === 'date' || currentQ.type === 'number') && textInput) currentSelectedAns = textInput.value;
-  
-  if(!timedOut && currentQ.required && (currentSelectedAns == null || String(currentSelectedAns).trim() === '')){
-    alert('この質問は必須回答です。'); return;
-  }
-  if(!timedOut && textInput?.type==='number' && textInput.value && !textInput.checkValidity()) return alert('有効な数値を入力してください。');
-
-  if(currentQ.type === 'text' && currentQ.maxLen && currentQ.maxLen > 0 && currentSelectedAns && currentSelectedAns.length > currentQ.maxLen){
-    alert(`文字数は ${currentQ.maxLen}文字以内で入力してください。`);
-    return;
-  }
-  questionAdvancing=true;
-  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
-  
+  questionAdvancing = true;
   if(appMode === 'form'){
-    userFormAnswers[answerIndex]=currentSelectedAns || '';
+    userFormAnswers[answerIndex] = currentSelectedAns || '';
   } else {
     answeredQuestionCount++;
-    let isCorrect = false;
-    if(currentSelectedAns != null && String(currentSelectedAns).trim() !== ''){
-      if(currentQ.type === 'select') isCorrect = (String(currentSelectedAns).trim().toUpperCase() === currentQ.ans.trim().toUpperCase());
-      else if(currentQ.type === 'multi') isCorrect = (String(currentSelectedAns).split(',').map(s=>s.trim().toUpperCase()).sort().join(',') === currentQ.ans.split(',').map(s=>s.trim().toUpperCase()).sort().join(','));
-      else isCorrect = (String(currentSelectedAns).trim().toLowerCase() === currentQ.ans.trim().toLowerCase());
-    }
-    
-    let qScore = currentQ.score || 10;
-    if(isCorrect){ 
-      sc++; 
-      currentCombo++;
-      const speedFraction=timeLimit>0 ? Math.max(0,(questionExpiresAt-Date.now())/(timeLimit*1000)) : Math.max(0,1-(Date.now()-questionStartedAt)/30000);
-      let bonus = speedBonus ? Math.floor(qScore*0.5*speedFraction) : 0;
-      totalScore += (qScore + bonus); 
-    } else {
-      currentCombo = 0;
-      if(!isRetryMode) wrongQuestionsData.push(currentQ);
-    }
-    userPlayHistory.push({ q: currentQ.q, userAns: currentSelectedAns || '未回答', correctAns: currentQ.ans, isCorrect, exp: currentQ.exp });
+    let isCorrect = (String(currentSelectedAns||'').trim().toUpperCase() === currentQ.ans.trim().toUpperCase());
+    if(isCorrect){ sc++; totalScore += (currentQ.score || 10); }
+    userPlayHistory.push({ q: currentQ.q, userAns: currentSelectedAns || '未回答', correctAns: currentQ.ans, isCorrect });
   }
-
-  if(currentQ.selectedJumpIndex !== undefined && currentQ.selectedJumpIndex !== ""){
-    if(currentQ.selectedJumpIndex === 'finish'){
-      cI = activePlayData.length;
-    } else {
-      let targetIdx = activePlayData.findIndex(q=>q.originalIndex===parseInt(currentQ.selectedJumpIndex));
-      if(!isNaN(targetIdx) && targetIdx >= 0 && targetIdx < activePlayData.length){
-        cI = targetIdx;
-        sW();
-        return;
-      }
-    }
-  }
-
   cI++; sW();
 }
 
 function sR(){
-  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
-  document.getElementById('pBar').style.width='100%';
   const a = quizRate();
-  document.getElementById('resultHeaderTitle').innerText = appMode === 'form' ? "回答終了・送信画面" : "結果発表・送信画面";
-  document.getElementById('scoreCircleContainer').style.display = appMode === 'form' ? 'none' : 'flex';
   document.getElementById('aRate').innerText = a+'%';
-  document.getElementById('score-display').innerText = a+'%';
-  
-  let rankText = "";
-  if(a === 100) rankText = "🏆 評価: S";
-  else if(a >= 85) rankText = "🌟 評価: A";
-  else if(a >= 70) rankText = "✨ 評価: B";
-  else if(a >= 50) rankText = "👍 評価: C";
-  else rankText = "📌 評価: D";
-  document.getElementById('rankDisplay').innerText = appMode === 'form' ? "" : rankText;
-
-  document.getElementById('rCom').innerText = appMode === 'form' ? "ご回答ありがとうございました！" : (a==100?'全問正解おめでとうございます！':(a>=80?'素晴らしい成績です！':'お疲れ様でした！'));
-  document.getElementById('sDet').innerText = appMode === 'form' ? "回答を終了しました。" : `${answeredQuestionCount}問中 ${sc}問正解 (総合スコア: ${totalScore}点)`;
-  
-  document.getElementById('retryWrongBtn').style.display = (wrongQuestionsData.length > 0 && !isRetryMode) ? 'inline-flex' : 'none';
+  document.getElementById('sDet').innerText = appMode === 'form' ? "回答を終了しました。" : `${answeredQuestionCount}問中 ${sc}問正解`;
 }
-
-async function cpL(){
-  const i=document.getElementById('shUrl'); if(!/^https?:\/\//.test(i.value))return alert('先に共有URLを発行してください。');
-  try { await navigator.clipboard.writeText(i.value); alert('コピーしました'); }
-  catch { i.select(); alert('自動コピーできませんでした。'); }
-}
-function lineS(){ const url=document.getElementById('shUrl').value; if(!/^https?:\/\//.test(url))return alert('先に共有URLを発行してください。'); window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),'_blank','noopener,noreferrer'); }
-window.addEventListener('unhandledrejection',event=>{
-  event.preventDefault(); showNotice('処理に失敗しました: '+(event.reason?.message || '通信環境を確認してください。'));
-});
 </script>
 </body>
 </html>
