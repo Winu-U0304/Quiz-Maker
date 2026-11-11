@@ -51,7 +51,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .toggle-pw-btn { position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 1rem; color: #94a3b8; }
 .auth-error-msg { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--d); color: #f87171; padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; display: none; margin-top: 5px; }
 
-/* 🌐 Googleログインボタン用スタイル */
 .google-login-btn { background: #ffffff; color: #334155; border: 1px solid var(--border); padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; transition: background 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 .google-login-btn:hover { background: #f8fafc; }
 
@@ -61,8 +60,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .template-btn:hover { border-color: var(--p); background: var(--p-light); }
 
 .category-filter-bar { display: flex; gap: 8px; align-items: center; overflow-x: auto; width: 100%; padding-bottom: 5px; }
-.cat-filter-chip { background: var(--input-bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--t); white-space: nowrap; }
+.cat-filter-chip { background: var(--input-bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--t); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
 .cat-filter-chip.active { background: var(--p); border-color: var(--p); color: #fff; }
+.cat-add-btn { background: var(--s); color: #0f172a; border: none; width: 22px; height: 22px; border-radius: 50%; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; margin-left: 4px; }
 
 .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
 .file-card { background: var(--c); border: 1px solid var(--border); border-radius: 20px; padding: 22px; cursor: pointer; transition: all 0.3s; position: relative; display: flex; flex-direction: column; justify-content: space-between; height: 185px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); user-select: none; }
@@ -87,12 +87,12 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); background: transparent; }
 .e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; }
 
-.floating-toolbar { position: sticky; bottom: 20px; z-index: 100; display: flex; justify-content: center; gap: 8px; background: var(--c); padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: 10px 0; width: 100%; }
+.floating-toolbar { position: static; display: flex; justify-content: center; gap: 8px; background: var(--c); padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: 10px 0; width: 100%; }
 .ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 700; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .ft-btn:hover { background: var(--p); border-color: var(--p); }
 
 @media(max-width: 768px) {
-  .floating-toolbar { position: fixed; bottom: 74px; left: 50%; transform: translateX(-50%); width: calc(100% - 24px); max-width: 850px; z-index: 999; }
+  .floating-toolbar { position: relative; width: 100%; margin-top: 15px; }
 }
 
 .settings-bar { background: var(--c); padding: 22px; border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; }
@@ -168,7 +168,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 }
 </style>
 
-<!-- 🟢 正しいSupabaseのCDNライブラリ読み込み -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 </head>
@@ -195,13 +194,11 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
   <!-- ① ホーム -->
   <div id="pageHome" class="home-section active">
-    <!-- 🔐 ログイン・アカウント管理エリア -->
     <div class="auth-box" id="auth-container">
       <div id="auth-logged-out">
         <h3 style="font-size: 1rem; color: var(--p); font-weight: 800; margin-bottom: 4px;">🔐 クイズ作成者としてログイン</h3>
         <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">自分専用のクイズを作成・保存し、回答データを集計するにはログインが必要です。</p>
         
-        <!-- 🌐 Googleログインボタン -->
         <button type="button" class="google-login-btn" onclick="signInWithGoogle()" style="margin-bottom: 10px;">
           <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.18 21.31 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.19C.43 8.13 0 9.87 0 11.75s.43 3.62 1.19 5.15l4.08-2.66z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.18 2.69 1.19 6.6l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
           Googleアカウントでログイン
@@ -211,13 +208,11 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
         <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
             <input type="email" id="auth-email" placeholder="メールアドレス" style="flex: 1; min-width: 180px;">
-            <!-- パスワード入力欄（目玉ボタン付き） -->
             <div class="password-wrapper">
                 <input type="password" id="auth-password" placeholder="パスワード">
                 <button type="button" class="toggle-pw-btn" onclick="togglePasswordVisibility()" title="パスワードを表示/非表示">👁️</button>
             </div>
         </div>
-        <!-- ⚠️ エラーメッセージ表示用 -->
         <div id="auth-error-message" class="auth-error-msg"></div>
 
         <div style="display: flex; gap: 8px; margin-top: 5px;">
@@ -275,11 +270,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         </div>
         <input type="text" id="quiz-title-input" class="e-title" placeholder="タイトルを入力" oninput="updatePageTitle(); autoSaveCloud();">
         <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明を入力" oninput="autoSaveCloud()">
-        <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="autoSaveCloud()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="autoSaveCloud()" placeholder="例: 学校" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">タグ: <input type="text" id="quizTag" oninput="autoSaveCloud()" placeholder="例: 歴史, 計算" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:140px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
-        </div>
       </div>
 
       <div class="sh-area" id="shArea">
@@ -440,13 +430,8 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 </div>
 
 <script>
-// ==========================================
-// 🚀 Supabase クライアント初期設定（すべて小文字）
-// ==========================================
 const SUPABASE_URL = "https://ovpwgxwuidnejdlszzqm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_9XQlxQcCXyL3odq0h80SxA_LPFv9BSw";
-// Keep the SDK global and the application client under different names.
-// Storage can be blocked in embedded previews. Fall back to this tab's memory.
 const memoryStorage = new Map();
 let persistentStorage = null;
 try {
@@ -502,7 +487,6 @@ function showNotice(message) {
   }
   document.getElementById('app-notice-text').textContent = String(message);
 }
-// Native dialogs are suppressed by some embedded hosts.
 window.alert = showNotice;
 function askInPage(message, defaultValue) {
   return new Promise(resolve => {
@@ -548,6 +532,7 @@ function authError(error) {
 
 let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, currentCombo=0, quizTitle="", quizDesc="", quizLogo="", quizGenre="", quizCategory="一般", quizTag="", quizDeadline="", appMode="form", shuffleMode=false, speedBonus=false, preventOnce=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [], timerInterval = null, cloudResponseList = [];
 let questionStartedAt = 0, questionExpiresAt = 0, questionAdvancing = false, visitedQuestions = new Set(), submittingResponse = false, responseSubmitted = false, answeredQuestionCount = 0;
+let isNewlyCreated = false; // 空の新規作成自動削除判定用
 
 function truncateText(str, maxLen = 4) {
   if (!str) return "";
@@ -584,6 +569,7 @@ function handleLogoFileUpload(e){
   reader.onload = (event) => {
     document.getElementById('quizLogo').value = event.target.result;
     updateLogoPreview();
+    isNewlyCreated = false; // 変更があったため自動削除対象外に
     autoSaveCloud();
     alert('ロゴ画像を設定しました！');
   };
@@ -611,9 +597,6 @@ function changeColorTheme(themeName){
   safeStorage.setItem('formapp_theme', themeName);
 }
 
-// ==========================================
-// 👁️ パスワード表示／非表示切り替え
-// ==========================================
 function togglePasswordVisibility() {
     const pwInput = document.getElementById('auth-password');
     const toggleBtn = document.querySelector('.toggle-pw-btn');
@@ -626,9 +609,6 @@ function togglePasswordVisibility() {
     }
 }
 
-// ==========================================
-// 🌐 Googleログイン＆認証機能
-// ==========================================
 async function signInWithGoogle() {
   return runAuth(async () => {
     const { error } = await dbClient.auth.signInWithOAuth({
@@ -637,10 +617,7 @@ async function signInWithGoogle() {
             redirectTo: publicPageUrl()
         }
     });
-
-    if (error) {
-        throw new Error("Googleログインの起動に失敗しました: " + authError(error));
-    }
+    if (error) throw new Error("Googleログインの起動に失敗しました: " + authError(error));
   });
 }
 
@@ -663,11 +640,8 @@ async function handleSignUp() {
     const options = {};
     try { options.emailRedirectTo = publicPageUrl(); } catch {}
     const { data, error } = await dbClient.auth.signUp({ email, password, options });
-    if (error) {
-        throw new Error("登録エラー: " + authError(error));
-    } else {
-        alert(data.session ? "登録とログインが完了しました。" : "登録を受け付けました。確認メールが届いた場合はリンクを開いて認証してください。届かない場合は登録済みアドレスか迷惑メールも確認してください。");
-    }
+    if (error) throw new Error("登録エラー: " + authError(error));
+    else alert(data.session ? "登録とログインが完了しました。" : "登録を受け付けました。確認メールのリンクを開いて認証してください。");
   });
 }
 
@@ -675,12 +649,8 @@ async function handleSignIn() {
   return runAuth(async () => {
     const {email,password} = authCredentials();
     const { error } = await dbClient.auth.signInWithPassword({ email, password });
-    if (error) {
-        throw new Error("ログイン失敗: " + authError(error));
-    } else {
-        alert("ログインに成功しました！");
-        document.getElementById('auth-password').value = '';
-    }
+    if (error) throw new Error("ログイン失敗: " + authError(error));
+    else { alert("ログインに成功しました！"); document.getElementById('auth-password').value = ''; }
   });
 }
 
@@ -703,8 +673,6 @@ dbClient.auth.onAuthStateChange((event, session) => {
         if(loggedInArea) loggedInArea.style.display = 'flex';
         if(emailDisplay) emailDisplay.innerText = session.user.email;
         if(myFormsSection) myFormsSection.style.display = 'flex';
-        
-        // Do not issue an awaited Supabase call while the auth lock is held.
         setTimeout(() => loadMyForms(session.user.id), 0);
     } else {
         if(loggedOutArea) loggedOutArea.style.display = 'block';
@@ -718,7 +686,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const authParams = new URLSearchParams(location.hash.slice(1));
   const authFailure = authParams.get('error_description') || new URLSearchParams(location.search).get('error_description');
   if (authFailure) showAuthError('認証エラー: ' + authFailure);
-  if (!persistentStorage) showNotice('この環境ではブラウザ保存が制限されています。ログイン状態・表示設定は、このページを開いている間だけ保持されます。');
+  if (!persistentStorage) showNotice('この環境ではブラウザ保存が制限されています。');
   const savedMode = safeStorage.getItem('formapp_mode');
   const savedTheme = safeStorage.getItem('formapp_theme') || 'blue';
   if(savedMode === 'light'){
@@ -733,12 +701,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const formId = urlParams.get('id');
   
   if (mode === 'answer' && formId) {
-    const { data, error } = await dbClient
-      .from('forms')
-      .select('*')
-      .eq('id', formId)
-      .single();
-
+    const { data, error } = await dbClient.from('forms').select('*').eq('id', formId).single();
     if (error || !data) {
       alert("クイズの読み込みに失敗しました。URLが正しいか確認してください。");
       goHome();
@@ -767,7 +730,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (preventOnce) {
       const onceKey = 'formapp_submitted_' + formId;
       if (safeStorage.getItem(onceKey)) {
-        document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⚠️ 回答済みです</h2><p>このフォームは「重複防止」が有効に設定されているため、すでに回答済みです。</p></div>`;
+        document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⚠️ 回答済みです</h2><p>このフォームはすでに回答済みです。</p></div>`;
         return;
       }
     }
@@ -793,6 +756,12 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 function switchPage(pageName){
   if (pageName !== 'play' && timerInterval) { clearInterval(timerInterval); timerInterval=null; }
+  
+  // 編集画面から移動する際、もし「新規作成して特に何も変更・追加していない(isNewlyCreated)」状態であれば自動削除する
+  if (pageName !== 'edit' && currentFileId && isNewlyCreated) {
+    checkAndDeleteEmptyNewForm();
+  }
+
   document.querySelectorAll('.home-section, .page-section').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
   const logoElem = document.getElementById('headerLogoText');
@@ -825,6 +794,21 @@ function switchPage(pageName){
     document.getElementById('pageTitle').innerText = "Q and F Maker - 結果発表";
     logoElem.innerText = "Q and F Maker - 結果発表";
   }
+}
+
+async function checkAndDeleteEmptyNewForm() {
+  const targetId = currentFileId;
+  currentFileId = null;
+  isNewlyCreated = false;
+  try {
+    const { data: { session } } = await dbClient.auth.getSession();
+    if (!session) return;
+    // タイトルが「無題のフォーム」のままで質問が1問かつ空欄の場合に削除
+    const { data } = await dbClient.from('forms').select('*').eq('id', targetId).eq('user_id', session.user.id).single();
+    if (data && data.title === "無題のフォーム" && (!data.quiz_data || data.quiz_data.length <= 1 && (!data.quiz_data[0] || !data.quiz_data[0].q))) {
+      await dbClient.from('forms').delete().eq('id', targetId).eq('user_id', session.user.id);
+    }
+  } catch {}
 }
 
 function switchFormTab(tabName){
@@ -869,13 +853,35 @@ async function loadMyForms(userId){
   if (!categories.includes(activeCategoryFilter)) activeCategoryFilter = 'すべて';
   const catBar = document.getElementById('categoryFilterBar');
   catBar.innerHTML = '';
+  
   categories.forEach(cat => {
     const chip = document.createElement('button');
     chip.className = 'cat-filter-chip ' + (activeCategoryFilter === cat ? 'active' : '');
-    chip.innerText = truncateText(cat, 5);
+    
+    if (cat === "すべて") {
+      chip.innerHTML = `${escapeHtml(truncateText(cat, 6))}`;
+    } else {
+      // ホームのカテゴリ横にプラスボタンを配置
+      chip.innerHTML = `${escapeHtml(truncateText(cat, 6))} <button class="cat-add-btn" title="${cat}に新規作成" onclick="event.stopPropagation(); createNewQuizInCategory('${cat}')">＋</button>`;
+    }
+    
     chip.onclick = () => { activeCategoryFilter = cat; loadMyForms(userId); };
     catBar.appendChild(chip);
   });
+  
+  // 一般など新規追加用の一番最初のプラスボタンチップ
+  const addCatChip = document.createElement('button');
+  addCatChip.className = 'cat-filter-chip';
+  addCatChip.style.background = 'var(--s)';
+  addCatChip.style.color = '#0f172a';
+  addCatChip.innerHTML = '＋ ジャンル/カテゴリ追加';
+  addCatChip.onclick = async () => {
+    let newCatName = await askInPage('新しく追加するカテゴリ名を入力してください:', '一般');
+    if (newCatName && newCatName.trim()) {
+      createNewQuizInCategory(newCatName.trim());
+    }
+  };
+  catBar.appendChild(addCatChip);
   
   const grid = document.getElementById('fileGrid');
   grid.innerHTML = '';
@@ -896,7 +902,7 @@ async function loadMyForms(userId){
       <div>
         <div class="file-card-title">${escapeHtml(file.title || '無題')}</div>
         <div class="file-card-meta">
-          <span>タグ: ${escapeHtml(truncateText(file.tag || '一般', 8))}</span>
+          <span>カテゴリ: ${escapeHtml(fileCat)} / タグ: ${escapeHtml(truncateText(file.tag || '一般', 8))}</span>
           <span>${file.mode === 'form' ? 'フォーム' : 'クイズ'} (${file.quiz_data ? file.quiz_data.length : 0}問)</span>
         </div>
       </div>
@@ -919,14 +925,16 @@ function resetNewFormSettings() {
   cloudResponseList=[]; document.getElementById('answerStatsContainer').replaceChildren();
 }
 
-async function createNewQuiz(){
+async function createNewQuiz(category = "一般", tag = "一般"){
   const { data: { session } } = await dbClient.auth.getSession();
   if(!session){ alert('クイズを作成するにはログインが必要です。'); return; }
   resetNewFormSettings();
   
-  quizTitle = "無題のフォーム"; quizDesc = ""; quizLogo = ""; quizGenre = ""; quizCategory = "一般"; quizTag = ""; quizDeadline = ""; appMode = "form";
+  quizTitle = "無題のフォーム"; quizDesc = ""; quizLogo = ""; quizGenre = ""; quizCategory = category; quizTag = tag; quizDeadline = ""; appMode = "form";
   questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
   
+  isNewlyCreated = true; // 新規作成フラグON（何も変更せず離脱したら自動削除対象）
+
   const newId = crypto.randomUUID();
   const { data, error } = await dbClient
     .from('forms')
@@ -950,15 +958,15 @@ async function createNewQuiz(){
   document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizLogo').value = quizLogo;
-  document.getElementById('quizGenre').value = quizGenre;
-  document.getElementById('quizCategory').value = quizCategory;
-  document.getElementById('quizTag').value = quizTag;
-  document.getElementById('quizDeadline').value = "";
   document.getElementById('selAppMode').value = appMode;
   document.getElementById('shArea').style.display = 'none';
   updateLogoPreview();
   renderQuestionsEditor();
   switchPage('edit');
+}
+
+async function createNewQuizInCategory(categoryName) {
+  await createNewQuiz(categoryName, categoryName);
 }
 
 async function createFromTemplate(type){
@@ -994,6 +1002,7 @@ async function createFromTemplate(type){
   }
   
   appMode = "form";
+  isNewlyCreated = false; // テンプレートは明示的な作成なので自動削除対象外
   const newId = crypto.randomUUID();
   const { data, error } = await dbClient
     .from('forms')
@@ -1017,9 +1026,6 @@ async function createFromTemplate(type){
   document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizLogo').value = quizLogo;
-  document.getElementById('quizGenre').value = quizGenre;
-  document.getElementById('quizCategory').value = quizCategory;
-  document.getElementById('quizTag').value = quizTag;
   document.getElementById('selAppMode').value = appMode;
   document.getElementById('shArea').style.display = 'none';
   updateLogoPreview();
@@ -1028,6 +1034,7 @@ async function createFromTemplate(type){
 }
 
 async function openFile(id){
+  isNewlyCreated = false;
   cloudResponseList=[];
   document.getElementById('answerStatsContainer').replaceChildren();
   const { data, error } = await dbClient.from('forms').select('*').eq('id', id).single();
@@ -1044,9 +1051,6 @@ async function openFile(id){
   document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
   document.getElementById('quizLogo').value = quizLogo;
-  document.getElementById('quizGenre').value = quizGenre;
-  document.getElementById('quizCategory').value = quizCategory;
-  document.getElementById('quizTag').value = quizTag;
   document.getElementById('quizDeadline').value = quizDeadline ? quizDeadline.slice(0, 16) : "";
   document.getElementById('selAppMode').value = appMode;
   document.getElementById('numRandomCount').value = data.random_count || 0;
@@ -1080,13 +1084,11 @@ function saveStatus(text) {
 }
 function autoSaveCloud(){
   if(!currentFileId || isSharedMode) return Promise.resolve(false);
+  isNewlyCreated = false; // 変更・編集が行われたため新規自動削除対象外にする
   const targetId=currentFileId, sequence=++saveSequence;
   quizTitle = document.getElementById('quiz-title-input').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
   quizLogo = document.getElementById('quizLogo').value.trim();
-  quizGenre = document.getElementById('quizGenre').value.trim();
-  quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
-  quizTag = document.getElementById('quizTag').value.trim();
   quizDeadline = document.getElementById('quizDeadline').value || null;
   appMode = document.getElementById('selAppMode').value;
   collectQuestionsFromDOM();
@@ -1177,7 +1179,6 @@ function renderQuestionsEditor(){
     
     if(!qObj.opts) qObj.opts = ["", ""];
     if(!qObj.optJumps) qObj.optJumps = qObj.opts.map(() => "");
-    // Escape only the rendering copy; original question text remains unchanged.
     qObj = {...qObj, q:escapeHtml(qObj.q), ans:escapeHtml(qObj.ans), exp:escapeHtml(qObj.exp), hint:escapeHtml(qObj.hint),
       imageUrl:escapeHtml(safeMediaUrl(qObj.imageUrl)), videoUrl:escapeHtml(safeMediaUrl(qObj.videoUrl,'video')),
       opts:qObj.opts.map(escapeHtml)};
@@ -1329,7 +1330,6 @@ function addTextSection(){ collectQuestionsFromDOM(); questionsData.push({ q: "�
 async function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = await askInPage(type==='image'?'画像URLを入力:':'YouTube動画URLを入力:', ''); if(u){ const safe=safeMediaUrl(u,type); if(!safe)return alert('有効なHTTP(S)のメディアURLを入力してください。'); if(type==='image') questionsData[questionsData.length-1].imageUrl=safe; else questionsData[questionsData.length-1].videoUrl=safe; renderQuestionsEditor(); autoSaveCloud(); } }
 function reorderQuestions(mutation){
   const previous=[...questionsData];
-  // Branch targets refer to question objects across reorder/insert/delete.
   const targets=new Map(previous.map(q=>[q,(q.optJumps || []).map(j=>/^\d+$/.test(j)?previous[Number(j)]:j)]));
   mutation();
   questionsData.forEach(q=>{
@@ -1363,14 +1363,11 @@ function removeOption(qIdx, optIdx){
 function changeQuestionType(index, newType){ collectQuestionsFromDOM(); questionsData[index].type = newType; questionsData[index].ans = (newType==='text'||newType==='date'||newType==='number')?'': 'A'; renderQuestionsEditor(); autoSaveCloud(); }
 
 async function saveAndGenerateShareUrl() {
-    // 共有URLの発行は、クイズ作成者本人のログインが必要
     const { data: { session }, error: sessionError } = await dbClient.auth.getSession();
     if (sessionError) return alert("ログイン状態を確認できませんでした: " + sessionError.message);
     if (!session) return alert("クイズを保存するにはログインが必要です！");
 
     collectQuestionsFromDOM();
-
-    // まずクイズ本体を最新状態で保存
     if (!await autoSaveCloud()) {
         alert("保存に失敗したため、共有URLは発行していません。保存状態とログインを確認してください。");
         return;
@@ -1381,7 +1378,6 @@ async function saveAndGenerateShareUrl() {
         return;
     }
 
-    // このクイズだけを共有公開状態にする
     const { data: published, error: publishError } = await dbClient
         .from('forms')
         .update({ is_public: true })
@@ -1391,8 +1387,7 @@ async function saveAndGenerateShareUrl() {
         .maybeSingle();
 
     if (publishError || !published) {
-        alert("共有設定に失敗しました: " +
-            (publishError?.message || "クイズが見つからないか、更新権限がありません。Supabaseで is_public 列とRLS設定を確認してください。"));
+        alert("共有設定に失敗しました: " + (publishError?.message || "クイズが見つからないか、更新権限がありません。"));
         return;
     }
 
@@ -1405,7 +1400,7 @@ async function saveAndGenerateShareUrl() {
     shInput.value = shareUrl;
     document.getElementById('shArea').style.display = 'block';
 
-    alert("クラウドに保存され、共有URLが発行されました！ログインしていない人も、このURLから回答できます。");
+    alert("クラウドに保存され、共有URLが発行されました！");
 }
 
 async function submitUserResponse() {
@@ -1449,17 +1444,11 @@ async function submitUserResponse() {
 }
 
 async function loadMyFormResponses(formId) {
-    const { data: responseList, error } = await dbClient
-        .from('responses')
-        .select('*')
-        .eq('form_id', formId);
-
+    const { data: responseList, error } = await dbClient.from('responses').select('*').eq('form_id', formId);
     if (error) {
-        console.error("集計データ取得エラー:", error);
         document.getElementById('answerStatsContainer').innerHTML = `<p style="color:#ef4444;">データの取得に失敗しました。</p>`;
         return;
     }
-
     cloudResponseList = responseList || [];
     renderAnswerStats();
 }
@@ -1623,7 +1612,6 @@ function exportStatsImage(){
         add('');
       });
     } else cloudResponseList.forEach((rec,index)=>add(`${index+1}. ${rec.username||'匿名'}  ${rec.score||''}`));
-    if(lines.length>800) return alert('画像の上限を超えました。回答をCSVでダウンロードしてください。');
     canvas.height=Math.max(180,lines.length*34+80);
     ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.textBaseline='top';
@@ -1641,7 +1629,7 @@ function exportJsonFile(){
   if(!document.getElementById('pageEdit').classList.contains('active')) return alert('バックアップしたいフォームを編集画面で開いてください。');
   collectQuestionsFromDOM();
   const metadata={};
-  ['quiz-title-input','qDesc','quizLogo','quizGenre','quizCategory','quizTag','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>metadata[id]=document.getElementById(id).value);
+  ['quiz-title-input','qDesc','quizLogo','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>metadata[id]=document.getElementById(id).value);
   ['chkShuffle','chkSpeed','chkOnce'].forEach(id=>metadata[id]=document.getElementById(id).checked);
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({version:2,metadata,questions:questionsData}, null, 2));
   const a = document.createElement('a'); a.href = dataStr; a.download = "q_and_f_maker_backup.json";
@@ -1659,12 +1647,12 @@ function importJsonFile(e){
         const restored=normalizeQuestions(Array.isArray(parsed)?parsed:parsed.questions);
         if(!restored.length) throw new Error('質問がありません。');
         if(parsed.version===2 && parsed.metadata && typeof parsed.metadata==='object') {
-          ['quiz-title-input','qDesc','quizLogo','quizGenre','quizCategory','quizTag','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>{
+          ['quiz-title-input','qDesc','quizLogo','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>{
             if(typeof parsed.metadata[id]==='string')document.getElementById(id).value=parsed.metadata[id];
           });
           ['chkShuffle','chkSpeed','chkOnce'].forEach(id=>document.getElementById(id).checked=parsed.metadata[id]===true);
         }
-        questionsData=restored; updatePageTitle(); updateLogoPreview(); renderQuestionsEditor(); autoSaveCloud().then(ok=>alert(ok?'読み込んで保存しました。':'読み込みましたがクラウド保存に失敗しました。保存状態を確認してください。'));
+        questionsData=restored; updatePageTitle(); updateLogoPreview(); renderQuestionsEditor(); autoSaveCloud().then(ok=>alert(ok?'読み込んで保存しました。':'読み込みましたがクラウド保存に失敗しました。'));
       } catch(error) { alert('読み込み失敗: '+error.message); }
     };
   }
@@ -1694,7 +1682,7 @@ function preparePlayData() {
   let data=JSON.parse(JSON.stringify(questionsData)).map((q,index)=>({...q,originalIndex:index}));
   const hasBranches=data.some(q=>q.type==='select' && q.optJumps?.some(v=>v!==''));
   if(hasBranches && (shuffleMode || randomCount>0)) {
-    alert('条件分岐があるため、質問の順番を維持して全問を出題します。シャッフル・ランダム出題数は適用しません。');
+    alert('条件分岐があるため、質問の順番を維持して全問を出題します。');
     return data;
   }
   const shuffle=list=>{ for(let i=list.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [list[i],list[j]]=[list[j],list[i]]; } return list; };
@@ -1711,9 +1699,6 @@ function startTestPlay(){
   quizTitle = document.getElementById('quiz-title-input').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
   quizLogo = document.getElementById('quizLogo').value.trim();
-  quizGenre = document.getElementById('quizGenre').value.trim();
-  quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
-  quizTag = document.getElementById('quizTag').value.trim();
   quizDeadline = document.getElementById('quizDeadline').value;
   appMode = document.getElementById('selAppMode').value;
   shuffleMode = document.getElementById('chkShuffle').checked;
@@ -1990,11 +1975,11 @@ function sR(){
 async function cpL(){
   const i=document.getElementById('shUrl'); if(!/^https?:\/\//.test(i.value))return alert('先に共有URLを発行してください。');
   try { await navigator.clipboard.writeText(i.value); alert('コピーしました'); }
-  catch { i.select(); alert('自動コピーできませんでした。選択されたURLを手動でコピーしてください。'); }
+  catch { i.select(); alert('自動コピーできませんでした。'); }
 }
 function lineS(){ const url=document.getElementById('shUrl').value; if(!/^https?:\/\//.test(url))return alert('先に共有URLを発行してください。'); window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(url),'_blank','noopener,noreferrer'); }
 window.addEventListener('unhandledrejection',event=>{
-  event.preventDefault(); showNotice('処理に失敗しました: '+(event.reason?.message || '通信環境とログイン状態を確認してください。'));
+  event.preventDefault(); showNotice('処理に失敗しました: '+(event.reason?.message || '通信環境を確認してください。'));
 });
 </script>
 </body>
