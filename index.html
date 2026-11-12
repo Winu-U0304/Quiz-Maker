@@ -87,7 +87,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .e-title { font-size: 1.6rem; font-weight: 800; border-bottom: 2px dashed transparent; outline: none; width: 100%; color: var(--t); background: transparent; }
 .e-desc { font-size: 0.95rem; border: none; border-bottom: 1px solid var(--border); outline: none; width: 100%; color: var(--t); padding: 6px 0; background: transparent; margin-top: 10px; }
 
-/* スマホ版でも一番下に自然に配置されるフローティングツールバーの修正 */
 .floating-toolbar { display: flex; justify-content: center; gap: 8px; background: var(--c); padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: 10px 0; width: 100%; }
 .ft-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--t); padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 700; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .ft-btn:hover { background: var(--p); border-color: var(--p); }
@@ -161,67 +160,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 @media(max-width: 768px) {
   .site-header { display: none; }
   .mobile-tab-bar { display: flex; }
-  body { padding: 12px; padding-bottom: 240px; }
-
-  /* スマホでは操作ボタンを画面上部に固定する */
-  /* 親要素の表示アニメーション(transform)がfixedの基準になるのを防ぐ */
-  .tab-content.active {
-    animation: none;
-  }
-
-  .floating-toolbar {
-    position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 12px);
-    bottom: auto;
-    left: 12px;
-    width: calc(100% - 24px);
-    margin: 0;
-    padding: 8px 6px;
-    gap: 5px;
-    flex-wrap: nowrap;
-    z-index: 1101;
-    border-radius: 14px 14px 0 0;
-    border-bottom: 0;
-    box-shadow: none;
-  }
-  .floating-toolbar .ft-btn {
-    flex: 1 1 0;
-    min-width: 0;
-    padding: 9px 4px;
-    font-size: 0.72rem;
-  }
-
-  /* 上部固定ツールバーの下に「質問・回答/集計・詳細設定」を配置 */
-  .form-tabs {
-    position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 60px);
-    left: 12px;
-    width: calc(100% - 24px);
-    z-index: 1100;
-    margin: 0;
-    padding: 0 8px;
-    gap: 0;
-    justify-content: space-around;
-    border-top: 0;
-    border-radius: 0 0 14px 14px;
-    box-shadow: 0 5px 18px rgba(0,0,0,0.24);
-  }
-
-  .form-tab-item {
-    flex: 1 1 0;
-    min-width: 0;
-    text-align: center;
-    padding: 13px 3px;
-    font-size: 0.82rem;
-    white-space: nowrap;
-  }
-
-  /* 固定した2段の操作エリアの下から編集内容を開始 */
-  #tabContentQuestions,
-  #tabContentAnswers,
-  #tabContentSettings {
-    padding-top: 116px;
-  }
+  body { padding: 12px; padding-bottom: 160px; }
 }
 </style>
 
@@ -337,8 +276,8 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <div class="sh-area" id="shArea">
         <div class="sh-wrap-in">
           <input type="text" id="shUrl" class="sh-input" readonly>
-          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;border-radius:10px;" onclick="cpL()">コピー</button>
-          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#06c755;border-radius:10px;color:#fff;" onclick="lineS()">LINE共有</button>
+          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;border-radius:10px;" onclick="copyLink()">コピー</button>
+          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#06c755;border-radius:10px;color:#fff;" onclick="lineShare()">LINE共有</button>
           <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#475569;border-radius:10px;color:#fff;" onclick="showQrModal()">📱 QRコード</button>
         </div>
         <p style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">💡 URL短縮（TinyURL）でQRコードがスッキリ読み取りやすくなります。</p>
@@ -576,6 +515,53 @@ function publicPageUrl() {
     throw new Error('公開済みのHTTP(S)ページを直接開いて利用してください。');
   }
   return location.origin + location.pathname;
+}
+
+// 修正：確実にコピーするための堅牢な関数
+function copyLink() {
+  const shInput = document.getElementById('shUrl');
+  if(!shInput || !shInput.value) {
+    alert('コピーするURLがありません。');
+    return;
+  }
+  
+  shInput.select();
+  shInput.setSelectionRange(0, 99999); // スマホ対応
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(shInput.value).then(() => {
+      alert('URLをコピーしました！');
+    }).catch(() => {
+      fallbackCopyText(shInput);
+    });
+  } else {
+    fallbackCopyText(shInput);
+  }
+}
+
+function fallbackCopyText(inputElement) {
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+      alert('URLをコピーしました！');
+    } else {
+      alert('コピーに失敗しました。手動でコピーしてください。');
+    }
+  } catch (err) {
+    alert('お使いのブラウザではコピー機能が制限されています。');
+  }
+}
+
+// 修正：LINE共有機能
+function lineShare() {
+  const shInput = document.getElementById('shUrl');
+  const url = shInput ? shInput.value : '';
+  if(!url) {
+    alert('共有するURLがありません。');
+    return;
+  }
+  const lineShareUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`;
+  window.open(lineShareUrl, '_blank', 'noopener,noreferrer');
 }
 
 let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, currentCombo=0, quizTitle="", quizDesc="", quizLogo="", quizGenre="", quizCategory="一般", quizTag="", quizDeadline="", appMode="form", shuffleMode=false, speedBonus=false, preventOnce=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [], timerInterval = null, cloudResponseList = [];
@@ -1672,7 +1658,6 @@ function beginQuizPlay(){
   document.getElementById('rankingRegisterSection').style.display = 'block';
   document.getElementById('postSubmitDetails').style.display = 'none';
   
-  // フォームモードの場合は正答率サークルを非表示にする
   document.getElementById('scoreCircleContainer').style.display = (appMode === 'form') ? 'none' : 'flex';
 
   document.getElementById('qTitleView').innerText = quizTitle;
