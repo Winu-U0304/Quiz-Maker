@@ -180,8 +180,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     gap: 5px;
     flex-wrap: nowrap;
     z-index: 1101;
-    border-radius: 14px;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.28);
+    border-radius: 14px 14px 0 0;
+    border-bottom: 0;
+    box-shadow: none;
   }
   .floating-toolbar .ft-btn {
     flex: 1 1 0;
@@ -193,7 +194,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   /* 上部固定ツールバーの下に「質問・回答/集計・詳細設定」を配置 */
   .form-tabs {
     position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 68px);
+    top: calc(env(safe-area-inset-top, 0px) + 60px);
     left: 12px;
     width: calc(100% - 24px);
     z-index: 1100;
@@ -201,8 +202,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     padding: 0 8px;
     gap: 0;
     justify-content: space-around;
-    border-radius: 14px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+    border-top: 0;
+    border-radius: 0 0 14px 14px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.24);
   }
 
   .form-tab-item {
@@ -218,7 +220,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   #tabContentQuestions,
   #tabContentAnswers,
   #tabContentSettings {
-    padding-top: 126px;
+    padding-top: 116px;
   }
 }
 </style>
