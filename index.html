@@ -190,9 +190,35 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     font-size: 0.72rem;
   }
 
-  /* 固定ツールバーと編集画面の見出しが重ならないようにする */
-  #tabContentQuestions {
-    padding-top: 64px;
+  /* 上部固定ツールバーの下に「質問・回答/集計・詳細設定」を配置 */
+  .form-tabs {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 68px);
+    left: 12px;
+    width: calc(100% - 24px);
+    z-index: 1100;
+    margin: 0;
+    padding: 0 8px;
+    gap: 0;
+    justify-content: space-around;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+  }
+
+  .form-tab-item {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+    padding: 13px 3px;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  /* 固定した2段の操作エリアの下から編集内容を開始 */
+  #tabContentQuestions,
+  #tabContentAnswers,
+  #tabContentSettings {
+    padding-top: 126px;
   }
 }
 </style>
