@@ -6,7 +6,6 @@
 <link rel="icon" href="Q & F  Maker.png">
 <title id="pageTitle">Q and F Maker - クラウド版</title>
 <meta name="description" content="クラウドに保存し、フォーム・クイズ製作が可能です。解答データの収集も可能。">
-<meta name="google-site-verification" content="vNgRrpb3UvoY39B0QklxDmnc73egTqjaeguz7IusimM" />
 <style>
 :root {
   --p: #6366f1; --p-light: #1e1b4b; --s: #10b981; --d: #ef4444;
@@ -126,25 +125,25 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .qr-modal-content { background: var(--c); border: 1px solid var(--border); padding: 24px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-width: 360px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 14px; max-height: 90vh; overflow-y: auto; }
 #qrcodeCanvas { background: #ffffff; padding: 10px; border-radius: 12px; display: block; margin: 0 auto; max-width: 100%; height: auto; }
 
-.play-card-container { background: var(--c); border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 16px 40px rgba(0,0,0,0.3); padding: 40px 30px; text-align: center; }
-.p-bar-c { width: 100%; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 25px; }
+.play-card-container { background: var(--c); border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 16px 40px rgba(0,0,0,0.3); padding: 30px 20px; text-align: center; }
+.p-bar-c { width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 20px; }
 .p-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--p), #818cf8); transition: width .4s; }
 
-.meta-info-view { display: flex; justify-content: space-between; font-weight: 700; color: #94a3b8; margin-bottom: 20px; font-size: 1rem; }
-.timer-view { font-size: 1.15rem; font-weight: 800; color: var(--d); margin-bottom: 15px; }
-.q-title-view { font-size: 1.3rem; font-weight: 800; color: var(--p); margin-bottom: 12px; }
-.q-text { font-size: 1.5rem; margin-bottom: 15px; font-weight: 800; color: var(--t); }
+.meta-info-view { display: flex; justify-content: space-between; font-weight: 700; color: #94a3b8; margin-bottom: 15px; font-size: 0.9rem; }
+.timer-view { font-size: 1.1rem; font-weight: 800; color: var(--d); margin-bottom: 15px; }
+.q-title-view { font-size: 1.2rem; font-weight: 800; color: var(--p); margin-bottom: 10px; }
+.q-text { font-size: 1.4rem; margin-bottom: 15px; font-weight: 800; color: var(--t); }
 .hint-box { background: rgba(99,102,241,0.1); border: 1px dashed var(--p); padding: 10px 14px; border-radius: 12px; font-size: 0.95rem; color: var(--p); margin-bottom: 20px; font-weight: 600; text-align: left; }
 
 .o-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 650px; margin: 0 auto 20px auto; }
 @media(max-width:600px){.o-grid{grid-template-columns:100%}}
-.o-btn { background: var(--input-bg); border: 2px solid var(--border); padding: 18px 22px; font-size: 1.1rem; border-radius: 16px; cursor: pointer; text-align: left; font-weight: 600; color: var(--t); display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
+.o-btn { background: var(--input-bg); border: 2px solid var(--border); padding: 16px 20px; font-size: 1.05rem; border-radius: 16px; cursor: pointer; text-align: left; font-weight: 600; color: var(--t); display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
 .o-btn:hover { border-color: var(--p); }
 .o-btn.selected { border-color: var(--p); background: var(--p-light); }
 
 .text-ans-input, .date-ans-input, .number-ans-input { width: 100%; max-width: 480px; padding: 16px 20px; font-size: 1.2rem; border: 2px solid var(--border); border-radius: 14px; outline: none; margin: 0 auto 10px auto; display: block; background: var(--input-bg); color: var(--t); font-weight: 600; text-align: center; }
 
-.r-card { background: var(--c); border-radius: 24px; padding: 45px 25px; text-align: center; box-shadow: 0 16px 40px rgba(0,0,0,0.3); border: 1px solid var(--border); }
+.r-card { background: var(--c); border-radius: 24px; padding: 35px 20px; text-align: center; box-shadow: 0 16px 40px rgba(0,0,0,0.3); border: 1px solid var(--border); }
 .s-circ { width: 140px; height: 140px; border-radius: 50%; border: 8px solid var(--s); display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto 25px auto; background: rgba(16,185,129,0.1); }
 .s-num { font-size: 2.4rem; font-weight: 800; color: var(--s); }
 .s-lab { font-size: .9rem; color: #94a3b8; font-weight: 700; }
@@ -254,16 +253,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
     <div id="tabContentQuestions" class="tab-content active">
       <div class="form-header-card pop-anim">
-        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
-          <div id="logoPreviewContainer" style="width: 50px; height: 50px; border-radius: 12px; border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; background: var(--input-bg); overflow: hidden; flex-shrink: 0;">
-            <span id="logoPlaceholderTxt" style="font-size: 0.75rem; color: #94a3b8;">ロゴ</span>
-          </div>
-          <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 6px;">
-            <input type="text" id="quizLogo" class="opt-input" placeholder="ロゴ画像URL (任意)" oninput="updateLogoPreview(); autoSaveCloud();" style="font-size: 0.85rem;">
-            <input type="file" id="logoFileSelect" style="display:none" accept="image/*" onchange="handleLogoFileUpload(event)">
-            <button type="button" class="file-action-btn s-btn" onclick="document.getElementById('logoFileSelect').click()" style="width: fit-content; padding: 4px 10px; font-size: 0.75rem;">📁 ロゴ画像ファイルを選択</button>
-          </div>
-        </div>
         <input type="text" id="quiz-title-input" class="e-title" placeholder="タイトルを入力" oninput="updatePageTitle(); autoSaveCloud();">
         <input type="text" id="qDesc" class="e-desc" placeholder="フォームの説明を入力" oninput="autoSaveCloud()">
         
@@ -361,10 +350,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     </div>
   </div>
 
-  <!-- ④ プレイページ -->
+  <!-- ④ プレイページ（回答サイト用：無駄なボタンを削ぎ落としたすっきりUI） -->
   <div id="pagePlay" class="page-section">
     <div class="play-card-container">
-      <div id="playLogoContainer" style="margin-bottom: 15px; display: none;"></div>
       <div class="p-bar-c"><div class="p-bar" id="pBar"></div></div>
       <div class="meta-info-view"><span id="genreView"></span><span id="scoreLiveView"></span></div>
       <div id="comboBadge" style="font-size:0.9rem; font-weight:800; color:var(--s); margin-bottom:8px; min-height:20px;"></div>
@@ -375,17 +363,21 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <div id="hintContainer"></div>
       <div id="quizArea"></div>
       
-      <div style="margin-top:25px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+      <div style="margin-top:20px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
         <button class="m-btn s-btn" id="nextPlayBtn" style="font-size:1rem; padding:12px 32px; border-radius:16px;" onclick="proceedNextPlay()">次へ進む</button>
-        <button class="m-btn" style="background:#475569; font-size:0.85rem; padding:8px 16px;" onclick="exitPlayMode()">編集に戻る / 中断</button>
       </div>
     </div>
   </div>
 
-  <!-- ⑤ 結果発表・送信ページ -->
+  <!-- ⑤ 結果発表・送信ページ（送信完了後に「Q and F」のアイコン、ホームに戻る・詳細を見るボタンを表示） -->
   <div id="pageResult" class="page-section">
     <div class="r-card">
-      <h2 style="margin-bottom:15px; font-size:1.5rem; font-weight:800;" id="resultHeaderTitle">解答終了・結果確認</h2>
+      <div id="postSubmitHeader" style="display:none; align-items:center; justify-content:center; gap:12px; margin-bottom:20px;">
+        <span style="font-size:2rem; font-weight:900; color:var(--t); letter-spacing:-1px;">Q<span style="font-size:1.2rem; font-weight:600; color:var(--p); padding:0 2px;">and</span>F</span>
+        <span style="background:var(--s); color:#0f172a; width:32px; height:32px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:900; font-size:1.1rem;">✓</span>
+      </div>
+
+      <h2 style="margin-bottom:15px; font-size:1.4rem; font-weight:800;" id="resultHeaderTitle">解答終了・結果確認</h2>
       <div id="rankDisplay" style="font-size:2rem; font-weight:900; margin-bottom:10px; color:var(--p);"></div>
       <div class="s-circ" id="scoreCircleContainer" style="display:none;">
         <div class="s-num" id="aRate">0%</div>
@@ -402,8 +394,8 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <button class="m-btn s-btn" style="padding:12px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="submitUserResponse()">📥 回答を送信・登録する</button>
       </div>
 
-      <div id="postSubmitDetails" style="display:none; margin-top:20px; padding:15px; background:var(--input-bg); border-radius:16px; border:1px solid var(--border);">
-        <p style="font-size: 0.95rem; font-weight: 700; color: var(--s); margin-bottom: 8px;">✨ ご回答ありがとうございました！</p>
+      <div id="postSubmitDetails" style="display:none; margin-top:10px; margin-bottom:20px; padding:15px; background:var(--input-bg); border-radius:16px; border:1px solid var(--border);">
+        <p style="font-size: 0.95rem; font-weight: 700; color: var(--s); margin-bottom: 6px;">✨ 送信完了しました！</p>
         <p style="font-size: 0.85rem; color: #94a3b8;">あなたの回答は正常に保存されました。</p>
       </div>
 
@@ -413,9 +405,8 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       </div>
 
       <div style="display:flex; gap:12px; justify-content:center; margin-top:25px; flex-wrap:wrap;" id="resultActionButtons">
-        <button class="m-btn s-btn" id="retryWrongBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="retryWrongQuestions()">🔄 間違えた問題だけリトライ</button>
-        <button class="m-btn" id="restartBtn" style="font-size:0.95rem; padding:12px 22px; border-radius:12px;" onclick="restartQuiz()">もう一度解答する</button>
-        <button class="m-btn" id="resultHomeBtn" style="background:#475569; font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="goHome()">🏠 ホームに戻る</button>
+        <button class="m-btn s-btn" id="resultHomeBtn" style="background:var(--s); color:#0f172a; font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="goHome()">ホームに戻る</button>
+        <button class="m-btn" id="resultDetailBtn" style="background:#475569; font-size:0.95rem; padding:12px 22px; border-radius:12px; display:none;" onclick="showDetailModal()">詳細を見る</button>
       </div>
     </div>
   </div>
@@ -517,54 +508,28 @@ function publicPageUrl() {
   return location.origin + location.pathname;
 }
 
-// 修正：確実にコピーするための堅牢な関数
 function copyLink() {
   const shInput = document.getElementById('shUrl');
-  if(!shInput || !shInput.value) {
-    alert('コピーするURLがありません。');
-    return;
-  }
-  
-  shInput.select();
-  shInput.setSelectionRange(0, 99999); // スマホ対応
-
+  if(!shInput || !shInput.value) { alert('コピーするURLがありません。'); return; }
+  shInput.select(); shInput.setSelectionRange(0, 99999);
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(shInput.value).then(() => {
-      alert('URLをコピーしました！');
-    }).catch(() => {
-      fallbackCopyText(shInput);
-    });
-  } else {
-    fallbackCopyText(shInput);
-  }
+    navigator.clipboard.writeText(shInput.value).then(() => { alert('URLをコピーしました！'); }).catch(() => { fallbackCopyText(shInput); });
+  } else { fallbackCopyText(shInput); }
 }
-
 function fallbackCopyText(inputElement) {
   try {
-    const successful = document.execCommand('copy');
-    if (successful) {
-      alert('URLをコピーしました！');
-    } else {
-      alert('コピーに失敗しました。手動でコピーしてください。');
-    }
-  } catch (err) {
-    alert('お使いのブラウザではコピー機能が制限されています。');
-  }
+    if (document.execCommand('copy')) alert('URLをコピーしました！');
+    else alert('コピーに失敗しました。');
+  } catch (err) { alert('コピー機能が制限されています。'); }
 }
-
-// 修正：LINE共有機能
 function lineShare() {
   const shInput = document.getElementById('shUrl');
   const url = shInput ? shInput.value : '';
-  if(!url) {
-    alert('共有するURLがありません。');
-    return;
-  }
-  const lineShareUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`;
-  window.open(lineShareUrl, '_blank', 'noopener,noreferrer');
+  if(!url) { alert('共有するURLがありません。'); return; }
+  window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
 }
 
-let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, currentCombo=0, quizTitle="", quizDesc="", quizLogo="", quizGenre="", quizCategory="一般", quizTag="", quizDeadline="", appMode="form", shuffleMode=false, speedBonus=false, preventOnce=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [], timerInterval = null, cloudResponseList = [];
+let questionsData=[], activePlayData=[], wrongQuestionsData=[], userFormAnswers=[], userPlayHistory=[], cI=0, sc=0, totalScore=0, currentCombo=0, quizTitle="", quizDesc="", quizGenre="", quizCategory="一般", quizTag="", quizDeadline="", appMode="form", shuffleMode=false, speedBonus=false, preventOnce=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, isRetryMode=false, activeCategoryFilter="すべて", currentSelectedAns = null, multiSelectedOpts = [], timerInterval = null, cloudResponseList = [];
 let questionStartedAt = 0, questionExpiresAt = 0, questionAdvancing = false, visitedQuestions = new Set(), submittingResponse = false, responseSubmitted = false, answeredQuestionCount = 0;
 let isNewlyCreated = false;
 
@@ -584,30 +549,6 @@ function updatePageTitle() {
     pageTitleElem.innerText = "Q and F Maker - 編集画面";
     logoElem.innerText = "Q and F Maker - 編集画面";
   }
-}
-
-function updateLogoPreview(){
-  const url = document.getElementById('quizLogo').value.trim();
-  const container = document.getElementById('logoPreviewContainer');
-  if(url){
-    container.innerHTML = `<img src="${escapeHtml(safeMediaUrl(url))}" style="width:100%; height:100%; object-fit:cover;">`;
-  } else {
-    container.innerHTML = `<span id="logoPlaceholderTxt" style="font-size: 0.75rem; color: #94a3b8;">ロゴ</span>`;
-  }
-}
-
-function handleLogoFileUpload(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    document.getElementById('quizLogo').value = event.target.result;
-    updateLogoPreview();
-    isNewlyCreated = false;
-    autoSaveCloud();
-    alert('ロゴ画像を設定しました！');
-  };
-  reader.readAsDataURL(file);
 }
 
 function toggleLightDarkMode(){
@@ -634,20 +575,12 @@ function changeColorTheme(themeName){
 function togglePasswordVisibility() {
     const pwInput = document.getElementById('auth-password');
     const toggleBtn = document.querySelector('.toggle-pw-btn');
-    if (pwInput.type === 'password') {
-        pwInput.type = 'text';
-        toggleBtn.innerText = '🙈';
-    } else {
-        pwInput.type = 'password';
-        toggleBtn.innerText = '👁️';
-    }
+    if (pwInput.type === 'password') { pwInput.type = 'text'; toggleBtn.innerText = '🙈'; }
+    else { pwInput.type = 'password'; toggleBtn.innerText = '👁️'; }
 }
 
 async function signInWithGoogle() {
-  const { error } = await dbClient.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: publicPageUrl() }
-  });
+  const { error } = await dbClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: publicPageUrl() } });
   if (error) alert("Googleログインエラー: " + error.message);
 }
 
@@ -719,7 +652,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     quizTitle = data.title || "無題";
     quizDesc = data.desc || "";
-    quizLogo = data.logo || "";
     quizGenre = data.genre || "";
     quizCategory = data.category || "一般";
     quizTag = data.tag || "";
@@ -929,7 +861,7 @@ async function createNewQuiz(category = "一般", tag = "一般"){
   if(!session){ alert('ログインが必要です。'); return; }
   resetNewFormSettings();
   
-  quizTitle = "無題のフォーム"; quizDesc = ""; quizLogo = ""; quizGenre = "一般"; quizCategory = category; quizTag = tag; quizDeadline = ""; appMode = "form";
+  quizTitle = "無題のフォーム"; quizDesc = ""; quizGenre = "一般"; quizCategory = category; quizTag = tag; quizDeadline = ""; appMode = "form";
   questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
   
   isNewlyCreated = true;
@@ -942,7 +874,6 @@ async function createNewQuiz(category = "一般", tag = "一般"){
       user_id: session.user.id,
       title: quizTitle,
       desc: quizDesc,
-      logo: quizLogo,
       genre: quizGenre,
       category: quizCategory,
       tag: quizTag,
@@ -956,12 +887,10 @@ async function createNewQuiz(category = "一般", tag = "一般"){
   currentFileId = data.id;
   document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
-  document.getElementById('quizLogo').value = quizLogo;
   document.getElementById('quizGenre').value = quizGenre;
   document.getElementById('quizCategory').value = quizCategory;
   document.getElementById('selAppMode').value = appMode;
   document.getElementById('shArea').style.display = 'none';
-  updateLogoPreview();
   renderQuestionsEditor();
   switchPage('edit');
 }
@@ -975,7 +904,7 @@ async function createFromTemplate(type){
   if(!session){ alert('ログインが必要です。'); return; }
   resetNewFormSettings();
   
-  quizLogo = ""; quizDeadline = "";
+  quizDeadline = "";
   if(type === 'event'){
     quizTitle = "イベント出欠確認"; quizDesc = "出欠をお知らせください。"; quizGenre = "イベント"; quizCategory = "行事"; quizTag = "出欠";
     questionsData = [
@@ -1008,7 +937,6 @@ async function createFromTemplate(type){
       user_id: session.user.id,
       title: quizTitle,
       desc: quizDesc,
-      logo: quizLogo,
       genre: quizGenre,
       category: quizCategory,
       tag: quizTag,
@@ -1026,7 +954,6 @@ async function createFromTemplate(type){
   document.getElementById('quizCategory').value = quizCategory;
   document.getElementById('selAppMode').value = appMode;
   document.getElementById('shArea').style.display = 'none';
-  updateLogoPreview();
   renderQuestionsEditor();
   switchPage('edit');
 }
@@ -1040,7 +967,6 @@ async function openFile(id){
   currentFileId = data.id;
   quizTitle = data.title || "";
   quizDesc = data.desc || "";
-  quizLogo = data.logo || "";
   quizGenre = data.genre || "一般";
   quizCategory = data.category || "一般";
   quizTag = data.tag || "";
@@ -1048,7 +974,6 @@ async function openFile(id){
   appMode = data.mode || "quiz";
   document.getElementById('quiz-title-input').value = quizTitle;
   document.getElementById('qDesc').value = quizDesc;
-  document.getElementById('quizLogo').value = quizLogo;
   document.getElementById('quizGenre').value = quizGenre;
   document.getElementById('quizCategory').value = quizCategory;
   document.getElementById('quizDeadline').value = quizDeadline ? quizDeadline.slice(0, 16) : "";
@@ -1059,7 +984,6 @@ async function openFile(id){
   document.getElementById('chkOnce').checked = !!data.once;
   document.getElementById('selTimer').value = data.tm || 0;
   document.getElementById('shArea').style.display = 'none';
-  updateLogoPreview();
   questionsData = normalizeQuestions(data.quiz_data || []);
   questionsData.forEach(q => { if(!q.optJumps && q.opts) q.optJumps = q.opts.map(() => ""); });
   if(questionsData.length === 0) questionsData = [{ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }];
@@ -1087,7 +1011,6 @@ function autoSaveCloud(){
   const targetId=currentFileId, sequence=++saveSequence;
   quizTitle = document.getElementById('quiz-title-input').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
-  quizLogo = document.getElementById('quizLogo').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim() || "一般";
   quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
   quizDeadline = document.getElementById('quizDeadline').value || null;
@@ -1097,7 +1020,6 @@ function autoSaveCloud(){
   const payload = structuredClone({
     title: quizTitle,
     desc: quizDesc,
-    logo: quizLogo,
     genre: quizGenre,
     category: quizCategory,
     tag: quizTag,
@@ -1409,13 +1331,34 @@ async function submitUserResponse() {
           responseSubmitted = true;
           if(preventOnce) safeStorage.setItem('formapp_submitted_' + formId, 'true');
           
+          // 送信完了後はすっきりとQ and Fアイコンと「ホームに戻る」「詳細を見る」ボタンを表示
           document.getElementById('rankingRegisterSection').style.display = 'none';
+          document.getElementById('postSubmitHeader').style.display = 'flex';
           document.getElementById('postSubmitDetails').style.display = 'block';
           document.getElementById('resultHomeBtn').style.display = 'inline-flex';
+          document.getElementById('resultDetailBtn').style.display = 'inline-flex';
+          document.getElementById('resultHeaderTitle').style.display = 'none';
           alert("回答を送信しました！");
       }
     } catch(error) { alert('送信失敗: '+error.message); }
     finally { submittingResponse=false; }
+}
+
+function showDetailModal() {
+  const rCard = document.querySelector('.r-card');
+  const existingDetail = document.getElementById('detailInfoBox');
+  if(existingDetail){ existingDetail.remove(); return; }
+
+  const box = document.createElement('div');
+  box.id = 'detailInfoBox';
+  box.style.cssText = 'margin-top:20px; padding:15px; background:var(--input-bg); border-radius:16px; border:1px solid var(--border); text-align:left; font-size:0.9rem;';
+  box.innerHTML = `
+    <h4 style="color:var(--p); margin-bottom:8px; font-weight:800;">📋 回答の詳細情報</h4>
+    <p style="color:#94a3b8; margin-bottom:4px;"><b>タイトル:</b> ${escapeHtml(quizTitle)}</p>
+    <p style="color:#94a3b8; margin-bottom:4px;"><b>ジャンル:</b> ${escapeHtml(quizGenre || '一般')}</p>
+    <p style="color:#94a3b8;"><b>回答モード:</b> ${appMode === 'form' ? 'フォーム' : 'クイズ'}</p>
+  `;
+  rCard.appendChild(box);
 }
 
 async function loadMyFormResponses(formId) {
@@ -1557,7 +1500,7 @@ function exportJsonFile(){
   if(!document.getElementById('pageEdit').classList.contains('active')) return;
   collectQuestionsFromDOM();
   const metadata={};
-  ['quiz-title-input','qDesc','quizLogo','quizGenre','quizCategory','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>metadata[id]=document.getElementById(id).value);
+  ['quiz-title-input','qDesc','quizGenre','quizCategory','quizDeadline','selAppMode','numRandomCount','selTimer'].forEach(id=>metadata[id]=document.getElementById(id).value);
   ['chkShuffle','chkSpeed','chkOnce'].forEach(id=>metadata[id]=document.getElementById(id).checked);
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({version:2,metadata,questions:questionsData}, null, 2));
   const a = document.createElement('a'); a.href = dataStr; a.download = "backup.json";
@@ -1604,7 +1547,6 @@ function startTestPlay(){
   if(questionsData.length === 0) return alert('質問がありません');
   quizTitle = document.getElementById('quiz-title-input').value.trim() || "無題";
   quizDesc = document.getElementById('qDesc').value.trim();
-  quizLogo = document.getElementById('quizLogo').value.trim();
   quizGenre = document.getElementById('quizGenre').value.trim() || "一般";
   quizCategory = document.getElementById('quizCategory').value.trim() || "一般";
   quizDeadline = document.getElementById('quizDeadline').value;
@@ -1653,11 +1595,16 @@ function beginQuizPlay(){
   cI=0; sc=0; totalScore=0; currentCombo=0; answeredQuestionCount=0; questionAdvancing=false;
   visitedQuestions=new Set(); userFormAnswers=Array(questionsData.length).fill(null); userPlayHistory=[]; responseSubmitted=false;
   
-  document.getElementById('restartBtn').style.display='inline-flex';
-  document.getElementById('resultHomeBtn').style.display='none';
+  document.getElementById('postSubmitHeader').style.display = 'none';
   document.getElementById('rankingRegisterSection').style.display = 'block';
   document.getElementById('postSubmitDetails').style.display = 'none';
+  document.getElementById('resultHomeBtn').style.display = 'none';
+  document.getElementById('resultDetailBtn').style.display = 'none';
+  document.getElementById('resultHeaderTitle').style.display = 'block';
   
+  const existingDetail = document.getElementById('detailInfoBox');
+  if(existingDetail) existingDetail.remove();
+
   document.getElementById('scoreCircleContainer').style.display = (appMode === 'form') ? 'none' : 'flex';
 
   document.getElementById('qTitleView').innerText = quizTitle;
