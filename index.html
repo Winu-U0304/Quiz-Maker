@@ -161,7 +161,28 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 @media(max-width: 768px) {
   .site-header { display: none; }
   .mobile-tab-bar { display: flex; }
-  body { padding: 12px; padding-bottom: 160px; }
+  body { padding: 12px; padding-bottom: 240px; }
+
+  /* 質問追加などの操作ボタンを、スマホでは画面下部に固定する */
+  .floating-toolbar {
+    position: fixed;
+    left: 12px;
+    bottom: 76px;
+    width: calc(100% - 24px);
+    margin: 0;
+    padding: 8px 6px;
+    gap: 5px;
+    flex-wrap: nowrap;
+    z-index: 999;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.28);
+  }
+  .floating-toolbar .ft-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 9px 4px;
+    font-size: 0.72rem;
+  }
 }
 </style>
 
