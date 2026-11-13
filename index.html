@@ -817,10 +817,15 @@ async function loadMyForms(userId){
   const grid = document.getElementById('fileGrid');
   grid.innerHTML = '';
   
+  // どのタブ（すべて、古い、お気に入り、特定カテゴリ）にいても、先頭に「+ 新規作成」カードを表示する処理
   const newCard = document.createElement('div');
   newCard.className = 'file-card new-card';
   newCard.innerHTML = `<div>+ 新規作成</div>`;
-  newCard.onclick = () => createNewQuiz();
+  newCard.onclick = () => {
+    // 現在選択中のカテゴリが「すべて」「お気に入り」「古いフォーム」の場合は「一般」で新規作成し、それ以外ならそのカテゴリで新規作成する
+    let targetCat = (activeCategoryFilter === "すべて" || activeCategoryFilter === "古いフォーム" || activeCategoryFilter === "お気に入り") ? "一般" : activeCategoryFilter;
+    createNewQuiz(targetCat, targetCat);
+  };
   grid.appendChild(newCard);
   
   (files || []).forEach((file) => {
@@ -884,7 +889,6 @@ async function createNewQuiz(category = "一般", tag = "general"){
   isNewlyCreated = true;
 
   const newId = crypto.randomUUID();
-  // is_favoriteカラムが存在しないテーブルでもエラーにならないよう基本フィールドのみで新規作成
   const insertPayload = {
     id: newId,
     user_id: session.user.id,
@@ -900,7 +904,6 @@ async function createNewQuiz(category = "一般", tag = "general"){
 
   let { data, error } = await dbClient.from('forms').insert([insertPayload]).select().single();
   if(error){
-    // 万が一is_publicなどもエラーになる場合はさらに最小限にする
     delete insertPayload.is_public;
     let res2 = await dbClient.from('forms').insert([insertPayload]).select().single();
     data = res2.data; error = res2.error;
