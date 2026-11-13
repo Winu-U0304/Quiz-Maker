@@ -174,9 +174,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <a class="site-logo" id="headerLogoText" onclick="goHome()" style="width:auto; flex:1;">Q and F Maker - クラウド版</a>
       
       <div style="display:flex; align-items:center; gap:10px;" id="formTopTools">
-        <button class="file-action-btn" title="テーマ変更" onclick="document.getElementById('themeSelect').focus()">[色]</button>
-        <button class="file-action-btn" title="プレビュー" onclick="startTestPlay()">[目]</button>
-        <button class="file-action-btn" title="リンク共有" onclick="saveAndGenerateShareUrl()">[鎖]</button>
+        <button class="file-action-btn" title="テーマ変更" onclick="document.getElementById('themeSelect').focus()">🎨</button>
+        <button class="file-action-btn" title="プレビュー" onclick="startTestPlay()">👁️</button>
+        <button class="file-action-btn" title="リンク共有" onclick="saveAndGenerateShareUrl()">🔗</button>
         <button class="m-btn" style="padding:6px 18px; font-size:0.85rem; border-radius:10px;" onclick="saveAndGenerateShareUrl()">公開</button>
       </div>
     </div>
@@ -188,7 +188,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <input type="file" id="importJsonFile" style="display:none" accept=".json" onchange="importJsonFile(event)">
       <button class="nav-link-btn" onclick="switchPage('howtouse')">使い方</button>
       <div class="theme-controls">
-        <button class="nav-link-btn" id="modeToggleBtn" onclick="toggleLightDarkMode()">[切替]</button>
+        <button class="nav-link-btn" id="modeToggleBtn" onclick="toggleLightDarkMode()">🌗</button>
         <select id="themeSelect" onchange="changeColorTheme(this.value)">
           <option value="blue">ブルー</option>
           <option value="yellow">イエロー</option>
@@ -202,7 +202,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   <div id="pageHome" class="home-section active">
     <div class="auth-box" id="auth-container">
       <div id="auth-logged-out">
-        <h3 style="font-size: 1rem; color: var(--p); font-weight: 800; margin-bottom: 4px;">[鍵] クイズ作成者としてログイン</h3>
+        <h3 style="font-size: 1rem; color: var(--p); font-weight: 800; margin-bottom: 4px;">🔑 クイズ作成者としてログイン</h3>
         <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">自分専用のクイズを作成・保存し、回答データを集計するにはログインが必要です。</p>
         
         <button type="button" class="google-login-btn" onclick="signInWithGoogle()" style="margin-bottom: 10px;">
@@ -215,7 +215,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
             <input type="email" id="auth-email" placeholder="メールアドレス" style="flex: 1; min-width: 180px;">
             <div class="password-wrapper">
                 <input type="password" id="auth-password" placeholder="パスワード">
-                <button type="button" class="toggle-pw-btn" onclick="togglePasswordVisibility()" title="パスワードを表示/非表示">[眼]</button>
+                <button type="button" class="toggle-pw-btn" onclick="togglePasswordVisibility()" title="パスワードを表示/非表示">👁️</button>
             </div>
         </div>
         <div id="auth-error-message" class="auth-error-msg"></div>
@@ -227,7 +227,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       </div>
       <div id="auth-logged-in" style="display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <div>
-          <span style="font-weight: bold; color: var(--s);">[-] ログイン中:</span>
+          <span style="font-weight: bold; color: var(--s);">👤 ログイン中:</span>
           <span id="user-display-email" style="margin-left: 5px; font-size: 0.9rem; font-weight: 600;"></span>
         </div>
         <button onclick="handleSignOut()" class="file-action-btn del" style="padding: 6px 14px;">ログアウト</button>
@@ -240,12 +240,12 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     </div>
 
     <div class="template-section">
-      <h3 style="font-size: 1rem; color: var(--p); font-weight: 800;">[電球] テンプレートから作成</h3>
+      <h3 style="font-size: 1rem; color: var(--p); font-weight: 800;">💡 テンプレートから作成</h3>
       <div class="template-grid">
-        <button class="template-btn" onclick="createFromTemplate('event')">[予定] イベント出欠</button>
-        <button class="template-btn" onclick="createFromTemplate('survey')">[集計] 一般アンケート</button>
-        <button class="template-btn" onclick="createFromTemplate('booking')">[メモ] 面談・予約受付</button>
-        <button class="template-btn" onclick="createFromTemplate('contact')">[連絡] 連絡先・プロフィール</button>
+        <button class="template-btn" onclick="createFromTemplate('event')">📅 イベント出欠</button>
+        <button class="template-btn" onclick="createFromTemplate('survey')">📊 一般アンケート</button>
+        <button class="template-btn" onclick="createFromTemplate('booking')">📝 面談・予約受付</button>
+        <button class="template-btn" onclick="createFromTemplate('contact')">📇 連絡先・プロフィール</button>
       </div>
     </div>
 
@@ -269,7 +269,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
           <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="autoSaveCloud()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
           <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="autoSaveCloud()" placeholder="例: 一般" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="chkFavorite" onchange="autoSaveCloud()"> [★] お気に入り</label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="chkFavorite" onchange="autoSaveCloud()"> ⭐ お気に入り</label>
         </div>
       </div>
 
@@ -278,7 +278,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
           <input type="text" id="shUrl" class="sh-input" readonly>
           <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;border-radius:10px;" onclick="copyLink()">コピー</button>
           <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#06c755;border-radius:10px;color:#fff;" onclick="lineShare()">LINE共有</button>
-          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#475569;border-radius:10px;color:#fff;" onclick="showQrModal()">[QR]</button>
+          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#475569;border-radius:10px;color:#fff;" onclick="showQrModal()">🔲 QR</button>
         </div>
         <p style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">URL短縮（TinyURL）でQRコードがスッキリ読み取りやすくなります。</p>
       </div>
@@ -287,8 +287,8 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
       <div class="floating-toolbar">
         <button class="ft-btn" onclick="addQuestionCard()">+ 質問追加</button>
-        <button class="ft-btn" onclick="addTextSection()">TT テキスト追加</button>
-        <button class="ft-btn" onclick="promptAddMedia('image')">[画] 画像挿入</button>
+        <button class="ft-btn" onclick="addTextSection()">📝 テキスト追加</button>
+        <button class="ft-btn" onclick="promptAddMedia('image')">🖼️ 画像挿入</button>
       </div>
 
       <div style="display:flex; gap:15px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
@@ -382,7 +382,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <div class="r-card">
       <div id="postSubmitHeader" style="display:none; align-items:center; justify-content:center; gap:12px; margin-bottom:20px;">
         <span style="font-size:2rem; font-weight:900; color:var(--t); letter-spacing:-1px;">Q<span style="font-size:1.2rem; font-weight:600; color:var(--p); padding:0 2px;">and</span>F</span>
-        <span style="background:var(--s); color:#0f172a; width:32px; height:32px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:900; font-size:1.1rem;">[OK]</span>
+        <span style="background:var(--s); color:#0f172a; width:32px; height:32px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:900; font-size:1.1rem;">✔️</span>
       </div>
 
       <h2 style="margin-bottom:15px; font-size:1.4rem; font-weight:800;" id="resultHeaderTitle">解答終了・結果確認</h2>
@@ -560,11 +560,11 @@ function toggleLightDarkMode(){
   const btn = document.getElementById('modeToggleBtn');
   if(body.classList.contains('light-mode')){
     body.classList.remove('light-mode');
-    btn.innerText = "[切替]";
+    btn.innerText = "🌗";
     safeStorage.setItem('formapp_mode', 'dark');
   } else {
     body.classList.add('light-mode');
-    btn.innerText = "[切替]";
+    btn.innerText = "🌗";
     safeStorage.setItem('formapp_mode', 'light');
   }
 }
@@ -579,8 +579,8 @@ function changeColorTheme(themeName){
 function togglePasswordVisibility() {
     const pwInput = document.getElementById('auth-password');
     const toggleBtn = document.querySelector('.toggle-pw-btn');
-    if (pwInput.type === 'password') { pwInput.type = 'text'; toggleBtn.innerText = '[-]'; }
-    else { pwInput.type = 'password'; toggleBtn.innerText = '[眼]'; }
+    if (pwInput.type === 'password') { pwInput.type = 'text'; toggleBtn.innerText = '🔒'; }
+    else { pwInput.type = 'password'; toggleBtn.innerText = '👁️'; }
 }
 
 async function signInWithGoogle() {
@@ -637,7 +637,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const savedTheme = safeStorage.getItem('formapp_theme') || 'blue';
   if(savedMode === 'light'){
     document.body.classList.add('light-mode');
-    document.getElementById('modeToggleBtn').innerText = "[切替]";
+    document.getElementById('modeToggleBtn').innerText = "🌗";
   }
   changeColorTheme(savedTheme);
   document.getElementById('themeSelect').value = savedTheme;
@@ -793,7 +793,7 @@ async function loadMyForms(userId){
     chip.className = 'cat-filter-chip ' + (activeCategoryFilter === cat ? 'active' : '');
     
     if (cat === "すべて" || cat === "一般" || cat === "古いフォーム" || cat === "お気に入り") {
-      chip.innerHTML = `${escapeHtml(cat === 'お気に入り' ? '[★] お気に入りフォーム' : cat)}`;
+      chip.innerHTML = `${escapeHtml(cat === 'お気に入り' ? '⭐ お気に入りフォーム' : cat)}`;
     } else {
       chip.innerHTML = `${escapeHtml(truncateText(cat, 6))} <button class="cat-add-btn" title="${cat}に新規作成" onclick="event.stopPropagation(); createNewQuizInCategory('${cat}')">+</button>`;
     }
@@ -817,12 +817,10 @@ async function loadMyForms(userId){
   const grid = document.getElementById('fileGrid');
   grid.innerHTML = '';
   
-  // どのタブ（すべて、古い、お気に入り、特定カテゴリ）にいても、先頭に「+ 新規作成」カードを表示する処理
   const newCard = document.createElement('div');
   newCard.className = 'file-card new-card';
   newCard.innerHTML = `<div>+ 新規作成</div>`;
   newCard.onclick = () => {
-    // 現在選択中のカテゴリが「すべて」「お気に入り」「古いフォーム」の場合は「一般」で新規作成し、それ以外ならそのカテゴリで新規作成する
     let targetCat = (activeCategoryFilter === "すべて" || activeCategoryFilter === "古いフォーム" || activeCategoryFilter === "お気に入り") ? "一般" : activeCategoryFilter;
     createNewQuiz(targetCat, targetCat);
   };
@@ -848,7 +846,7 @@ async function loadMyForms(userId){
       <div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <div class="file-card-title" style="margin-bottom:0; flex:1;">${escapeHtml(file.title || '無題')}</div>
-          ${fileFav ? '<span style="font-size:1.1rem;">[★]</span>' : ''}
+          ${fileFav ? '<span style="font-size:1.1rem;">⭐</span>' : ''}
         </div>
         <div class="file-card-meta">
           <span>ジャンル: ${escapeHtml(file.genre || '未設定')} / カテゴリ: ${escapeHtml(fileCat)}</span>
