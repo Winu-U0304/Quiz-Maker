@@ -58,6 +58,9 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .template-btn { background: var(--input-bg); border: 1px solid var(--border); padding: 12px; border-radius: 14px; cursor: pointer; text-align: left; font-weight: 700; color: var(--t); transition: all 0.2s; font-size: 0.9rem; }
 .template-btn:hover { border-color: var(--p); background: var(--p-light); }
 
+.form-sort-filter-bar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; width:100%; margin-top:4px; }
+.form-sort-chip { background:var(--input-bg); border:1px solid var(--border); padding:8px 16px; border-radius:22px; font-size:.9rem; font-weight:700; cursor:pointer; color:var(--t); white-space:nowrap; }
+.form-sort-chip.active { background:var(--p); border-color:var(--p); color:#fff; }
 .category-filter-bar { display: flex; gap: 8px; align-items: center; overflow-x: auto; width: 100%; padding-bottom: 5px; }
 .cat-filter-chip { background: var(--input-bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--t); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
 .cat-filter-chip.active { background: var(--p); border-color: var(--p); color: #fff; }
@@ -174,8 +177,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <a class="site-logo" id="headerLogoText" onclick="goHome()" style="width:auto; flex:1;">Q and F Maker - クラウド版</a>
       
       <div style="display:flex; align-items:center; gap:10px;" id="formTopTools">
-        <button class="file-action-btn" title="テーマ変更" onclick="document.getElementById('themeSelect').focus()">🎨</button>
-        <button class="file-action-btn" title="プレビュー" onclick="startTestPlay()">👁️</button>
+        <button class="file-action-btn" title="プレビュー" onclick="startTestPlay()">👁</button>
         <button class="file-action-btn" title="リンク共有" onclick="saveAndGenerateShareUrl()">🔗</button>
         <button class="m-btn" style="padding:6px 18px; font-size:0.85rem; border-radius:10px;" onclick="saveAndGenerateShareUrl()">公開</button>
       </div>
@@ -188,7 +190,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <input type="file" id="importJsonFile" style="display:none" accept=".json" onchange="importJsonFile(event)">
       <button class="nav-link-btn" onclick="switchPage('howtouse')">使い方</button>
       <div class="theme-controls">
-        <button class="nav-link-btn" id="modeToggleBtn" onclick="toggleLightDarkMode()">🌗</button>
+        <button class="nav-link-btn" id="modeToggleBtn" onclick="toggleLightDarkMode()">切り替え</button>
         <select id="themeSelect" onchange="changeColorTheme(this.value)">
           <option value="blue">ブルー</option>
           <option value="yellow">イエロー</option>
@@ -202,7 +204,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   <div id="pageHome" class="home-section active">
     <div class="auth-box" id="auth-container">
       <div id="auth-logged-out">
-        <h3 style="font-size: 1rem; color: var(--p); font-weight: 800; margin-bottom: 4px;">🔑 クイズ作成者としてログイン</h3>
+        <h3 style="font-size: 1rem; color: var(--p); font-weight: 800; margin-bottom: 4px;">クイズ作成者としてログイン</h3>
         <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">自分専用のクイズを作成・保存し、回答データを集計するにはログインが必要です。</p>
         
         <button type="button" class="google-login-btn" onclick="signInWithGoogle()" style="margin-bottom: 10px;">
@@ -249,6 +251,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       </div>
     </div>
 
+    <div class="form-sort-filter-bar" id="formSortFilterBar"></div>
     <div class="category-filter-bar" id="categoryFilterBar"></div>
     <div class="file-grid" id="fileGrid"></div>
   </div>
@@ -532,7 +535,7 @@ function lineShare() {
   window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
 }
 
-let questionsData=[], activePlayData=[], userFormAnswers=[], sc=0, totalScore=0, quizTitle="", quizDesc="", quizGenre="", quizCategory="General", quizTag="", quizDeadline="", appMode="form", shuffleMode=false, speedBonus=false, preventOnce=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, activeCategoryFilter="すべて", cloudResponseList = [];
+let questionsData=[], activePlayData=[], userFormAnswers=[], sc=0, totalScore=0, quizTitle="", quizDesc="", quizGenre="", quizCategory="General", quizTag="", quizDeadline="", appMode="form", shuffleMode=false, speedBonus=false, preventOnce=false, timeLimit=0, randomCount=0, currentFileId=null, isSharedMode=false, activeCategoryFilter="すべて", activeFormFilter="すべて", cloudResponseList = [];
 let submittingResponse = false, responseSubmitted = false, answeredQuestionCount = 0;
 let isFavorite = false, isPublicState = false;
 let isNewlyCreated = false;
@@ -778,29 +781,40 @@ async function loadMyForms(userId){
 
   if(error) return;
 
-  const categories = ["すべて", "一般", "古いフォーム", "お気に入り"];
-  (files || []).forEach(f => {
+  const allFiles = files || [];
+  const sortOptions = ["すべて", "新しいフォーム", "古いフォーム", "お気に入りフォーム"];
+  if (!sortOptions.includes(activeFormFilter)) activeFormFilter = 'すべて';
+
+  // 上段：フォームの編集時期・お気に入りによる絞り込み
+  const sortBar = document.getElementById('formSortFilterBar');
+  sortBar.innerHTML = '';
+  sortOptions.forEach(option => {
+    const chip = document.createElement('button');
+    chip.className = 'form-sort-chip ' + (activeFormFilter === option ? 'active' : '');
+    chip.textContent = option === 'お気に入りフォーム' ? '⭐ お気に入りフォーム' : option;
+    chip.onclick = () => { activeFormFilter = option; loadMyForms(userId); };
+    sortBar.appendChild(chip);
+  });
+
+  // 下段：ジャンル／カテゴリによる絞り込み
+  const categories = ["すべて"];
+  allFiles.forEach(f => {
     const cat = f.category && f.category.trim() ? f.category.trim() : "一般";
     if(!categories.includes(cat)) categories.push(cat);
   });
-  
+
   if (!categories.includes(activeCategoryFilter)) activeCategoryFilter = 'すべて';
   const catBar = document.getElementById('categoryFilterBar');
   catBar.innerHTML = '';
-  
+
   categories.forEach(cat => {
     const chip = document.createElement('button');
     chip.className = 'cat-filter-chip ' + (activeCategoryFilter === cat ? 'active' : '');
-    
-    if (cat === "すべて" || cat === "一般" || cat === "古いフォーム" || cat === "お気に入り") {
-      chip.innerHTML = `${escapeHtml(cat === 'お気に入り' ? '⭐ お気に入りフォーム' : cat)}`;
-    } else {
-      chip.innerHTML = `${escapeHtml(truncateText(cat, 6))} <button class="cat-add-btn" title="${cat}に新規作成" onclick="event.stopPropagation(); createNewQuizInCategory('${cat}')">+</button>`;
-    }
+    chip.textContent = cat;
     chip.onclick = () => { activeCategoryFilter = cat; loadMyForms(userId); };
     catBar.appendChild(chip);
   });
-  
+
   const addCatChip = document.createElement('button');
   addCatChip.className = 'cat-filter-chip';
   addCatChip.style.background = 'var(--s)';
@@ -808,38 +822,47 @@ async function loadMyForms(userId){
   addCatChip.innerHTML = '+ ジャンル/カテゴリ追加';
   addCatChip.onclick = async () => {
     let newCatName = await askInPage('新しく追加するカテゴリ名を入力してください:', '一般');
-    if (newCatName && newCatName.trim()) {
-      createNewQuizInCategory(newCatName.trim());
-    }
+    if (newCatName && newCatName.trim()) createNewQuizInCategory(newCatName.trim());
   };
   catBar.appendChild(addCatChip);
-  
+
   const grid = document.getElementById('fileGrid');
   grid.innerHTML = '';
-  
+
   const newCard = document.createElement('div');
   newCard.className = 'file-card new-card';
   newCard.innerHTML = `<div>+ 新規作成</div>`;
   newCard.onclick = () => {
-    let targetCat = (activeCategoryFilter === "すべて" || activeCategoryFilter === "古いフォーム" || activeCategoryFilter === "お気に入り") ? "一般" : activeCategoryFilter;
+    const targetCat = activeCategoryFilter === 'すべて' ? '一般' : activeCategoryFilter;
     createNewQuiz(targetCat, targetCat);
   };
   grid.appendChild(newCard);
-  
-  (files || []).forEach((file) => {
-    const fileCat = file.category && file.category.trim() ? file.category.trim() : "一般";
+
+  const now = Date.now();
+  const recentWindow = 30 * 24 * 60 * 60 * 1000;
+  const getEditedTime = file => new Date(file.updated_at || file.created_at || 0).getTime();
+  const visibleFiles = allFiles.filter(file => {
+    const fileCat = file.category && file.category.trim() ? file.category.trim() : '一般';
     const fileFav = !!file.is_favorite;
-    
-    if(activeCategoryFilter === "お気に入り" && !fileFav) return;
-    if(activeCategoryFilter === "古いフォーム") {
-      const isOld = new Date(file.created_at) < new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      if(!isOld) return;
-    }
-    if(activeCategoryFilter !== "すべて" && activeCategoryFilter !== "お気に入り" && activeCategoryFilter !== "古いフォーム" && activeCategoryFilter !== fileCat) return;
-    
+    const editedAt = getEditedTime(file);
+    const isRecent = Number.isFinite(editedAt) && (now - editedAt) <= recentWindow;
+
+    if (activeFormFilter === '新しいフォーム' && !isRecent) return false;
+    if (activeFormFilter === '古いフォーム' && isRecent) return false;
+    if (activeFormFilter === 'お気に入りフォーム' && !fileFav) return false;
+    if (activeCategoryFilter !== 'すべて' && activeCategoryFilter !== fileCat) return false;
+    return true;
+  }).sort((a, b) => getEditedTime(b) - getEditedTime(a));
+
+  visibleFiles.forEach(file => {
+    const fileCat = file.category && file.category.trim() ? file.category.trim() : '一般';
+    const fileFav = !!file.is_favorite;
     const isPub = !!file.is_public;
     const pubBadge = isPub ? `<span style="color:var(--s); font-weight:700;">[公開中]</span>` : `<span style="color:#94a3b8; font-weight:700;">[非公開]</span>`;
-    
+    const editedAt = getEditedTime(file);
+    const editedLabel = Number.isFinite(editedAt) && editedAt > 0
+      ? new Date(editedAt).toLocaleDateString('ja-JP') : '日時不明';
+
     const card = document.createElement('div');
     card.className = 'file-card';
     card.innerHTML = `
@@ -851,6 +874,7 @@ async function loadMyForms(userId){
         <div class="file-card-meta">
           <span>ジャンル: ${escapeHtml(file.genre || '未設定')} / カテゴリ: ${escapeHtml(fileCat)}</span>
           <span>${file.mode === 'form' ? 'フォーム' : 'クイズ'} (${file.quiz_data ? file.quiz_data.length : 0}問) | ${pubBadge}</span>
+          <span>最終編集: ${editedLabel}</span>
         </div>
       </div>
       <div style="display:flex; gap:8px; align-items:center;">
@@ -862,7 +886,7 @@ async function loadMyForms(userId){
     card.onclick = () => openFile(file.id);
     grid.appendChild(card);
   });
- } catch {}
+ } catch(error) { console.error('フォーム一覧の読み込みに失敗しました:', error); }
 }
 
 function resetNewFormSettings() {
@@ -1068,6 +1092,7 @@ function autoSaveCloud(){
     deadline: quizDeadline,
     mode: appMode,
     is_favorite: isFavorite,
+    updated_at: new Date().toISOString(),
     random_count: parseInt(document.getElementById('numRandomCount').value) || 0,
     shuffle: document.getElementById('chkShuffle').checked,
     speed: document.getElementById('chkSpeed').checked,
@@ -1082,10 +1107,18 @@ function autoSaveCloud(){
       if(sessionError || !session) throw new Error();
       
       let { error } = await dbClient.from('forms').update(payload).eq('id',targetId).eq('user_id',session.user.id);
-      if (error && error.message.includes('is_favorite')) {
-        delete payload.is_favorite;
-        let res2 = await dbClient.from('forms').update(payload).eq('id',targetId).eq('user_id',session.user.id);
-        error = res2.error;
+      // 互換性のため、未追加の任意カラムがあれば外して再試行する
+      for (let attempt = 0; error && attempt < 2; attempt++) {
+        const message = error.message || '';
+        if (message.includes('updated_at') && Object.prototype.hasOwnProperty.call(payload, 'updated_at')) {
+          delete payload.updated_at;
+        } else if (message.includes('is_favorite') && Object.prototype.hasOwnProperty.call(payload, 'is_favorite')) {
+          delete payload.is_favorite;
+        } else {
+          break;
+        }
+        const retry = await dbClient.from('forms').update(payload).eq('id',targetId).eq('user_id',session.user.id);
+        error = retry.error;
       }
       if(error) throw error;
 
