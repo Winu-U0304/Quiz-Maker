@@ -69,7 +69,6 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 .file-card.new-card { border: 2px dashed var(--s); background: var(--p-light); justify-content: center; align-items: center; text-align: center; color: var(--s); font-weight: bold; }
 .file-card-title { font-size: 1.15rem; font-weight: bold; color: var(--t); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
 .file-card-meta { font-size: 0.85rem; color: #94a3b8; display:flex; flex-direction:column; gap:3px; }
-.file-card-actions { display: flex; gap: 8px; margin-top: 10px; }
 .file-action-btn { background: var(--border); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 600; color: var(--t); }
 .file-action-btn.del { background: #7f1d1d; color: #fecaca; }
 
@@ -171,7 +170,18 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 <body class="theme-blue">
 <div class="con" id="app">
   <header class="site-header">
-    <a class="site-logo" id="headerLogoText" onclick="goHome()">Q and F Maker - クラウド版</a>
+    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:10px; flex-wrap:wrap;">
+      <a class="site-logo" id="headerLogoText" onclick="goHome()" style="width:auto; flex:1;">Q and F Maker - クラウド版</a>
+      
+      <!-- Googleフォーム風の右上アクションアイコン群 -->
+      <div style="display:flex; align-items:center; gap:10px;" id="formTopTools">
+        <button class="file-action-btn" title="テーマ変更" onclick="document.getElementById('themeSelect').focus()">🎨</button>
+        <button class="file-action-btn" title="プレビュー" onclick="startTestPlay()">👁️</button>
+        <button class="file-action-btn" title="リンク共有" onclick="saveAndGenerateShareUrl()">🔗</button>
+        <button class="m-btn" style="padding:6px 18px; font-size:0.85rem; border-radius:10px;" onclick="saveAndGenerateShareUrl()">公開</button>
+      </div>
+    </div>
+
     <nav class="nav-links">
       <button class="nav-link-btn" onclick="goHome()">ホーム</button>
       <button class="nav-link-btn" onclick="exportJsonFile()">📁 バックアップ</button>
@@ -290,7 +300,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       </div>
     </div>
 
-    <!-- 回答・集計（スプレッドシート風テーブル表示対応） -->
+    <!-- 回答・集計 -->
     <div id="tabContentAnswers" class="tab-content">
       <div class="form-header-card" id="statsExportArea">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
@@ -354,7 +364,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     </div>
   </div>
 
-  <!-- ④ プレイページ（Googleフォーム風の一覧回答対応） -->
+  <!-- ④ プレイページ（解答中画面） -->
   <div id="pagePlay" class="page-section">
     <div class="play-card-container">
       <div class="p-bar-c"><div class="p-bar" id="pBar"></div></div>
@@ -453,7 +463,6 @@ function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-// URLを自動検知してリンク化する関数
 function linkifyText(text) {
   const safe = escapeHtml(text);
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -716,8 +725,8 @@ function switchPage(pageName){
     if(tabW) tabW.classList.add('active');
   } else if(pageName === 'play') {
     document.getElementById('pagePlay').classList.add('active');
-    document.getElementById('pageTitle').innerText = "Q and F Maker - プレイ中";
-    logoElem.innerText = "Q and F Maker - プレイ中";
+    document.getElementById('pageTitle').innerText = "Q and F Maker - 解答中";
+    logoElem.innerText = "Q and F Maker - 解答中";
   } else if(pageName === 'result') {
     document.getElementById('pageResult').classList.add('active');
     document.getElementById('pageTitle').innerText = "Q and F Maker - 結果発表";
@@ -1336,7 +1345,7 @@ async function saveAndGenerateShareUrl() {
     shInput.value = shareUrl;
     document.getElementById('shArea').style.display = 'block';
 
-    alert("共有URLを発行し、公開しました！");
+    alert("公開され、共有URLを発行しました！");
 }
 
 async function submitUserResponse() {
@@ -1418,7 +1427,6 @@ function generateConicPieChart(items, totalVotes) {
   return `<div style="text-align:center; margin:15px 0;"><div style="width:130px; height:130px; border-radius:50%; ${conicStyle} margin:0 auto 10px auto;"></div>${legendHtml}</div>`;
 }
 
-// スプレッドシート風テーブル表示対応
 function renderAnswerStats(){
   const container = document.getElementById('answerStatsContainer');
   const mode = document.getElementById('statDisplayMode').value;
@@ -1586,8 +1594,6 @@ function preparePlayData() {
   return JSON.parse(JSON.stringify(questionsData)).map((q,index)=>({...q,originalIndex:index}));
 }
 
-function quizRate(){ return answeredQuestionCount ? Math.round(sc/answeredQuestionCount*100) : 0; }
-
 function startTestPlay(){
   collectQuestionsFromDOM();
   if(questionsData.length === 0) return alert('質問がありません');
@@ -1623,7 +1629,6 @@ function showQrModal(){
 function closeQrModal(){ document.getElementById('qrModal').style.display = 'none'; }
 function closeQrModalDirect(){ document.getElementById('qrModal').style.display = 'none'; }
 
-// ── Googleフォーム風：全問一覧での回答・プレイ画面 ──
 function beginQuizPlay(){
   if(!activePlayData.length) return;
   userFormAnswers = Array(activePlayData.length).fill(null);
@@ -1654,7 +1659,7 @@ function beginQuizPlay(){
     block.className = 'play-question-block';
     
     if(q.type === 'info'){
-      block.innerHTML = `<h3 style="color:var(--p); margin-bottom:8px;">📌 セクション説明</h3><div style="font-size:1.05font; font-weight:bold;">${linkifyText(q.q)}</div>`;
+      block.innerHTML = `<h3 style="color:var(--p); margin-bottom:8px;">📌 セクション説明</h3><div style="font-size:1.05rem; font-weight:bold;">${linkifyText(q.q)}</div>`;
       container.appendChild(block);
       return;
     }
@@ -1711,7 +1716,7 @@ function updateOtherAnswer(qIdx, oIdx) {
 
 function submitPlayAnswers(){
   for(let i=0; i<activePlayData.length; i++){
-    if(activePlayData[i].required && !activePlayData[i].type === 'info' && (!userFormAnswers[i] || !String(userFormAnswers[i]).trim())) {
+    if(activePlayData[i].required && activePlayData[i].type !== 'info' && (!userFormAnswers[i] || !String(userFormAnswers[i]).trim())) {
       return alert(`Q${i+1}は必須質問です。回答を入力してください。`);
     }
   }
