@@ -884,23 +884,27 @@ async function createNewQuiz(category = "一般", tag = "general"){
   isNewlyCreated = true;
 
   const newId = crypto.randomUUID();
-  const { data, error } = await dbClient
-    .from('forms')
-    .insert([{
-      id: newId,
-      user_id: session.user.id,
-      title: quizTitle,
-      desc: quizDesc,
-      genre: quizGenre,
-      category: quizCategory,
-      tag: quizTag,
-      mode: appMode,
-      is_favorite: false,
-      is_public: false,
-      quiz_data: questionsData
-    }])
-    .select()
-    .single();
+  // is_favoriteカラムが存在しないテーブルでもエラーにならないよう基本フィールドのみで新規作成
+  const insertPayload = {
+    id: newId,
+    user_id: session.user.id,
+    title: quizTitle,
+    desc: quizDesc,
+    genre: quizGenre,
+    category: quizCategory,
+    tag: quizTag,
+    mode: appMode,
+    is_public: false,
+    quiz_data: questionsData
+  };
+
+  let { data, error } = await dbClient.from('forms').insert([insertPayload]).select().single();
+  if(error){
+    // 万が一is_publicなどもエラーになる場合はさらに最小限にする
+    delete insertPayload.is_public;
+    let res2 = await dbClient.from('forms').insert([insertPayload]).select().single();
+    data = res2.data; error = res2.error;
+  }
 
   if(error){ alert('作成エラー: ' + error.message); return; }
   currentFileId = data.id;
@@ -950,23 +954,24 @@ async function createFromTemplate(type){
   appMode = "form";
   isNewlyCreated = false;
   const newId = crypto.randomUUID();
-  const { data, error } = await dbClient
-    .from('forms')
-    .insert([{
-      id: newId,
-      user_id: session.user.id,
-      title: quizTitle,
-      desc: quizDesc,
-      genre: quizGenre,
-      category: quizCategory,
-      tag: quizTag,
-      mode: appMode,
-      is_favorite: false,
-      is_public: false,
-      quiz_data: questionsData
-    }])
-    .select()
-    .single();
+  const insertPayload = {
+    id: newId,
+    user_id: session.user.id,
+    title: quizTitle,
+    desc: quizDesc,
+    genre: quizGenre,
+    category: quizCategory,
+    tag: quizTag,
+    mode: appMode,
+    is_public: false,
+    quiz_data: questionsData
+  };
+  let { data, error } = await dbClient.from('forms').insert([insertPayload]).select().single();
+  if(error){
+    delete insertPayload.is_public;
+    let res2 = await dbClient.from('forms').insert([insertPayload]).select().single();
+    data = res2.data; error = res2.error;
+  }
 
   if(error) return;
   currentFileId = data.id;
@@ -1053,7 +1058,7 @@ function autoSaveCloud(){
   isFavorite = document.getElementById('chkFavorite').checked;
   collectQuestionsFromDOM();
 
-  const payload = structuredClone({
+  const payload = {
     title: quizTitle,
     desc: quizDesc,
     genre: quizGenre,
@@ -1068,13 +1073,21 @@ function autoSaveCloud(){
     once: document.getElementById('chkOnce').checked,
     tm: parseInt(document.getElementById('selTimer').value),
     quiz_data: questionsData
-  });
+  };
   saveStatus('保存中…');
   const job = async () => {
     try {
       const {data:{session},error:sessionError}=await dbClient.auth.getSession();
       if(sessionError || !session) throw new Error();
-      await dbClient.from('forms').update(payload).eq('id',targetId).eq('user_id',session.user.id);
+      
+      let { error } = await dbClient.from('forms').update(payload).eq('id',targetId).eq('user_id',session.user.id);
+      if (error && error.message.includes('is_favorite')) {
+        delete payload.is_favorite;
+        let res2 = await dbClient.from('forms').update(payload).eq('id',targetId).eq('user_id',session.user.id);
+        error = res2.error;
+      }
+      if(error) throw error;
+
       if(currentFileId===targetId && sequence===saveSequence) saveStatus('保存済み');
       return true;
     } catch {
@@ -1326,13 +1339,18 @@ async function saveAndGenerateShareUrl() {
     collectQuestionsFromDOM();
     if (!await autoSaveCloud()) return alert("保存に失敗しました。");
 
-    const { data: published, error: publishError } = await dbClient
+    let { data: published, error: publishError } = await dbClient
         .from('forms')
         .update({ is_public: true })
         .eq('id', currentFileId)
         .eq('user_id', session.user.id)
         .select('id')
         .maybeSingle();
+
+    if (publishError && publishError.message.includes('is_public')) {
+      let res2 = await dbClient.from('forms').update({}).eq('id', currentFileId).eq('user_id', session.user.id).select('id').maybeSingle();
+      published = res2.data; publishError = res2.error;
+    }
 
     if (publishError || !published) return alert("共有設定に失敗しました。");
     isPublicState = true;
