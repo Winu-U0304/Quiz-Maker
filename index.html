@@ -173,23 +173,22 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <div style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:10px; flex-wrap:wrap;">
       <a class="site-logo" id="headerLogoText" onclick="goHome()" style="width:auto; flex:1;">Q and F Maker - クラウド版</a>
       
-      <!-- Googleフォーム風の右上アクションアイコン群 -->
       <div style="display:flex; align-items:center; gap:10px;" id="formTopTools">
-        <button class="file-action-btn" title="テーマ変更" onclick="document.getElementById('themeSelect').focus()">🎨</button>
-        <button class="file-action-btn" title="プレビュー" onclick="startTestPlay()">👁️</button>
-        <button class="file-action-btn" title="リンク共有" onclick="saveAndGenerateShareUrl()">🔗</button>
+        <button class="file-action-btn" title="テーマ変更" onclick="document.getElementById('themeSelect').focus()">[色]</button>
+        <button class="file-action-btn" title="プレビュー" onclick="startTestPlay()">[目]</button>
+        <button class="file-action-btn" title="リンク共有" onclick="saveAndGenerateShareUrl()">[鎖]</button>
         <button class="m-btn" style="padding:6px 18px; font-size:0.85rem; border-radius:10px;" onclick="saveAndGenerateShareUrl()">公開</button>
       </div>
     </div>
 
     <nav class="nav-links">
       <button class="nav-link-btn" onclick="goHome()">ホーム</button>
-      <button class="nav-link-btn" onclick="exportJsonFile()">📁 バックアップ</button>
-      <button class="nav-link-btn" onclick="document.getElementById('importJsonFile').click()">📥 読み込み</button>
+      <button class="nav-link-btn" onclick="exportJsonFile()">バックアップ</button>
+      <button class="nav-link-btn" onclick="document.getElementById('importJsonFile').click()">読み込み</button>
       <input type="file" id="importJsonFile" style="display:none" accept=".json" onchange="importJsonFile(event)">
       <button class="nav-link-btn" onclick="switchPage('howtouse')">使い方</button>
       <div class="theme-controls">
-        <button class="nav-link-btn" id="modeToggleBtn" onclick="toggleLightDarkMode()">☀️ ライト</button>
+        <button class="nav-link-btn" id="modeToggleBtn" onclick="toggleLightDarkMode()">[切替]</button>
         <select id="themeSelect" onchange="changeColorTheme(this.value)">
           <option value="blue">ブルー</option>
           <option value="yellow">イエロー</option>
@@ -203,11 +202,10 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
   <div id="pageHome" class="home-section active">
     <div class="auth-box" id="auth-container">
       <div id="auth-logged-out">
-        <h3 style="font-size: 1rem; color: var(--p); font-weight: 800; margin-bottom: 4px;">🔐 クイズ作成者としてログイン</h3>
+        <h3 style="font-size: 1rem; color: var(--p); font-weight: 800; margin-bottom: 4px;">[鍵] クイズ作成者としてログイン</h3>
         <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">自分専用のクイズを作成・保存し、回答データを集計するにはログインが必要です。</p>
         
         <button type="button" class="google-login-btn" onclick="signInWithGoogle()" style="margin-bottom: 10px;">
-          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.18 21.31 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.19C.43 8.13 0 9.87 0 11.75s.43 3.62 1.19 5.15l4.08-2.66z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.18 2.69 1.19 6.6l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
           Googleアカウントでログイン
         </button>
 
@@ -217,7 +215,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
             <input type="email" id="auth-email" placeholder="メールアドレス" style="flex: 1; min-width: 180px;">
             <div class="password-wrapper">
                 <input type="password" id="auth-password" placeholder="パスワード">
-                <button type="button" class="toggle-pw-btn" onclick="togglePasswordVisibility()" title="パスワードを表示/非表示">👁️</button>
+                <button type="button" class="toggle-pw-btn" onclick="togglePasswordVisibility()" title="パスワードを表示/非表示">[眼]</button>
             </div>
         </div>
         <div id="auth-error-message" class="auth-error-msg"></div>
@@ -229,7 +227,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       </div>
       <div id="auth-logged-in" style="display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <div>
-          <span style="font-weight: bold; color: var(--s);">● ログイン中:</span>
+          <span style="font-weight: bold; color: var(--s);">[-] ログイン中:</span>
           <span id="user-display-email" style="margin-left: 5px; font-size: 0.9rem; font-weight: 600;"></span>
         </div>
         <button onclick="handleSignOut()" class="file-action-btn del" style="padding: 6px 14px;">ログアウト</button>
@@ -238,16 +236,16 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
 
     <div class="home-top-bar" id="my-forms-section" style="display:none;">
       <h2>マイフォーム一覧</h2>
-      <button class="m-btn s-btn" style="padding:10px 20px; font-size:0.95rem; border-radius:12px;" onclick="createNewQuiz()">＋ 新規作成</button>
+      <button class="m-btn s-btn" style="padding:10px 20px; font-size:0.95rem; border-radius:12px;" onclick="createNewQuiz()">+ 新規作成</button>
     </div>
 
     <div class="template-section">
-      <h3 style="font-size: 1rem; color: var(--p); font-weight: 800;">💡 テンプレートから作成</h3>
+      <h3 style="font-size: 1rem; color: var(--p); font-weight: 800;">[電球] テンプレートから作成</h3>
       <div class="template-grid">
-        <button class="template-btn" onclick="createFromTemplate('event')">📅 イベント出欠</button>
-        <button class="template-btn" onclick="createFromTemplate('survey')">📊 一般アンケート</button>
-        <button class="template-btn" onclick="createFromTemplate('booking')">📝 面談・予約受付</button>
-        <button class="template-btn" onclick="createFromTemplate('contact')">📇 連絡先・プロフィール</button>
+        <button class="template-btn" onclick="createFromTemplate('event')">[予定] イベント出欠</button>
+        <button class="template-btn" onclick="createFromTemplate('survey')">[集計] 一般アンケート</button>
+        <button class="template-btn" onclick="createFromTemplate('booking')">[メモ] 面談・予約受付</button>
+        <button class="template-btn" onclick="createFromTemplate('contact')">[連絡] 連絡先・プロフィール</button>
       </div>
     </div>
 
@@ -271,7 +269,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <div style="margin-top:15px; display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
           <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">ジャンル: <input type="text" id="quizGenre" oninput="autoSaveCloud()" placeholder="例: アンケート" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
           <label style="font-size:0.95rem; font-weight:700; color:#94a3b8;">カテゴリ: <input type="text" id="quizCategory" oninput="autoSaveCloud()" placeholder="例: 一般" style="padding:8px 12px; border:1px solid var(--border); border-radius:10px; width:160px; font-size:0.95rem; background:var(--input-bg); color:var(--t);"></label>
-          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="chkFavorite" onchange="autoSaveCloud()"> ⭐ お気に入り</label>
+          <label style="font-size:0.95rem; font-weight:700; color:#94a3b8; display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" id="chkFavorite" onchange="autoSaveCloud()"> [★] お気に入り</label>
         </div>
       </div>
 
@@ -280,22 +278,22 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
           <input type="text" id="shUrl" class="sh-input" readonly>
           <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;border-radius:10px;" onclick="copyLink()">コピー</button>
           <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#06c755;border-radius:10px;color:#fff;" onclick="lineShare()">LINE共有</button>
-          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#475569;border-radius:10px;color:#fff;" onclick="showQrModal()">📱 QRコード</button>
+          <button class="m-btn" style="padding:10px 16px;font-size:0.9rem;background:#475569;border-radius:10px;color:#fff;" onclick="showQrModal()">[QR]</button>
         </div>
-        <p style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">💡 URL短縮（TinyURL）でQRコードがスッキリ読み取りやすくなります。</p>
+        <p style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">URL短縮（TinyURL）でQRコードがスッキリ読み取りやすくなります。</p>
       </div>
 
       <div id="questionsContainer" style="display:flex; flex-direction:column; gap:16px;"></div>
 
       <div class="floating-toolbar">
-        <button class="ft-btn" onclick="addQuestionCard()">＋ 質問追加</button>
+        <button class="ft-btn" onclick="addQuestionCard()">+ 質問追加</button>
         <button class="ft-btn" onclick="addTextSection()">TT テキスト追加</button>
-        <button class="ft-btn" onclick="promptAddMedia('image')">🖼 画像挿入</button>
+        <button class="ft-btn" onclick="promptAddMedia('image')">[画] 画像挿入</button>
       </div>
 
       <div style="display:flex; gap:15px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
-        <button class="m-btn s-btn" onclick="startTestPlay()">▶ プレビュー / テスト</button>
-        <button class="m-btn" onclick="saveAndGenerateShareUrl()">🔗 共有URLを発行</button>
+        <button class="m-btn s-btn" onclick="startTestPlay()">プレビュー / テスト</button>
+        <button class="m-btn" onclick="saveAndGenerateShareUrl()">共有URLを発行</button>
         <button class="m-btn" style="background:#475569;" onclick="goHome()">ホームに戻る</button>
       </div>
     </div>
@@ -306,11 +304,11 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
           <h3 style="color:var(--p); font-weight:800;">回答・集計データ（クラウド同期）</h3>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <button class="m-btn s-btn" style="padding:6px 14px; font-size:0.85rem; border-radius:8px;" onclick="exportStatsImage()">📷 統計結果を画像保存</button>
-            <button class="m-btn" style="padding:6px 14px; font-size:0.85rem; border-radius:8px; background:#059669;" onclick="exportAnswersCSV()">📥 回答をCSVでダウンロード</button>
+            <button class="m-btn s-btn" style="padding:6px 14px; font-size:0.85rem; border-radius:8px;" onclick="exportStatsImage()">統計結果を画像保存</button>
+            <button class="m-btn" style="padding:6px 14px; font-size:0.85rem; border-radius:8px; background:#059669;" onclick="exportAnswersCSV()">回答をCSVでダウンロード</button>
             <span style="font-size:0.85rem; color:#94a3b8; font-weight:700;">表示切替:</span>
             <select id="statDisplayMode" onchange="renderAnswerStats()" style="background:var(--input-bg); color:var(--t); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-weight:bold; outline:none; cursor:pointer;">
-              <option value="table">📊 スプレッドシート(表)形式</option>
+              <option value="table">スプレッドシート(表)形式</option>
               <option value="bar">1. 棒グラフ(プログレスバー)表示</option>
               <option value="pie">2. 全体で1つの円グラフ表示</option>
               <option value="text">3. テキスト・リスト表示</option>
@@ -384,7 +382,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <div class="r-card">
       <div id="postSubmitHeader" style="display:none; align-items:center; justify-content:center; gap:12px; margin-bottom:20px;">
         <span style="font-size:2rem; font-weight:900; color:var(--t); letter-spacing:-1px;">Q<span style="font-size:1.2rem; font-weight:600; color:var(--p); padding:0 2px;">and</span>F</span>
-        <span style="background:var(--s); color:#0f172a; width:32px; height:32px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:900; font-size:1.1rem;">✓</span>
+        <span style="background:var(--s); color:#0f172a; width:32px; height:32px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:900; font-size:1.1rem;">[OK]</span>
       </div>
 
       <h2 style="margin-bottom:15px; font-size:1.4rem; font-weight:800;" id="resultHeaderTitle">解答終了・結果確認</h2>
@@ -399,11 +397,11 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
       <div id="rankingRegisterSection" style="max-width:360px; margin:0 auto 25px auto; background:var(--input-bg); padding:18px; border-radius:16px; border:1px solid var(--border);">
         <p style="font-size:0.85rem; color:#94a3b8; font-weight:700; margin-bottom:10px; line-height:1.4;">※名前を入力し、「回答を送信・登録する」ボタンを押してクラウドに記録してください。</p>
         <input type="text" id="respondent-name-input" placeholder="名前を入力" style="width:100%; padding:12px; border:2px solid var(--border); border-radius:12px; margin-bottom:12px; text-align:center; font-size:1rem; outline:none; font-weight:600; background:var(--c); color:var(--t);">
-        <button class="m-btn s-btn" style="padding:12px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="submitUserResponse()">📥 回答を送信・登録する</button>
+        <button class="m-btn s-btn" style="padding:12px 18px; font-size:0.95rem; width:100%; border-radius:12px;" onclick="submitUserResponse()">回答を送信・登録する</button>
       </div>
 
       <div id="postSubmitDetails" style="display:none; margin-top:10px; margin-bottom:20px; padding:15px; background:var(--input-bg); border-radius:16px; border:1px solid var(--border);">
-        <p style="font-size: 0.95rem; font-weight: 700; color: var(--s); margin-bottom: 6px;">✨ 送信完了しました！</p>
+        <p style="font-size: 0.95rem; font-weight: 700; color: var(--s); margin-bottom: 6px;">送信完了しました</p>
         <p style="font-size: 0.85rem; color: #94a3b8;">あなたの回答は正常に保存されました。</p>
       </div>
 
@@ -425,7 +423,7 @@ body{background:var(--b);color:var(--t);padding:15px;display:flex;justify-conten
     <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--p);">共有用 QRコード</h3>
     <canvas id="qrcodeCanvas"></canvas>
     <p style="font-size: 0.75rem; color: #94a3b8; word-break: break-all; max-width: 100%;" id="qrModalUrlText"></p>
-    <button class="m-btn" style="padding: 10px 24px; font-size: 0.9rem; width: 100%; border-radius: 12px;" onclick="closeQrModalDirect()">OK (閉じる)</button>
+    <button class="m-btn" style="padding: 10px 24px; font-size: 0.9rem; width: 100%; border-radius: 12px;" onclick="closeQrModalDirect()">閉じる</button>
   </div>
 </div>
 
@@ -518,19 +516,19 @@ function copyLink() {
   if(!shInput || !shInput.value) { alert('コピーするURLがありません。'); return; }
   shInput.select(); shInput.setSelectionRange(0, 99999);
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(shInput.value).then(() => { alert('URLをコピーしました！'); }).catch(() => { fallbackCopyText(shInput); });
+    navigator.clipboard.writeText(shInput.value).then(() => { alert('URLをコピーしました'); }).catch(() => { fallbackCopyText(shInput); });
   } else { fallbackCopyText(shInput); }
 }
 function fallbackCopyText(inputElement) {
   try {
-    if (document.execCommand('copy')) alert('URLをコピーしました！');
-    else alert('コピーに失敗しました。');
-  } catch (err) { alert('コピー機能が制限されています。'); }
+    if (document.execCommand('copy')) alert('URLをコピーしました');
+    else alert('コピーに失敗しました');
+  } catch (err) { alert('コピー機能が制限されています'); }
 }
 function lineShare() {
   const shInput = document.getElementById('shUrl');
   const url = shInput ? shInput.value : '';
-  if(!url) { alert('共有するURLがありません。'); return; }
+  if(!url) { alert('共有するURLがありません'); return; }
   window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
 }
 
@@ -562,11 +560,11 @@ function toggleLightDarkMode(){
   const btn = document.getElementById('modeToggleBtn');
   if(body.classList.contains('light-mode')){
     body.classList.remove('light-mode');
-    btn.innerText = "☀️ ライト";
+    btn.innerText = "[切替]";
     safeStorage.setItem('formapp_mode', 'dark');
   } else {
     body.classList.add('light-mode');
-    btn.innerText = "🌙 ダーク";
+    btn.innerText = "[切替]";
     safeStorage.setItem('formapp_mode', 'light');
   }
 }
@@ -581,8 +579,8 @@ function changeColorTheme(themeName){
 function togglePasswordVisibility() {
     const pwInput = document.getElementById('auth-password');
     const toggleBtn = document.querySelector('.toggle-pw-btn');
-    if (pwInput.type === 'password') { pwInput.type = 'text'; toggleBtn.innerText = '🙈'; }
-    else { pwInput.type = 'password'; toggleBtn.innerText = '👁️'; }
+    if (pwInput.type === 'password') { pwInput.type = 'text'; toggleBtn.innerText = '[-]'; }
+    else { pwInput.type = 'password'; toggleBtn.innerText = '[眼]'; }
 }
 
 async function signInWithGoogle() {
@@ -605,7 +603,7 @@ async function handleSignIn() {
   if (!email || !password) return alert('メールアドレスとパスワードを入力してください。');
   const { error } = await dbClient.auth.signInWithPassword({ email, password });
   if (error) alert("ログイン失敗: " + error.message);
-  else { alert("ログインしました！"); document.getElementById('auth-password').value = ''; }
+  else { alert("ログインしました"); document.getElementById('auth-password').value = ''; }
 }
 
 async function handleSignOut() {
@@ -639,7 +637,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const savedTheme = safeStorage.getItem('formapp_theme') || 'blue';
   if(savedMode === 'light'){
     document.body.classList.add('light-mode');
-    document.getElementById('modeToggleBtn').innerText = "🌙 ダーク";
+    document.getElementById('modeToggleBtn').innerText = "[切替]";
   }
   changeColorTheme(savedTheme);
   document.getElementById('themeSelect').value = savedTheme;
@@ -670,12 +668,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     timeLimit = data.tm || 0;
 
     if (quizDeadline && new Date() > new Date(quizDeadline)) {
-      document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⏰ 受付終了しました</h2></div>`;
+      document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">受付終了しました</h2></div>`;
       return;
     }
 
     if (preventOnce && safeStorage.getItem('formapp_submitted_' + formId)) {
-      document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">⚠️ 回答済みです</h2></div>`;
+      document.body.innerHTML = `<div style="text-align:center; padding:50px; font-family:sans-serif; color:#f8fafc; background:#0f172a; min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;"><h2 style="color:#ef4444; margin-bottom:15px;">回答済みです</h2></div>`;
       return;
     }
 
@@ -795,9 +793,9 @@ async function loadMyForms(userId){
     chip.className = 'cat-filter-chip ' + (activeCategoryFilter === cat ? 'active' : '');
     
     if (cat === "すべて" || cat === "一般" || cat === "古いフォーム" || cat === "お気に入り") {
-      chip.innerHTML = `${escapeHtml(cat === 'お気に入り' ? '⭐ お気に入りフォーム' : cat)}`;
+      chip.innerHTML = `${escapeHtml(cat === 'お気に入り' ? '[★] お気に入りフォーム' : cat)}`;
     } else {
-      chip.innerHTML = `${escapeHtml(truncateText(cat, 6))} <button class="cat-add-btn" title="${cat}に新規作成" onclick="event.stopPropagation(); createNewQuizInCategory('${cat}')">＋</button>`;
+      chip.innerHTML = `${escapeHtml(truncateText(cat, 6))} <button class="cat-add-btn" title="${cat}に新規作成" onclick="event.stopPropagation(); createNewQuizInCategory('${cat}')">+</button>`;
     }
     chip.onclick = () => { activeCategoryFilter = cat; loadMyForms(userId); };
     catBar.appendChild(chip);
@@ -807,7 +805,7 @@ async function loadMyForms(userId){
   addCatChip.className = 'cat-filter-chip';
   addCatChip.style.background = 'var(--s)';
   addCatChip.style.color = '#0f172a';
-  addCatChip.innerHTML = '＋ ジャンル/カテゴリ追加';
+  addCatChip.innerHTML = '+ ジャンル/カテゴリ追加';
   addCatChip.onclick = async () => {
     let newCatName = await askInPage('新しく追加するカテゴリ名を入力してください:', '一般');
     if (newCatName && newCatName.trim()) {
@@ -821,7 +819,7 @@ async function loadMyForms(userId){
   
   const newCard = document.createElement('div');
   newCard.className = 'file-card new-card';
-  newCard.innerHTML = `<div>＋ 新規作成</div>`;
+  newCard.innerHTML = `<div>+ 新規作成</div>`;
   newCard.onclick = () => createNewQuiz();
   grid.appendChild(newCard);
   
@@ -837,7 +835,7 @@ async function loadMyForms(userId){
     if(activeCategoryFilter !== "すべて" && activeCategoryFilter !== "お気に入り" && activeCategoryFilter !== "古いフォーム" && activeCategoryFilter !== fileCat) return;
     
     const isPub = !!file.is_public;
-    const pubBadge = isPub ? `<span style="color:var(--s); font-weight:700;">🟢 公開中</span>` : `<span style="color:#94a3b8; font-weight:700;">⚪ 非公開</span>`;
+    const pubBadge = isPub ? `<span style="color:var(--s); font-weight:700;">[公開中]</span>` : `<span style="color:#94a3b8; font-weight:700;">[非公開]</span>`;
     
     const card = document.createElement('div');
     card.className = 'file-card';
@@ -845,7 +843,7 @@ async function loadMyForms(userId){
       <div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <div class="file-card-title" style="margin-bottom:0; flex:1;">${escapeHtml(file.title || '無題')}</div>
-          ${fileFav ? '<span style="font-size:1.1rem;">⭐</span>' : ''}
+          ${fileFav ? '<span style="font-size:1.1rem;">[★]</span>' : ''}
         </div>
         <div class="file-card-meta">
           <span>ジャンル: ${escapeHtml(file.genre || '未設定')} / カテゴリ: ${escapeHtml(fileCat)}</span>
@@ -1214,7 +1212,7 @@ function renderQuestionsEditor(){
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <input type="text" class="img-input opt-input" value="${qObj.imageUrl || ''}" placeholder="画像URLまたはファイル選択" oninput="autoSaveCloud()" style="font-size:0.9rem; flex:1; min-width:200px;">
           <input type="file" id="imgFile_${index}" style="display:none" accept="image/*" onchange="handleMediaFileUpload(event, ${index}, 'image')">
-          <button type="button" class="file-action-btn s-btn" onclick="document.getElementById('imgFile_${index}').click()" style="padding:10px 12px;">📁 画像ファイル</button>
+          <button type="button" class="file-action-btn s-btn" onclick="document.getElementById('imgFile_${index}').click()" style="padding:10px 12px;">画像ファイル</button>
         </div>
       </div>
 
@@ -1224,11 +1222,11 @@ function renderQuestionsEditor(){
         </div>
         ${qObj.type !== 'text' && qObj.type !== 'date' && qObj.type !== 'number' && optCount < 10 ? `
           <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
-            <button type="button" class="file-action-btn" style="width:auto;" onclick="addOptionToQuestion(${index})">＋ 選択肢を追加</button>
-            <button type="button" class="file-action-btn" style="width:auto; background:var(--p);" onclick="addOtherOptionToQuestion(${index})">＋ 「その他」を追加</button>
+            <button type="button" class="file-action-btn" style="width:auto;" onclick="addOptionToQuestion(${index})">+ 選択肢を追加</button>
+            <button type="button" class="file-action-btn" style="width:auto; background:var(--p);" onclick="addOtherOptionToQuestion(${index})">+ 「その他」を追加</button>
           </div>
         ` : ''}
-        <input type="text" class="hint-input opt-input" value="${qObj.hint || ''}" placeholder="💡 ヒント文（任意）" oninput="autoSaveCloud()" style="font-size:0.9rem; margin-bottom:12px; border-color:var(--p);">
+        <input type="text" class="hint-input opt-input" value="${qObj.hint || ''}" placeholder="ヒント文（任意）" oninput="autoSaveCloud()" style="font-size:0.9rem; margin-bottom:12px; border-color:var(--p);">
         
         <div class="q-card-footer">
           <div class="ans-select-group">
@@ -1279,14 +1277,14 @@ function handleMediaFileUpload(e, index, type){
     else questionsData[index].videoUrl = event.target.result;
     renderQuestionsEditor();
     autoSaveCloud();
-    alert('メディアファイルを設定しました！');
+    alert('メディアファイルを設定しました');
   };
   reader.readAsDataURL(file);
 }
 
 function addQuestionCard(){ collectQuestionsFromDOM(); questionsData.push({ q: "", type: "select", opts: ["", ""], optJumps: ["", ""], ans: "A", exp: "", hint: "", diff: "★☆☆", score: 10, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); autoSaveCloud(); }
 function addTextSection(){ collectQuestionsFromDOM(); questionsData.push({ q: "【セクション説明】", type: "info", opts: [], optJumps: [], ans: "", exp: "", hint: "", diff: "★☆☆", score: 0, imageUrl: "", videoUrl: "", required: false, maxLen: 0 }); renderQuestionsEditor(); autoSaveCloud(); }
-async function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = await askInPage('画像URLを入力:', ''); if(u){ const safe=safeMediaUrl(u,type); if(!safe)return alert('有効なURLを入力してください。'); questionsData[questionsData.length-1].imageUrl=safe; renderQuestionsEditor(); autoSaveCloud(); } }
+async function promptAddMedia(type){ collectQuestionsFromDOM(); if(questionsData.length === 0) addQuestionCard(); const u = await askInPage('画像URLを入力:', ''); if(u){ const safe=safeMediaUrl(u,type); if(!safe)return alert('有効なURLを入力してください'); questionsData[questionsData.length-1].imageUrl=safe; renderQuestionsEditor(); autoSaveCloud(); } }
 
 function reorderQuestions(mutation){
   const previous=[...questionsData];
@@ -1345,7 +1343,7 @@ async function saveAndGenerateShareUrl() {
     shInput.value = shareUrl;
     document.getElementById('shArea').style.display = 'block';
 
-    alert("公開され、共有URLを発行しました！");
+    alert("公開され、共有URLを発行しました");
 }
 
 async function submitUserResponse() {
@@ -1377,7 +1375,7 @@ async function submitUserResponse() {
           document.getElementById('resultHomeBtn').style.display = 'inline-flex';
           document.getElementById('resultDetailBtn').style.display = 'inline-flex';
           document.getElementById('resultHeaderTitle').style.display = 'none';
-          alert("回答を送信しました！");
+          alert("回答を送信しました");
       }
     } catch(error) { alert('送信失敗: '+error.message); }
     finally { submittingResponse=false; }
@@ -1392,7 +1390,7 @@ function showDetailModal() {
   box.id = 'detailInfoBox';
   box.style.cssText = 'margin-top:20px; padding:15px; background:var(--input-bg); border-radius:16px; border:1px solid var(--border); text-align:left; font-size:0.9rem;';
   box.innerHTML = `
-    <h4 style="color:var(--p); margin-bottom:8px; font-weight:800;">📋 回答の詳細情報</h4>
+    <h4 style="color:var(--p); margin-bottom:8px; font-weight:800;">回答の詳細情報</h4>
     <p style="color:#94a3b8; margin-bottom:4px;"><b>タイトル:</b> ${escapeHtml(quizTitle)}</p>
     <p style="color:#94a3b8; margin-bottom:4px;"><b>ジャンル:</b> ${escapeHtml(quizGenre || '一般')}</p>
     <p style="color:#94a3b8;"><b>回答モード:</b> ${appMode === 'form' ? 'フォーム' : 'クイズ'}</p>
@@ -1498,7 +1496,7 @@ function renderAnswerStats(){
         records.forEach(rec => { 
           let ansData = rec.answer_data;
           let val = Array.isArray(ansData) ? ansData[qIdx] : ansData;
-          if(val) html += `<li style="background:var(--border); padding:6px 10px; border-radius:8px; color:var(--t);">💬 ${val} <span style="font-size:0.75rem; color:#94a3b8; float:right;">(${rec.username})</span></li>`; 
+          if(val) html += `<li style="background:var(--border); padding:6px 10px; border-radius:8px; color:var(--t);">${val} <span style="font-size:0.75rem; color:#94a3b8; float:right;">(${rec.username})</span></li>`; 
         });
         html += `</ul>`;
       }
@@ -1512,7 +1510,7 @@ function renderAnswerStats(){
 
 function exportAnswersCSV(){
   const records = cloudResponseList;
-  if(records.length === 0) return alert('データがありません。');
+  if(records.length === 0) return alert('データがありません');
   const csvCell = value => '"' + String(value ?? '').replace(/"/g,'""') + '"';
   let csvRows = [];
   let headers = ['回答者名', '回答日時'];
@@ -1536,7 +1534,7 @@ function exportAnswersCSV(){
 }
 
 function exportStatsImage(){
-  if(!cloudResponseList.length) return alert('データがありません。');
+  if(!cloudResponseList.length) return alert('データがありません');
   const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
   canvas.width=1200; canvas.height=600;
   ctx.fillStyle='#1e293b'; ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -1571,7 +1569,7 @@ function importJsonFile(e){
         questionsData=normalizeQuestions(Array.isArray(parsed)?parsed:parsed.questions);
         renderQuestionsEditor();
         autoSaveCloud();
-        alert('読み込みました！');
+        alert('読み込みました');
       } catch(e) { alert('読み込み失敗'); }
     };
   }
@@ -1659,7 +1657,7 @@ function beginQuizPlay(){
     block.className = 'play-question-block';
     
     if(q.type === 'info'){
-      block.innerHTML = `<h3 style="color:var(--p); margin-bottom:8px;">📌 セクション説明</h3><div style="font-size:1.05rem; font-weight:bold;">${linkifyText(q.q)}</div>`;
+      block.innerHTML = `<h3 style="color:var(--p); margin-bottom:8px;">[案内] セクション説明</h3><div style="font-size:1.05rem; font-weight:bold;">${linkifyText(q.q)}</div>`;
       container.appendChild(block);
       return;
     }
@@ -1682,7 +1680,7 @@ function beginQuizPlay(){
 
     block.innerHTML = `
       <div class="q-text">Q${qIdx+1}. ${linkifyText(q.q)}${q.required ? '<span style="color:var(--d); margin-left:6px;">*必須</span>' : ''}</div>
-      ${q.hint ? `<div class="hint-box">💡 ${linkifyText(q.hint)}</div>` : ''}
+      ${q.hint ? `<div class="hint-box">[ヒント] ${linkifyText(q.hint)}</div>` : ''}
       ${q.imageUrl ? `<img src="${safeMediaUrl(q.imageUrl)}" style="max-width:100%; max-height:220px; border-radius:12px; margin-bottom:12px;">` : ''}
       ${innerContent}
     `;
